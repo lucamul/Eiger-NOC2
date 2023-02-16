@@ -25,20 +25,15 @@ defaultsettings = { "serversList" : [(5,5)],
                  }
 
 
-test_tsize = {
-    "serversList" : [(5,5)],
-                    "txnlen" : [4,8,16,32,64,128],
-                    "threads" : [1000],
+test_port = {
+    "serversList" : [(8,8)],
+                    "txnlen" : [5],
+                    "threads" : [32],
                     "numseconds" : 60,
                     "configs" : [
-                                  "READ_ATOMIC_STAMP",
-                                  "READ_ATOMIC_LIST",
-                                  "READ_ATOMIC_LORA",
-                                  "READ_ATOMIC_CONST_ORT",
-                                  "READ_ATOMIC_NOC",
-                                  "READ_COMMITTED"
+                                  "EIGER",
                                 ],
-                    "readprop" : [.95],
+                    "readprop" : [.9],
                     "iterations" : range(0,1),
                     "numkeys" : [1000000],
                     "valuesize" : [1],
@@ -72,7 +67,7 @@ experiments = { "debug" :
                                       "readprop",
                                       [.95]),
                 
-                "tsize_test" : test_tsize,
+                "port" : test_port,
                 
                 "threads" : chg_param(defaultsettings.copy(),
                                       "threads",

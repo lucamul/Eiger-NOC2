@@ -23,67 +23,24 @@ KAIJU_HOSTS_INTERNAL=""
 KAIJU_HOSTS_EXTERNAL=""
 netCmd = "sudo sysctl net.ipv4.tcp_syncookies=1 > /dev/null; sudo sysctl net.core.netdev_max_backlog=250000 > /dev/null; sudo ifconfig ens3 txqueuelen 10000000; sudo sysctl net.core.somaxconn=100000 > /dev/null ; sudo sysctl net.core.netdev_max_backlog=10000000 > /dev/null; sudo sysctl net.ipv4.tcp_max_syn_backlog=1000000 > /dev/null; sudo sysctl -w net.ipv4.ip_local_port_range='1024 64000' > /dev/null; sudo sysctl -w net.ipv4.tcp_fin_timeout=2 > /dev/null; "
 
-n_servers = 5
-n_clients = 5
+username = "ubuntu"
+
+file_name = "/home/ubuntu/hosts/all-hosts.txt"
+
+# Read the contents of the file and store the nodes in a list
+with open(file_name, "r") as f:
+    nodes = f.readlines()
+
+# Remove newline characters from the nodes
+nodes = [node.strip() for node in nodes]
+
+n_servers = len(nodes)//2
+n_clients = len(nodes)//2
 
 #list of clients and servers IP addresses
-clients_list = [
-"10.254.3.100"
-,"10.254.1.161"
-,"10.254.3.224"
-,"10.254.0.63"
-,"10.254.0.145"
-,"10.254.3.202"
-,"10.254.3.154"
-,"10.254.0.103"
-,"10.254.1.245"
-,"10.254.0.221"
-,"10.254.1.46"
-,"10.254.2.99"
-,"10.254.3.24"
-,"10.254.2.18"
-,"10.254.2.180"
-,"10.254.1.192"
-,"10.254.1.162"
-,"10.254.3.31"
-,"10.254.1.124"
-,"10.254.2.144"
-,"10.254.1.213"
-,"10.254.3.83"
-,"10.254.0.189"
-,"10.254.3.17"
-,"10.254.0.163"
-]
+clients_list = [nodes[i] for i in range(n_servers, n_servers + n_clients)]
 
-server_list = [
-"10.254.0.150"
-,"10.254.2.184"
-,"10.254.1.57"
-,"10.254.1.236"
-,"10.254.2.119"
-,"10.254.1.164"
-,"10.254.2.220"
-,"10.254.0.177"
-,"10.254.2.87"
-,"10.254.3.239"
-,"10.254.2.107"
-,"10.254.3.108"
-,"10.254.1.223"
-,"10.254.1.226"
-,"10.254.0.60"
-,"10.254.1.145"
-,"10.254.0.183"
-,"10.254.0.128"
-,"10.254.3.99"
-,"10.254.0.117"
-,"10.254.2.171"
-,"10.254.1.59"
-,"10.254.2.154"
-,"10.254.1.99"
-,"10.254.0.236"
-]
-
-
+server_list = [nodes[i] for i in range(n_servers)]
 
 def start_servers(**kwargs):
     HEADER = "pkill -9 java; cd /home/ubuntu/kaiju/; rm *.log;"
