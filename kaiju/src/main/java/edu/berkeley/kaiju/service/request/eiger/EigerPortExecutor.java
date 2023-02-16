@@ -163,6 +163,8 @@ public class EigerPortExecutor implements IEigerExecutor{
     private DataItem find_isolated(DataItem ver, String key) {
         Long gst = ver.getPrepTs();
         Long commit_t = ver.getTimestamp();
+        if(gst >= commit_t) return ver;
+        if(!storageEngine.eigerMap.containsKey(key)) return ver;
         NavigableMap<Long,DataItem> subMap = storageEngine.eigerMap.get(key).subMap(gst, commit_t).descendingMap();
         Iterator<NavigableMap.Entry<Long, DataItem> > itr = subMap.entrySet().iterator();
         while(itr.hasNext()){
@@ -170,7 +172,10 @@ public class EigerPortExecutor implements IEigerExecutor{
             while(entry.getValue().getCid() == ver.getCid()) {
                 ver = entry.getValue();
                 Long new_gst = ver.getPrepTs();
-                subMap = storageEngine.eigerMap.get(key).subMap(new_gst, commit_t).descendingMap();
+                Long new_commit_t = ver.getTimestamp();
+                if(new_gst >= commit_t) return ver;
+                if(!storageEngine.eigerMap.containsKey(key)) return ver;
+                subMap = storageEngine.eigerMap.get(key).subMap(new_gst, new_commit_t).descendingMap();
                 itr = subMap.entrySet().iterator();
                 if(!itr.hasNext()) {
                     return ver;
@@ -212,8 +217,9 @@ public class EigerPortExecutor implements IEigerExecutor{
             tidToPendingTime.remove(transactionID);
         }
         if(commitTime > this.latest_commit) this.latest_commit = commitTime;
-        if(pending.isEmpty()) this.lst = this.latest_commit;
-        else this.lst = pending.first();
+        Long tmp = this.pending.pollFirst();
+        if(tmp == null) this.lst = this.latest_commit;
+        else this.lst = tmp;
 
         KaijuResponse response = new KaijuResponse();
         response.setHct(this.lst);
@@ -254,8 +260,9 @@ public class EigerPortExecutor implements IEigerExecutor{
                 tidToPendingTime.remove(transactionID);
             }
             if(commitTime > this.latest_commit) this.latest_commit = commitTime;
-            if(pending.isEmpty()) this.lst = this.latest_commit;
-            else this.lst = pending.first();
+            Long tmp = this.pending.pollFirst();
+            if(tmp == null) this.lst = this.latest_commit;
+            else this.lst = tmp;
         }
     }
 
