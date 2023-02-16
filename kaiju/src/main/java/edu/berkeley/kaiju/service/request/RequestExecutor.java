@@ -12,6 +12,7 @@ import edu.berkeley.kaiju.monitor.MetricsManager;
 import edu.berkeley.kaiju.service.LockManager;
 import edu.berkeley.kaiju.service.MemoryStorageEngine;
 import edu.berkeley.kaiju.service.request.eiger.EigerExecutor;
+import edu.berkeley.kaiju.service.request.eiger.IEigerExecutor;
 import edu.berkeley.kaiju.service.request.message.KaijuMessage;
 import edu.berkeley.kaiju.service.request.message.request.*;
 import edu.berkeley.kaiju.service.request.message.response.EigerPreparedResponse;
@@ -108,13 +109,13 @@ public class RequestExecutor implements Runnable {
     private MemoryStorageEngine storageEngine;
     private KaijuMessage message;
     private LockManager lockManager;
-    private EigerExecutor eigerExecutor;
+    private IEigerExecutor eigerExecutor;
 
     public RequestExecutor(RequestDispatcher dispatcher,
                            MemoryStorageEngine storageEngine,
                            LockManager lockManager,
                            KaijuMessage message,
-                           EigerExecutor eigerExecutor) {
+                           IEigerExecutor eigerExecutor) {
         this.dispatcher = dispatcher;
         this.storageEngine = storageEngine;
         this.lockManager = lockManager;

@@ -3,6 +3,7 @@ package edu.berkeley.kaiju.service.request;
 import edu.berkeley.kaiju.service.LockManager;
 import edu.berkeley.kaiju.service.MemoryStorageEngine;
 import edu.berkeley.kaiju.service.request.eiger.EigerExecutor;
+import edu.berkeley.kaiju.service.request.eiger.IEigerExecutor;
 import edu.berkeley.kaiju.service.request.message.KaijuMessage;
 
 /*
@@ -11,7 +12,7 @@ import edu.berkeley.kaiju.service.request.message.KaijuMessage;
 public class RequestExecutorFactory {
     private MemoryStorageEngine storageEngine;
     private LockManager lockManager;
-    private EigerExecutor eigerExecutor;
+    private IEigerExecutor eigerExecutor;
 
     public RequestExecutorFactory(MemoryStorageEngine storageEngine, LockManager lockManager) {
         this.storageEngine = storageEngine;
@@ -22,7 +23,7 @@ public class RequestExecutorFactory {
      The 2PC-CI code in general is a bit annoying/was added later on in the dev cycle.
      Artifacts like this are lamentable.
      */
-    public void setEigerExecutor(EigerExecutor eigerExecutor) {
+    public void setEigerExecutor(IEigerExecutor eigerExecutor) {
         this.eigerExecutor = eigerExecutor;
     }
 

@@ -1,14 +1,33 @@
 package edu.berkeley.kaiju.service.request.eiger;
 
-import com.beust.jcommander.internal.Sets;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.NavigableMap;
+import java.util.Vector;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.ReentrantLock;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.collect.Maps;
 import com.google.common.collect.Queues;
+import com.google.common.collect.Sets;
 import com.yammer.metrics.Histogram;
 import com.yammer.metrics.MetricRegistry;
 import com.yammer.metrics.Timer;
-import com.yammer.metrics.Timer.Context;
+
 import edu.berkeley.kaiju.config.Config;
 import edu.berkeley.kaiju.data.DataItem;
+import edu.berkeley.kaiju.exception.ClientException;
 import edu.berkeley.kaiju.exception.KaijuException;
 import edu.berkeley.kaiju.monitor.MetricsManager;
 import edu.berkeley.kaiju.net.routing.OutboundRouter;
@@ -19,33 +38,11 @@ import edu.berkeley.kaiju.service.request.message.request.EigerCheckCommitReques
 import edu.berkeley.kaiju.service.request.message.request.EigerCommitRequest;
 import edu.berkeley.kaiju.service.request.message.request.EigerGetAllRequest;
 import edu.berkeley.kaiju.service.request.message.request.EigerPutAllRequest;
-import edu.berkeley.kaiju.service.request.message.response.EigerCheckCommitResponse;
 import edu.berkeley.kaiju.service.request.message.response.EigerPreparedResponse;
 import edu.berkeley.kaiju.service.request.message.response.KaijuResponse;
 import edu.berkeley.kaiju.util.Timestamp;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.util.*;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.ReentrantLock;
-
-/*
-  The E-PCI algorithm was pretty complicated since it required remote RPCs to make additional remote RPCs. (That is,
-  if a read request came into server 1, server 1 might have to check server 3, the coordinator for that server.)
-
-  So, while all non-E-PCI RPCs are cleanly implemented by overriding IKaijuRequest, E-PCI requests require their own
-  special executor. :(
-
-  This is a bit of a hack, but we decided to put basically all of this code into its own class to avoid polluting
-  the remainder of the code base.
-*/
-
-public class EigerExecutor implements IEigerExecutor{
+public class EigerPortExecutor implements IEigerExecutor{
     private static Logger logger = LoggerFactory.getLogger(EigerExecutor.class);
 
     private RequestDispatcher dispatcher;
@@ -56,7 +53,8 @@ public class EigerExecutor implements IEigerExecutor{
 
     ReentrantLock pendingTransactionsLock = new ReentrantLock();
     private ConcurrentMap<String, Collection<Long>> pendingTransactionsPerKey = Maps.newConcurrentMap();
-
+    private ConcurrentSkipListSet<Long> pending = new ConcurrentSkipListSet<Long>();
+    private ConcurrentMap<Long,Long> tidToPendingTime = Maps.newConcurrentMap();
     // a roughly time-ordered queue of KVPs to GC; exact real-time ordering not necessary for correctness
     private BlockingQueue<CommittedGarbage> candidatesForGarbageCollection = Queues.newLinkedBlockingQueue();
 
@@ -71,8 +69,9 @@ public class EigerExecutor implements IEigerExecutor{
     private static Timer commitCheckReadTimer = MetricsManager.getRegistry().timer(MetricRegistry.name(EigerExecutor.class,
                                                                                         "commit-check-read-timer",
                                                                                         "latency"));
-
-    public EigerExecutor(RequestDispatcher dispatcher,
+    Long lst = Timestamp.NO_TIMESTAMP;
+    Long latest_commit = Timestamp.NO_TIMESTAMP;
+    public EigerPortExecutor(RequestDispatcher dispatcher,
                          MemoryStorageEngine storageEngine) {
         this.dispatcher = dispatcher;
         this.storageEngine = storageEngine;
@@ -98,8 +97,16 @@ public class EigerExecutor implements IEigerExecutor{
                     }
                 }, "Eiger-GC-Thread").start();
     }
+    
+    @Override
+    public void processMessage(EigerPutAllRequest putAllRequest)
+            throws KaijuException, IOException, InterruptedException {
 
-    public void processMessage(EigerPutAllRequest putAllRequest) throws KaijuException, IOException, InterruptedException {
+        if(putAllRequest.is_get) getAll(putAllRequest);
+        else putAll(putAllRequest);
+    }
+
+    public void putAll(EigerPutAllRequest putAllRequest)throws KaijuException, IOException, InterruptedException{
         long transactionID = putAllRequest.keyValuePairs.values().iterator().next().getTimestamp();
         if(OutboundRouter.ownsResource(putAllRequest.coordinatorKey.hashCode())) {
             if(!pendingTransactionsCoordinated.containsKey(transactionID)) {
@@ -113,16 +120,84 @@ public class EigerExecutor implements IEigerExecutor{
 
         assert(!pendingTransactionsNonCoordinated.containsKey(transactionID));
         pendingTransactionsNonCoordinated.put(transactionID, putAllRequest);
-
-        for(String key : putAllRequest.keyValuePairs.keySet()) {
-            markKeyPending(key, transactionID);
-        }
-
+        Long pending_t = Timestamp.assignNewTimestamp();
+        pending.add(pending_t);
+        tidToPendingTime.putIfAbsent(transactionID, pending_t);
         dispatcher.requestOneWay(putAllRequest.coordinatorKey.hashCode(), new EigerPreparedResponse(transactionID,
                                                                                                     putAllRequest
                                                                                                             .keyValuePairs
                                                                                                             .size(),
-                                                                                                    Timestamp.assignNewTimestamp()));
+                                                                                                    pending_t));
+    }
+
+    public void getAll(EigerPutAllRequest getAllRequest)throws KaijuException, IOException, InterruptedException{
+        Map<String,DataItem> result = new HashMap<String,DataItem>();
+        for(Map.Entry<String,DataItem> entry : getAllRequest.keyValuePairs.entrySet()){
+            Long version = storageEngine.getHighestCommittedNotGreaterThan(entry.getKey(),entry.getValue().getTimestamp());
+            Long latestByClient = storageEngine.getHighestCommittedPerCid(entry.getKey(), entry.getValue().getCid(), version);
+            if(latestByClient != Timestamp.NO_TIMESTAMP){
+                result.put(entry.getKey(), storageEngine.getByTimestamp(entry.getKey(), latestByClient));
+                continue;
+            }
+            
+
+            DataItem ver = storageEngine.getByTimestamp(entry.getKey(), version);
+            if(version == Timestamp.NO_TIMESTAMP || ver.getTimestamp() == Timestamp.NO_TIMESTAMP){
+                 result.put(entry.getKey(), DataItem.getNullItem());
+                 continue;
+            }
+            if(!ver.getCid().equals(entry.getValue().getCid())){
+                result.put(entry.getKey(), ver);
+                continue;
+            }
+
+            result.put(entry.getKey(), find_isolated(ver,entry.getKey()));
+        }
+
+        KaijuResponse response = new KaijuResponse(result);
+        response.setHct(this.lst);
+        dispatcher.sendResponse(getAllRequest.senderID, getAllRequest.requestID, response);
+
+    }
+
+    private DataItem find_isolated(DataItem ver, String key) {
+        Long gst = ver.getPrepTs();
+        Long commit_t = ver.getTimestamp();
+        NavigableMap<Long,DataItem> subMap = storageEngine.eigerMap.get(key).subMap(gst, commit_t).descendingMap();
+        Iterator<NavigableMap.Entry<Long, DataItem> > itr = subMap.entrySet().iterator();
+        while(itr.hasNext()){
+            NavigableMap.Entry<Long, DataItem> entry = itr.next();
+            while(entry.getValue().getCid() == ver.getCid()) {
+                ver = entry.getValue();
+                Long new_gst = ver.getPrepTs();
+                subMap = storageEngine.eigerMap.get(key).subMap(new_gst, commit_t).descendingMap();
+                itr = subMap.entrySet().iterator();
+                if(!itr.hasNext()) {
+                    return ver;
+                }
+                entry = itr.next();
+            }
+            return entry.getValue();
+        }
+        return ver;
+    }    
+
+    @Override
+    public void processMessage(EigerPreparedResponse preparedNotification)
+            throws KaijuException, IOException, InterruptedException {
+                if(!pendingTransactionsCoordinated.containsKey(preparedNotification.transactionID)) {
+                    EigerPendingTransaction newTxn =new EigerPendingTransaction();
+                    pendingTransactionsCoordinated.putIfAbsent(preparedNotification.transactionID, newTxn);
+                }
+        
+                EigerPendingTransaction ept = pendingTransactionsCoordinated.get(preparedNotification.transactionID);
+        
+                ept.recordPreparedKeys(preparedNotification.senderID, preparedNotification.numKeys, preparedNotification.preparedTime);
+        
+                if(ept.shouldCommit()) {
+                    commitEigerPendingTransaction(preparedNotification.transactionID, ept);
+                }
+        
     }
 
     private void commitEigerPendingTransaction(long transactionID, EigerPendingTransaction ept) throws IOException, InterruptedException{
@@ -130,33 +205,30 @@ public class EigerExecutor implements IEigerExecutor{
         for(int serverToNotify : ept.getServersToNotifyCommit()) {
             toSend.put(serverToNotify, new EigerCommitRequest(transactionID, ept.getCommitTime()));
         }
-
+        Long commitTime = ept.getCommitTime();
         dispatcher.multiRequestOneWay(toSend);
-        dispatcher.sendResponse(ept.getClientID(), ept.getClientRequestID(), new KaijuResponse());
+        if(tidToPendingTime.containsKey(transactionID) && pending.contains(tidToPendingTime.get(transactionID))){
+            pending.remove(tidToPendingTime.get(transactionID));
+            tidToPendingTime.remove(transactionID);
+        }
+        if(commitTime > this.latest_commit) this.latest_commit = commitTime;
+        if(pending.isEmpty()) this.lst = this.latest_commit;
+        else this.lst = pending.first();
+
+        KaijuResponse response = new KaijuResponse();
+        response.setHct(this.lst);
+        dispatcher.sendResponse(ept.getClientID(), ept.getClientRequestID(), response);
         candidatesForGarbageCollection.add(new CommittedGarbage(transactionID, System.currentTimeMillis()+Config.getConfig().overwrite_gc_ms));
     }
-
-    public void processMessage(EigerPreparedResponse preparedNotification) throws KaijuException, IOException, InterruptedException {
-        if(!pendingTransactionsCoordinated.containsKey(preparedNotification.transactionID)) {
-            EigerPendingTransaction newTxn =new EigerPendingTransaction();
-            pendingTransactionsCoordinated.putIfAbsent(preparedNotification.transactionID, newTxn);
-        }
-
-        EigerPendingTransaction ept = pendingTransactionsCoordinated.get(preparedNotification.transactionID);
-
-        ept.recordPreparedKeys(preparedNotification.senderID, preparedNotification.numKeys, preparedNotification.preparedTime);
-
-        if(ept.shouldCommit()) {
-            commitEigerPendingTransaction(preparedNotification.transactionID, ept);
-        }
-
+    
+    @Override
+    public void processMessage(EigerCommitRequest commitNotification)
+            throws KaijuException, IOException, InterruptedException {
+        nonCoordinatorMarkCommitted(commitNotification.transactionID, commitNotification.commitTime);
+        
     }
 
-    public void processMessage(EigerCommitRequest commitNotification) throws KaijuException, IOException, InterruptedException {
-        nonCoordinatorMarkCommitted(commitNotification.transactionID);
-    }
-
-    private void nonCoordinatorMarkCommitted(long transactionID) throws KaijuException,IOException {
+    private void nonCoordinatorMarkCommitted(long transactionID, Long commitTime) throws KaijuException, IOException {
         EigerPutAllRequest preparedRequest = pendingTransactionsNonCoordinated.get(transactionID);
 
         if(preparedRequest == null) {
@@ -167,168 +239,36 @@ public class EigerExecutor implements IEigerExecutor{
 
         for(String key : preparedRequest.keyValuePairs.keySet()) {
             DataItem item = preparedRequest.keyValuePairs.get(key);
-            toCommit.put(key, new DataItem(transactionID, item.getValue()));
+            DataItem new_item =  new DataItem(commitTime, item.getValue());
+            new_item.setCid(item.getCid());
+            new_item.setPrepTs(item.getPrepTs());
+            toCommit.put(key,new_item);
 
             //logger.info(String.format("%d: COMMITTING %s [%s] at time %d\n", Config.getConfig().server_id, key, Arrays.toString(item.getValue().array()), commitNotification.commitTime));
         }
 
         storageEngine.putAll(toCommit);
-
-        for(String key : preparedRequest.keyValuePairs.keySet()) {
-            unmarkKeyPending(key, transactionID);
+        if(!OutboundRouter.ownsResource(preparedRequest.coordinatorKey.hashCode())){
+            if(tidToPendingTime.containsKey(transactionID) && pending.contains(tidToPendingTime.get(transactionID))){
+                pending.remove(tidToPendingTime.get(transactionID));
+                tidToPendingTime.remove(transactionID);
+            }
+            if(commitTime > this.latest_commit) this.latest_commit = commitTime;
+            if(pending.isEmpty()) this.lst = this.latest_commit;
+            else this.lst = pending.first();
         }
     }
 
-    public void processMessage(EigerGetAllRequest getAllRequest) throws KaijuException, IOException, InterruptedException {
-        Timestamp.assignNewTimestamp(getAllRequest.readTimestamp);
-        Map<String, DataItem> currentItems = Maps.newHashMap();
-        Collection<Long> pendingTransactionsToCheck = Sets.newHashSet();
-        Map<String, Set<Long>> pendingValuesToConsider = Maps.newHashMap();
-        for(String key : getAllRequest.keys) {
-            pendingValuesToConsider.put(key, new HashSet<Long>());
-            Collection<Long> keyPending = checkKeyPending(key);
-            if(keyPending == null) {
-                continue;
-            }
-
-            for(Long pendingTransactionID : keyPending) {
-                if(pendingTransactionID <= getAllRequest.readTimestamp) {
-
-                    pendingTransactionsToCheck.add(pendingTransactionID);
-                    pendingValuesToConsider.get(key).add(pendingTransactionID);
-                }
-            }
-        }
-
-        if(pendingTransactionsToCheck.isEmpty()) {
-            commitChecksNumKeys.update(0);
-            commitChecksNumKeys.update(0);
-            for(String key : getAllRequest.keys) {
-                currentItems.put(key, storageEngine.getHighestNotGreaterThan(key, getAllRequest.readTimestamp));
-            }
-
-            dispatcher.sendResponse(getAllRequest.senderID, getAllRequest.requestID, new KaijuResponse(currentItems));
-
-            return;
-        }
-
-        Map<Integer, KaijuMessage> checkRequests = Maps.newHashMap();
-
-        int commitCheckKeys = 0;
-
-        Context startCheck = commitCheckReadTimer.time();
-
-        for(Long pendingTransactionID : pendingTransactionsToCheck) {
-            int serverIDForPendingTransaction = OutboundRouter.getRouter().getServerIDByResourceID(
-                    pendingTransactionsNonCoordinated.get(pendingTransactionID).coordinatorKey.hashCode());
-            if(!checkRequests.containsKey(serverIDForPendingTransaction))
-                checkRequests.put(serverIDForPendingTransaction, new EigerCheckCommitRequest(getAllRequest.readTimestamp));
-
-            ((EigerCheckCommitRequest)checkRequests.get(serverIDForPendingTransaction)).toCheck.add(pendingTransactionID);
-            commitCheckKeys++;
-        }
-
-        commitChecksNumKeys.update(commitCheckKeys);
-        commitCheckNumServers.update(checkRequests.size());
-
-        Collection<KaijuResponse> responses = dispatcher.multiRequest(checkRequests);
-
-        KaijuResponse.coalesceErrorsIntoException(responses);
-
-        startCheck.stop();
-
-        Map<Long, Long> convertUserTimestampToCommitTimestamp = Maps.newHashMap();
-
-        for(KaijuResponse response : responses) {
-            EigerCheckCommitResponse checkResponse = (EigerCheckCommitResponse) response;
-
-            convertUserTimestampToCommitTimestamp.putAll(((EigerCheckCommitResponse) response).commitTimes);
-
-            for(Map.Entry<Long, Long> result : checkResponse.commitTimes.entrySet()) {
-                //remove any uncommitted pending transactions; we won't consider them...
-                if(result.getValue() == -1 || result.getValue() > getAllRequest.readTimestamp) {
-                    for(String transactionKey : pendingTransactionsNonCoordinated.get(result.getKey()).keyValuePairs.keySet()) {
-                        Collection<Long> toConsider = pendingValuesToConsider.get(transactionKey);
-                        if(toConsider != null)
-                            toConsider.remove(result.getKey());
-                    }
-                }
-
-                if(result.getValue() != -1) {
-                    nonCoordinatorMarkCommitted(result.getValue());
-                }
-            }
-        }
-
-        for(String key : pendingValuesToConsider.keySet()) {
-            Collection<Long> committedTransactionStamps = pendingValuesToConsider.get(key);
-            if(committedTransactionStamps.isEmpty()) {
-                continue;
-            }
-
-            long maxCommittedForKey = Collections.max(committedTransactionStamps);
-
-            DataItem committedItem = pendingTransactionsNonCoordinated.get(maxCommittedForKey).keyValuePairs.get(key);
-            currentItems.put(key, new DataItem(convertUserTimestampToCommitTimestamp.get(maxCommittedForKey), committedItem.getValue()));
-        }
-
-        for(String key : getAllRequest.keys) {
-            DataItem committed = storageEngine.getHighestNotGreaterThan(key, getAllRequest.readTimestamp);
-            if(!currentItems.containsKey(key) || committed.getTimestamp() > currentItems.get(key).getTimestamp()) {
-                currentItems.put(key, committed);
-            }
-        }
-
-        dispatcher.sendResponse(getAllRequest.senderID, getAllRequest.requestID, new KaijuResponse(currentItems));
+    @Override
+    public void processMessage(EigerGetAllRequest getAllRequest)
+            throws KaijuException, IOException, InterruptedException {
+        throw new ClientException("This method should not be reached in Eiger-PORT");
     }
 
-    public void processMessage(EigerCheckCommitRequest checkCommitRequest) throws KaijuException, IOException, InterruptedException {
-        Timestamp.assignNewTimestamp();
-        Map<Long, Long> ret = Maps.newHashMap();
-
-        for(Long toCheck : checkCommitRequest.toCheck) {
-            if(pendingTransactionsCoordinated.containsKey(toCheck)) {
-                ret.put(toCheck, pendingTransactionsCoordinated.get(toCheck).hasCommitted() ?
-                                 pendingTransactionsCoordinated.get(toCheck).getCommitTime() :
-                                 -1L);
-
-            }
-            else
-                ret.put(toCheck, -1L);
-        }
-
-        dispatcher.sendResponse(checkCommitRequest.senderID, checkCommitRequest.requestID, new EigerCheckCommitResponse(ret));
-    }
-
-    private void markKeyPending(String key, long timestamp) {
-        pendingTransactionsLock.lock();
-        if(!pendingTransactionsPerKey.containsKey(key)) {
-            pendingTransactionsPerKey.put(key, new HashSet<Long>());
-        }
-
-        pendingTransactionsPerKey.get(key).add(timestamp);
-
-        pendingTransactionsLock.unlock();
-    }
-
-    private void unmarkKeyPending(String key, long timestamp) {
-        pendingTransactionsLock.lock();
-        if(pendingTransactionsPerKey.get(key).size() == 1) {
-            pendingTransactionsPerKey.remove(key);
-        } else {
-            pendingTransactionsPerKey.get(key).remove(timestamp);
-        }
-        pendingTransactionsLock.unlock();
-    }
-
-    private Collection<Long> checkKeyPending(String key) {
-        Collection<Long> ret = Sets.newHashSet();
-        pendingTransactionsLock.lock();
-        Collection<Long> pending = pendingTransactionsPerKey.get(key);
-        if(pending != null)
-            ret.addAll(pending);
-        pendingTransactionsLock.unlock();
-        return ret;
+    @Override
+    public void processMessage(EigerCheckCommitRequest checkCommitRequest)
+            throws KaijuException, IOException, InterruptedException {
+        throw new ClientException("This method should not be reached in Eiger-PORT");
     }
 
     class EigerPendingTransaction {

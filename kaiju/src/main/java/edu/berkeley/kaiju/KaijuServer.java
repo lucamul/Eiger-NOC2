@@ -11,8 +11,9 @@ import edu.berkeley.kaiju.service.LockManager;
 import edu.berkeley.kaiju.service.MemoryStorageEngine;
 import edu.berkeley.kaiju.service.request.RequestDispatcher;
 import edu.berkeley.kaiju.service.request.RequestExecutorFactory;
-import edu.berkeley.kaiju.service.request.eiger.EigerExecutor;
+import edu.berkeley.kaiju.service.request.eiger.*;
 import edu.berkeley.kaiju.service.request.handler.KaijuServiceHandler;
+import edu.berkeley.kaiju.util.Timestamp;
 import edu.berkeley.kaiju.service.MemoryStorageEngine.KeyTimestampPair;
 import com.google.common.collect.Queues;
 import org.slf4j.Logger;
@@ -37,6 +38,7 @@ public class KaijuServer {
     public static Map<String,Long> prep = Maps.newConcurrentMap();
     public static Map<Integer,Long> hcts = Maps.newConcurrentMap();
 
+    public static Long gst = Timestamp.NO_TIMESTAMP;
     public static void main(String[] args) {
         Config.serverSideInitialize(args);
 
@@ -46,7 +48,11 @@ public class KaijuServer {
         LockManager lockManager = new LockManager();
         RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory(storage, lockManager);
         RequestDispatcher dispatcher = new RequestDispatcher(requestExecutorFactory);
+        if(Config.getConfig().readatomic_algorithm == Config.ReadAtomicAlgorithm.EIGER_PORT)
+            requestExecutorFactory.setEigerExecutor(new EigerPortExecutor(dispatcher, storage));
+        else
         requestExecutorFactory.setEigerExecutor(new EigerExecutor(dispatcher, storage));
+
         new CooperativeCommitter(storage, new KaijuServiceHandler(dispatcher, storage, lockManager));
         
         try {

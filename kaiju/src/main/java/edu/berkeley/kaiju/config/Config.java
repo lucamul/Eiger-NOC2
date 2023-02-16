@@ -126,9 +126,11 @@ public class Config {
                                       TIMESTAMP,
                                     LORA,
                                 CONST_ORT,
-                            NOC}
+                            NOC,
+                        EIGER,
+                    EIGER_PORT}
     @Parameter(names = { "-read_atomic_algorithm", "-ra_algorithm"},
-               description = "Read atomic algorithm (KEY_LIST | BLOOM_FILTER | TIMESTAMP | LORA | CONST_ORT | NOC)")
+               description = "Read atomic algorithm (KEY_LIST | BLOOM_FILTER | TIMESTAMP | LORA | CONST_ORT | NOC | EIGER | EIGER_PORT)")
     public ReadAtomicAlgorithm readatomic_algorithm = ReadAtomicAlgorithm.KEY_LIST;
 
     /*

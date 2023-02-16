@@ -32,6 +32,7 @@ test_port = {
                     "numseconds" : 60,
                     "configs" : [
                                   "EIGER",
+                                  "EIGER_PORT"
                                 ],
                     "readprop" : [.9],
                     "iterations" : range(0,1),

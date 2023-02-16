@@ -126,13 +126,13 @@ def get_tp_and_latency(dir_name, num_clients):
             r95[c] += (opr*latr95 + opw*latw95)/(opr+opw)
             rr[c] += latr*pow(10,-3)
             rw[c] += latw*pow(10,-3)
-        for c in results:
-            final_results += results[c]
-            fr_read += results[c]
-            fr_write += rw[c]
-            fr_95 += r95[c]
-            fr_99 += r99[c]
-            tp_final += tp[c]
+    for c in results:
+        final_results += results[c]
+        fr_read += results[c]
+        fr_write += rw[c]
+        fr_95 += r95[c]
+        fr_99 += r99[c]
+        tp_final += tp[c]
     return tp_final, final_results/num_clients, fr_read/num_clients, fr_write/num_clients, fr_99/num_clients, fr_95/num_clients
     
         

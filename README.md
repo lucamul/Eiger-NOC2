@@ -31,7 +31,7 @@ Finally copy the codebase to all machines. You can do so by using:
 ### Running an experiment
 In experiment.py you find different experiments you can run that come from the RAMP paper. You can similarly expand and modify these experiments by altering the lists of parameters in the dictionary. For example the "tsize_test" is a test of varying transaction size. To run any experiment change to /home/ubuntu/experiment folder and run:
 
-    python setup_hosts.py --color -c us-west-2 -nc 5 -ns 5 --experiment NAME_OF_EXPERIMENT --tag example
+    python setup_hosts.py --color -c us-west-2 -nc 5 -ns 5 --experiment port --tag example
 
 The logs will be uploaded in the output folder.
 

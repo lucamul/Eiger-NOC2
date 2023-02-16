@@ -81,7 +81,11 @@ public class KaijuServiceHandler implements IKaijuHandler {
                 handler = new LockBasedKaijuServiceHandler(dispatcher);
                 break;
             case EIGER:
-                handler = new EigerKaijuServiceHandler(dispatcher);
+                if(Config.getConfig().readatomic_algorithm == Config.ReadAtomicAlgorithm.EIGER_PORT){
+                    handler = new EigerPortKaijuServiceHandler(dispatcher);   
+                }else if(Config.getConfig().readatomic_algorithm == Config.ReadAtomicAlgorithm.EIGER){
+                    handler = new EigerKaijuServiceHandler(dispatcher);
+                }
                 break;
             default:
                 throw new RuntimeException("No handler defined!");

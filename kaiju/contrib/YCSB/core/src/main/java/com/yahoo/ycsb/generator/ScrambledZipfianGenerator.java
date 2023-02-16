@@ -31,7 +31,7 @@ import com.yahoo.ycsb.Utils;
 public class ScrambledZipfianGenerator extends IntegerGenerator 
 {
 	public static final double ZETAN=26.46902820178302;
-        public static final double USED_ZIPFIAN_CONSTANT=0.99;
+        public static final double USED_ZIPFIAN_CONSTANT=0.8;
 	public static final long ITEM_COUNT=10000000000L;
 	
 	ZipfianGenerator gen;

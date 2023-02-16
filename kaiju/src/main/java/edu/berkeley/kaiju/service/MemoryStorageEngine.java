@@ -134,7 +134,7 @@ public class MemoryStorageEngine {
     private boolean tests = (Config.getConfig().freshness_test == 1 || Config.getConfig().ra_tester == 1);
 
     // only used in E-PCI, which requires ordering for lookups
-    private Map<String, ConcurrentSkipListMap<Long, DataItem>> eigerMap = Maps.newConcurrentMap();
+    public Map<String, ConcurrentSkipListMap<Long, DataItem>> eigerMap = Maps.newConcurrentMap();
 
     // used in CTP
     private ConcurrentMap<Long, Boolean> abortedTxns = Maps.newConcurrentMap();
@@ -384,7 +384,7 @@ public class MemoryStorageEngine {
         return getLatestItemForKey(key);
     }
 
-    private DataItem getByTimestamp(String key, Long requiredTimestamp) throws KaijuException {
+    public DataItem getByTimestamp(String key, Long requiredTimestamp) throws KaijuException {
         assert(requiredTimestamp != Timestamp.NO_TIMESTAMP);
 
         DataItem ret = getItemByVersion(key, requiredTimestamp);
@@ -461,6 +461,12 @@ public class MemoryStorageEngine {
             if(!eigerMap.containsKey(key))
                 eigerMap.putIfAbsent(key, new ConcurrentSkipListMap<Long, DataItem>());
             eigerMap.get(key).put(timestamp, dataItems.get(new KeyTimestampPair(key, timestamp)));
+        }else if(Config.getConfig().readatomic_algorithm == Config.ReadAtomicAlgorithm.EIGER_PORT){
+            String cid = getItemByVersion(key, timestamp).getCid();
+            KeyCidPair pair = new KeyCidPair(key, cid);
+            if(!keyCidVersions.containsKey(pair) || keyCidVersions.get(pair) < timestamp){
+                keyCidVersions.put(pair, timestamp);
+            }    
         }
 
         while(true) {

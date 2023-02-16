@@ -345,23 +345,31 @@ if __name__ == "__main__":
                                                     algo = config
                                                     if(config.find("READ_ATOMIC") != -1):
                                                         isolation_level = "READ_ATOMIC"
-                                                        if(config.find("LIST") != -1):
+                                                        if(config == "READ_ATOMIC_LIST"):
                                                             ra_algorithm = "KEY_LIST"
                                                             if run_opw_RAMP:
                                                                 algo = "READ_ATOMIC_FASTOPW"
-                                                        elif(config.find("BLOOM") != -1):
+                                                        elif(config == "READ_ATOMIC_BLOOM"):
                                                             ra_algorithm = "BLOOM_FILTER"
-                                                        elif(config.find("LORA") != -1):
+                                                        elif(config == "READ_ATOMIC_LORA"):
                                                             ra_algorithm = "LORA"
-                                                        elif(config.find("CONST_ORT") != -1):
+                                                        elif(config == "READ_ATOMIC_CONST_ORT"):
                                                             ra_algorithm = "CONST_ORT"
-                                                        elif(config.find("NOC") != -1):
+                                                        elif(config == "READ_ATOMIC_NOC"):
                                                             ra_algorithm = "NOC"
                                                         else:
                                                             ra_algorithm = "TIMESTAMP"
                                                             if run_opw_RAMP:
                                                                 algo = "READ_ATOMIC_SMALLOPW"
+                                                    elif(config == "EIGER"):
+                                                        algo = "EIGER"
+                                                        ra_algorithm = "EIGER"
+                                                    elif(config == "EIGER_PORT"):
+                                                        algo = "EIGER_PORT"
+                                                        ra_algorithm = "EIGER_PORT"
+                                                        isolation_level = "EIGER"
                                                     
+
                                                     firstrun = True
                                                     run_ycsb_trial(tag, runid=("%s-%d-THREADS%d-RPROP%s-VS%d-TXN%d-NC%s-NS%s-NK%d-DCP%f-CCD%d-IT%d-KD%s" % (algo,
                                                                                                                                                     txnlen,
