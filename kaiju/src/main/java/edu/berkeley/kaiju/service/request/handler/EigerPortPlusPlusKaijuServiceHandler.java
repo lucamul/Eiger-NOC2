@@ -1,5 +1,6 @@
 package edu.berkeley.kaiju.service.request.handler;
 
+import java.sql.Time;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -19,11 +20,10 @@ import edu.berkeley.kaiju.service.request.message.KaijuMessage;
 import edu.berkeley.kaiju.service.request.message.request.EigerPutAllRequest;
 import edu.berkeley.kaiju.service.request.message.response.KaijuResponse;
 import edu.berkeley.kaiju.util.Timestamp;
-
-public class EigerPortPlusKaijuServiceHandler implements IKaijuHandler{
+public class EigerPortPlusPlusKaijuServiceHandler implements IKaijuHandler{
     RequestDispatcher dispatcher;
     
-    public EigerPortPlusKaijuServiceHandler(RequestDispatcher dispatcher) {
+    public EigerPortPlusPlusKaijuServiceHandler(RequestDispatcher dispatcher) {
         this.dispatcher = dispatcher;
     }
 
@@ -43,6 +43,7 @@ public class EigerPortPlusKaijuServiceHandler implements IKaijuHandler{
                 for(String key : keysByServerID.get(serverID)){
                     keysWithMd.put(key, new DataItem(gst,new byte[0]));
                     keysWithMd.get(key).setCid(cid);
+                    keysWithMd.get(key).setPrepTs(KaijuServer.prep.getOrDefault(key, Timestamp.NO_TIMESTAMP));
                 }
                 requestsByServerID.put(serverID, new EigerPutAllRequest(keysWithMd, readStamp));
             }
@@ -68,9 +69,8 @@ public class EigerPortPlusKaijuServiceHandler implements IKaijuHandler{
         }
     }
 
-    @Override
-    public void put_all(Map<String, byte[]> keyValuePairs) throws HandlerException {
-        try {
+    public void prepare_all(Map<String,byte[]> keyValuePairs) throws HandlerException{
+        try{
             List<String> keys = Lists.newArrayList(keyValuePairs.keySet());
             String coordinatorKey = keys.get(random.nextInt(keys.size()));
 
@@ -93,7 +93,7 @@ public class EigerPortPlusKaijuServiceHandler implements IKaijuHandler{
                                                                         keyValuePairs.size()));
             }
 
-            Collection<KaijuResponse> responses = dispatcher.multiRequestBlockFor(requestsByServerID,keysByServerID.keySet().size());
+            Collection<KaijuResponse> responses = dispatcher.multiRequest(requestsByServerID);
 
             KaijuResponse.coalesceErrorsIntoException(responses);
             
@@ -105,9 +105,22 @@ public class EigerPortPlusKaijuServiceHandler implements IKaijuHandler{
                 }
             }
 
-        } catch (Exception e) {
+            synchronized(this){
+                for(String key : keyValuePairs.keySet()){
+                    if(!KaijuServer.prep.containsKey(key) || KaijuServer.prep.get(key) < timestamp){
+                        KaijuServer.prep.put(key, timestamp);
+                    }
+                }
+            }
+
+        }catch (Exception e) {
             throw new HandlerException("Error processing request", e);
         }
+    }
+
+    @Override
+    public void put_all(Map<String, byte[]> keyValuePairs) throws HandlerException {
+        prepare_all(keyValuePairs);
     }
     
     private Long get_read_ts(){
@@ -118,5 +131,5 @@ public class EigerPortPlusKaijuServiceHandler implements IKaijuHandler{
         if(KaijuServer.gst < min_ts) KaijuServer.gst = min_ts;
         return KaijuServer.gst;
     }
-       
+           
 }

@@ -132,7 +132,6 @@ public class EigerExecutor implements IEigerExecutor{
         }
 
         dispatcher.multiRequestOneWay(toSend);
-        dispatcher.sendResponse(ept.getClientID(), ept.getClientRequestID(), new KaijuResponse());
         candidatesForGarbageCollection.add(new CommittedGarbage(transactionID, System.currentTimeMillis()+Config.getConfig().overwrite_gc_ms));
     }
 
@@ -177,6 +176,7 @@ public class EigerExecutor implements IEigerExecutor{
         for(String key : preparedRequest.keyValuePairs.keySet()) {
             unmarkKeyPending(key, transactionID);
         }
+        dispatcher.sendResponse(preparedRequest.senderID, preparedRequest.requestID, new KaijuResponse());
     }
 
     public void processMessage(EigerGetAllRequest getAllRequest) throws KaijuException, IOException, InterruptedException {

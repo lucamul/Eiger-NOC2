@@ -253,7 +253,7 @@ def get_tp_and_latency(dir_name, num_clients):
             rw[c] += latw*pow(10,-3)
     for c in results:
         final_results += results[c]
-        fr_read += results[c]
+        fr_read += rr[c]
         fr_write += rw[c]
         fr_95 += r95[c]
         fr_99 += r99[c]
@@ -291,7 +291,7 @@ def extract_freshness(experiment_dir, result_file):
             if dirname.find("IT0") == -1:
                 continue
             data = get_parameters(dirname)
-            ret = get_freshness(experiment_dir + '/' + dirname, int(data["algorithm"]))
+            ret = get_freshness(experiment_dir + '/' + dirname, data["algorithm"])
             for i in range(len(staleness_string)):
                 data[staleness_string[i]] = ret[i]
             results.append(data)

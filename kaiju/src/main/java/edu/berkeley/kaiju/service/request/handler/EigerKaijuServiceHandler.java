@@ -77,7 +77,7 @@ public class EigerKaijuServiceHandler implements IKaijuHandler  {
                                                                         keyValuePairs.size()));
             }
 
-            Collection<KaijuResponse> responses = dispatcher.multiRequestBlockFor(requestsByServerID,1);
+            Collection<KaijuResponse> responses = dispatcher.multiRequestBlockFor(requestsByServerID,keysByServerID.keySet().size());
 
             KaijuResponse.coalesceErrorsIntoException(responses);
         } catch (Exception e) {

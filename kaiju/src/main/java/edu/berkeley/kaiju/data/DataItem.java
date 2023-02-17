@@ -49,6 +49,7 @@ public class DataItem {
         return timestamp;
     }
 
+
     public boolean hasTransactionKeys() {
         return transactionKeys != null;
     }

@@ -33,10 +33,12 @@ test_port = {
                     "configs" : [
                                   "EIGER",
                                   "EIGER_PORT",
-                                  "EIGER_PORT_PLUS"
+                                  "EIGER_PORT_PLUS",
+                                  "EIGER_PORT_PLUS_PLUS"
                                 ],
                     "readprop" : [.9],
                     "iterations" : range(0,1),
+                    "freshness" : 0,
                     "numkeys" : [1000000],
                     "valuesize" : [1],
                     "keydistribution" : ["zipfian"],
@@ -54,10 +56,12 @@ num_clients = {
                     "configs" : [
                                   "EIGER",
                                   "EIGER_PORT",
-                                  "EIGER_PORT_PLUS"
+                                  "EIGER_PORT_PLUS",
+                                  "EIGER_PORT_PLUS_PLUS"
                                 ],
                     "readprop" : [.9],
                     "iterations" : range(0,1),
+                    "freshness" : 0,
                     "numkeys" : [1000000],
                     "valuesize" : [1],
                     "keydistribution" : ["zipfian"],
@@ -76,10 +80,12 @@ num_servers = {
                     "configs" : [
                                   "EIGER",
                                   "EIGER_PORT",
-                                  "EIGER_PORT_PLUS"
+                                  "EIGER_PORT_PLUS",
+                                  "EIGER_PORT_PLUS_PLUS"
                                 ],
                     "readprop" : [.9],
                     "iterations" : range(0,1),
+                    "freshness" : 0,
                     "numkeys" : [1000000],
                     "valuesize" : [1],
                     "keydistribution" : ["zipfian"],

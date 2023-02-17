@@ -52,7 +52,9 @@ public class KaijuServer {
             requestExecutorFactory.setEigerExecutor(new EigerPortExecutor(dispatcher, storage));
         else if(Config.getConfig().readatomic_algorithm == Config.ReadAtomicAlgorithm.EIGER_PORT_PLUS)
             requestExecutorFactory.setEigerExecutor(new EigerPortPlusExecutor(dispatcher, storage));
-        else 
+        else if(Config.getConfig().readatomic_algorithm == Config.ReadAtomicAlgorithm.EIGER_PORT_PLUS_PLUS)
+            requestExecutorFactory.setEigerExecutor(new EigerPortPlusPlusExecutor(dispatcher, storage));
+        else
             requestExecutorFactory.setEigerExecutor(new EigerExecutor(dispatcher, storage));
 
         new CooperativeCommitter(storage, new KaijuServiceHandler(dispatcher, storage, lockManager));

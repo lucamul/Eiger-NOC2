@@ -710,10 +710,10 @@ public class MemoryStorageEngine {
     }
 
     public static boolean is_PORT(){
-        return Config.getConfig().readatomic_algorithm == ReadAtomicAlgorithm.EIGER_PORT || Config.getConfig().readatomic_algorithm == ReadAtomicAlgorithm.EIGER_PORT_PLUS;
+        return Config.getConfig().readatomic_algorithm == ReadAtomicAlgorithm.EIGER_PORT || Config.getConfig().readatomic_algorithm == ReadAtomicAlgorithm.EIGER_PORT_PLUS || Config.getConfig().readatomic_algorithm == ReadAtomicAlgorithm.EIGER_PORT_PLUS_PLUS;
     }
-
+    // TODO: currently set as ++ doing the same as + when it comes to find_isolated, decide this 
     public static boolean is_PLUS(){
-        return Config.getConfig().readatomic_algorithm == ReadAtomicAlgorithm.EIGER_PORT_PLUS;
+        return Config.getConfig().readatomic_algorithm == ReadAtomicAlgorithm.EIGER_PORT_PLUS || Config.getConfig().readatomic_algorithm == ReadAtomicAlgorithm.EIGER_PORT_PLUS_PLUS;
     }
 }

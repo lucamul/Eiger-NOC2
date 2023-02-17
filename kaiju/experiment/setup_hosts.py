@@ -63,6 +63,8 @@ def start_servers(**kwargs):
      -check_commit_delay_ms %d\
      -outbound_internal_conn %d \
      -locktable_numlatches %d \
+     -opw %d \
+     -freshness_test %d \
       1>server-%d.log 2>&1 & "
     setup_hosts()
     sid = 0
@@ -88,6 +90,8 @@ def start_servers(**kwargs):
                    kwargs.get("check_commit_delay", -1),
                    kwargs.get("outbound_internal_conn", 1),
                    kwargs.get("locktable_numlatches", 1024),
+                   kwargs.get("opw", 0),
+                   kwargs.get("freshness",0),
                    s_localid))
             sid += 1
         i += 1
@@ -308,7 +312,7 @@ if __name__ == "__main__":
 
         system("mkdir -p "+args.output_dir)
         system("cp experiments.py "+args.output_dir)
-
+        fresh = experiment["freshness"]
         for nc, ns in experiment["serversList"]:
             args.servers = ns
             args.clients = nc
@@ -339,7 +343,7 @@ if __name__ == "__main__":
                                         for check_commit_delay in experiment["check_commit_delays"]:
                                             for config in experiment["configs"]:
                                                 for distribution in experiment["keydistribution"]:
-                                                
+                                                    opw = 0
                                                     isolation_level = config
                                                     ra_algorithm = "KEY_LIST"
                                                     algo = config
@@ -347,8 +351,6 @@ if __name__ == "__main__":
                                                         isolation_level = "READ_ATOMIC"
                                                         if(config == "READ_ATOMIC_LIST"):
                                                             ra_algorithm = "KEY_LIST"
-                                                            if run_opw_RAMP:
-                                                                algo = "READ_ATOMIC_FASTOPW"
                                                         elif(config == "READ_ATOMIC_BLOOM"):
                                                             ra_algorithm = "BLOOM_FILTER"
                                                         elif(config == "READ_ATOMIC_LORA"):
@@ -357,10 +359,14 @@ if __name__ == "__main__":
                                                             ra_algorithm = "CONST_ORT"
                                                         elif(config == "READ_ATOMIC_NOC"):
                                                             ra_algorithm = "NOC"
+                                                        elif(config == "READ_ATOMIC_FASTOPW"):
+                                                            ra_algorithm = "KEY_LIST"
+                                                            opw = 1
+                                                        elif(config == "READ_ATOMIC_SMALLOPW"):
+                                                            ra_algorithm = "TIMESTAMP"
+                                                            opw = 1
                                                         else:
                                                             ra_algorithm = "TIMESTAMP"
-                                                            if run_opw_RAMP:
-                                                                algo = "READ_ATOMIC_SMALLOPW"
                                                     elif(config == "EIGER"):
                                                         algo = "EIGER"
                                                         ra_algorithm = "EIGER"
@@ -372,7 +378,10 @@ if __name__ == "__main__":
                                                         algo = "EIGER_PORT_PLUS"
                                                         ra_algorithm = "EIGER_PORT_PLUS"
                                                         isolation_level = "EIGER"
-                                                    
+                                                    elif(config == "EIGER_PORT_PLUS_PLUS"):
+                                                        algo = "EIGER_PORT_PLUS_PLUS"
+                                                        ra_algorithm = "EIGER_PORT_PLUS_PLUS"
+                                                        isolation_level = "EIGER"
 
                                                     firstrun = True
                                                     run_ycsb_trial(tag, runid=("%s-%d-THREADS%d-RPROP%s-VS%d-TXN%d-NC%s-NS%s-NK%d-DCP%f-CCD%d-IT%d-KD%s" % (algo,
@@ -404,5 +413,7 @@ if __name__ == "__main__":
                                                                 killservers=firstrun,
                                                                 drop_commit_pct=drop_commit_pct,
                                                                 check_commit_delay=check_commit_delay,
-                                                                bgrun=experiment["launch_in_bg"])
+                                                                bgrun=experiment["launch_in_bg"],
+                                                                opw = opw,
+                                                                freshness=fresh)
                                                     firstrun = False

@@ -168,10 +168,6 @@ public class EigerPortPlusExecutor implements IEigerExecutor{
         Long tmp = this.pending.pollFirst();
         if(tmp == null) this.lst = this.latest_commit;
         else this.lst = tmp;
-
-        KaijuResponse response = new KaijuResponse();
-        response.setHct(this.lst);
-        dispatcher.sendResponse(ept.getClientID(), ept.getClientRequestID(), response);
         candidatesForGarbageCollection.add(new CommittedGarbage(transactionID, System.currentTimeMillis()+Config.getConfig().overwrite_gc_ms));
     }
     
@@ -212,6 +208,9 @@ public class EigerPortPlusExecutor implements IEigerExecutor{
             if(tmp == null) this.lst = this.latest_commit;
             else this.lst = tmp;
         }
+        KaijuResponse response = new KaijuResponse();
+        response.setHct(this.lst);
+        dispatcher.sendResponse(preparedRequest.senderID, preparedRequest.requestID, response);
     }
 
     @Override
