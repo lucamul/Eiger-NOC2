@@ -397,7 +397,7 @@ public class MemoryStorageEngine {
         if(ret == null)
             logger.warn("No suitable value found for key " + key
                                                + " version " + requiredTimestamp);
-        else if(Config.getConfig().freshness_test == 1 && ret.getTimestamp() != Timestamp.NO_TIMESTAMP){
+        else if(Config.getConfig().freshness_test == 1 && ret.getTimestamp() != Timestamp.NO_TIMESTAMP && !isEiger){
             long t = this.freshness(key, requiredTimestamp);
             logger.warn("Round 2 Freshness for key: " + key + " timestamp: " + requiredTimestamp + " = " + t);
         }
@@ -423,7 +423,7 @@ public class MemoryStorageEngine {
     private DataItem getLatestItemForKey(String key) {
         if(!lastCommitForKey.containsKey(key))
             return DataItem.getNullItem();
-        if(Config.getConfig().freshness_test == 1){
+        if(Config.getConfig().freshness_test == 1 && !isEiger){
             long t = this.freshness(key, lastCommitForKey.get(key));
             logger.warn("Round 1 Freshness for key: " + key + " timestamp: " + lastCommitForKey.get(key) + " = " + t);
         }

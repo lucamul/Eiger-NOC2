@@ -118,16 +118,15 @@ public class EigerPortPlusExecutor implements IEigerExecutor{
             Long latestByClient = storageEngine.getHighestCommittedPerCid(entry.getKey(), entry.getValue().getCid(), version);
             if(latestByClient != Timestamp.NO_TIMESTAMP){
                 result.put(entry.getKey(), storageEngine.getByTimestamp(entry.getKey(), latestByClient));
-                continue;
+            }else{
+                DataItem ver = storageEngine.getByTimestamp(entry.getKey(), version);
+                if(version == Timestamp.NO_TIMESTAMP || ver.getTimestamp() == Timestamp.NO_TIMESTAMP){
+                    result.put(entry.getKey(), DataItem.getNullItem());
+                }else{
+                    result.put(entry.getKey(), ver);
+                }
             }
-            
-
-            DataItem ver = storageEngine.getByTimestamp(entry.getKey(), version);
-            if(version == Timestamp.NO_TIMESTAMP || ver.getTimestamp() == Timestamp.NO_TIMESTAMP){
-                 result.put(entry.getKey(), DataItem.getNullItem());
-                 continue;
-            }
-            result.put(entry.getKey(), ver);
+            logFreshness(entry.getKey(),result.get(entry.getKey()));
         }
 
         KaijuResponse response = new KaijuResponse(result);
@@ -330,5 +329,11 @@ public class EigerPortPlusExecutor implements IEigerExecutor{
                 CommittedGarbage rhs = (CommittedGarbage) obj;
                 return rhs.getTimestamp() == timestamp ;
            }
-       }    
+       }
+    @Override
+    public void logFreshness(String key, DataItem value) {
+        if(Config.getConfig().freshness_test == 0) return;
+        Long freshness = storageEngine.freshness(key, value.getTimestamp());
+        logger.warn("Freshness for key: " + key + " timestamp: " + value.getTimestamp() + " = " + freshness);
+    }
 }

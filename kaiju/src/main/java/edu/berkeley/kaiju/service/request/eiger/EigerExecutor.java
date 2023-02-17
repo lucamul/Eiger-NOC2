@@ -205,6 +205,7 @@ public class EigerExecutor implements IEigerExecutor{
             commitChecksNumKeys.update(0);
             for(String key : getAllRequest.keys) {
                 currentItems.put(key, storageEngine.getHighestNotGreaterThan(key, getAllRequest.readTimestamp));
+                logFreshness(key, currentItems.get(key));
             }
 
             dispatcher.sendResponse(getAllRequest.senderID, getAllRequest.requestID, new KaijuResponse(currentItems));
@@ -277,6 +278,7 @@ public class EigerExecutor implements IEigerExecutor{
             if(!currentItems.containsKey(key) || committed.getTimestamp() > currentItems.get(key).getTimestamp()) {
                 currentItems.put(key, committed);
             }
+            logFreshness(key, currentItems.get(key));
         }
 
         dispatcher.sendResponse(getAllRequest.senderID, getAllRequest.requestID, new KaijuResponse(currentItems));
@@ -435,4 +437,11 @@ public class EigerExecutor implements IEigerExecutor{
                 return rhs.getTimestamp() == timestamp ;
            }
        }
+
+    @Override
+    public void logFreshness(String key, DataItem value) {
+        if(Config.getConfig().freshness_test == 0) return;
+        Long freshness = storageEngine.freshness(key, value.getTimestamp());
+        logger.warn("Freshness for key: " + key + " timestamp: " + value.getTimestamp() + " = " + freshness);
+    }
 }
