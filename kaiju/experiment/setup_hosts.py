@@ -13,6 +13,7 @@ from threading import Thread, Lock
 from experiments import *
 import os
 import itertools
+import re
 from datetime import datetime
 from os import system 
 from time import sleep
@@ -41,6 +42,17 @@ n_clients = len(nodes)//2
 clients_list = [nodes[i] for i in range(n_servers, n_servers + n_clients)]
 
 server_list = [nodes[i] for i in range(n_servers)]
+
+def get_zipf():
+    ZIPFIAN_CONSTANT = 0
+    with open('/home/ubuntu/kaiju/contrib/YCSB/core/src/main/java/com/yahoo/ycsb/generator/ZipfianGenerator.java', 'r') as file:
+        for line in file:
+            match = re.search(r'ZIPFIAN_CONSTANT\s*=\s*([\d\.]+);', line)
+            if match:
+                value = match.group(1)
+                ZIPFIAN_CONSTANT = round(float(value), 2)
+                break
+    return ZIPFIAN_CONSTANT
 
 def start_servers(**kwargs):
     HEADER = "pkill -9 java; cd /home/ubuntu/kaiju/; rm *.log;"
@@ -343,6 +355,10 @@ if __name__ == "__main__":
                                         for check_commit_delay in experiment["check_commit_delays"]:
                                             for config in experiment["configs"]:
                                                 for distribution in experiment["keydistribution"]:
+                                                    if distribution == "zipfian":
+                                                        zipf = get_zipf()
+                                                    else:
+                                                        zipf = 0.0
                                                     opw = 0
                                                     isolation_level = config
                                                     ra_algorithm = "KEY_LIST"
@@ -384,7 +400,7 @@ if __name__ == "__main__":
                                                         isolation_level = "EIGER"
 
                                                     firstrun = True
-                                                    run_ycsb_trial(tag, runid=("%s-%d-THREADS%d-RPROP%s-VS%d-TXN%d-NC%s-NS%s-NK%d-DCP%f-CCD%d-IT%d-KD%s" % (algo,
+                                                    run_ycsb_trial(tag, runid=("%s-%d-THREADS%d-RPROP%s-VS%d-TXN%d-NC%s-NS%s-NK%d-DCP%f-CCD%d-IT%d-KD%s-ZC%f" % (algo,
                                                                                                                                                     txnlen,
                                                                                                                                                 threads,
                                                                                                                                                 readprop,
@@ -396,7 +412,7 @@ if __name__ == "__main__":
                                                                                                                                                 drop_commit_pct,
                                                                                                                                                 check_commit_delay,
                                                                                                                                                 iteration,
-                                                                                                                                                distribution)),
+                                                                                                                                                distribution,zipf)),
                                                                 bootstrap_time_ms=experiment["bootstrap_time_ms"],
                                                                 threads=threads,
                                                                 txnlen=txnlen,

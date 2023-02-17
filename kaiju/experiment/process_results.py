@@ -20,7 +20,8 @@ def get_parameters(dir_name):
             'num_clients': int(parts[6][2:]),
             'num_servers': int(parts[7][2:]),
             'num_key': int(parts[8][2:]),
-            'distribution': parts[-1][2:]}
+            'distribution': parts[-2][2:],
+            'zipfian_constant': float(parts[-1][2:]),}
     return data
 
 def get_freshness_ramp_fast(dir_name):
@@ -263,7 +264,7 @@ def get_tp_and_latency(dir_name, num_clients):
         
 def extract_data(experiment_dir, result_file):
     with open(result_file, 'w') as f:
-        writer = csv.DictWriter(f, fieldnames=['algorithm', 'threads', 'read_prop', 'value_size', 'txn_size', 'num_clients', 'num_servers', 'num_key', 'distribution', 'throughput', 'average_latency', 'read_latency', 'write_latency', '99th_latency', '95th_latency'])
+        writer = csv.DictWriter(f, fieldnames=['algorithm', 'threads', 'read_prop', 'value_size', 'txn_size', 'num_clients', 'num_servers', 'num_key', 'distribution', 'zipfian_constant', 'throughput', 'average_latency', 'read_latency', 'write_latency', '99th_latency', '95th_latency'])
         writer.writeheader()
     # iterate through the directories in the root directory
         results = []
@@ -273,14 +274,14 @@ def extract_data(experiment_dir, result_file):
             data = get_parameters(dirname)
             data['throughput'], data['average_latency'], data['read_latency'], data['write_latency'], data['99th_latency'], data['95th_latency'] = get_tp_and_latency(experiment_dir + '/' + dirname, int(data["num_clients"]))
             results.append(data)
-        sorted_list = sorted(results, key=lambda x: (x['algorithm'], x['threads'], x['read_prop'], x['value_size'], x['txn_size'], x['num_clients'], x['num_servers'], x['num_key'], x['distribution'], x['throughput'], x['average_latency'], x['read_latency'], x['write_latency'], x['99th_latency'], x['95th_latency']))
+        sorted_list = sorted(results, key=lambda x: (x['algorithm'], x['threads'], x['read_prop'], x['value_size'], x['txn_size'], x['num_clients'], x['num_servers'], x['num_key'], x['distribution'], x['zipfian_constant'], x['throughput'], x['average_latency'], x['read_latency'], x['write_latency'], x['99th_latency'], x['95th_latency']))
         for data in sorted_list:
             writer = csv.DictWriter(f, fieldnames=data.keys())
             writer.writerow(data)
 
 def extract_freshness(experiment_dir, result_file):
     with open(result_file, 'w') as f:
-        names = ['algorithm', 'threads', 'read_prop', 'value_size', 'txn_size', 'num_clients', 'num_servers', 'num_key', 'distribution']
+        names = ['algorithm', 'threads', 'read_prop', 'value_size', 'txn_size', 'num_clients', 'num_servers', 'num_key', 'distribution', 'zipfian_constant']
         for s in staleness_string:
             names.append(s)
         writer = csv.DictWriter(f, fieldnames=names)
@@ -295,7 +296,7 @@ def extract_freshness(experiment_dir, result_file):
             for i in range(len(staleness_string)):
                 data[staleness_string[i]] = ret[i]
             results.append(data)
-        sorted_list = sorted(results, key=lambda x: (x['algorithm'], x['threads'], x['read_prop'], x['value_size'], x['txn_size'], x['num_clients'], x['num_servers'], x['num_key'], x['distribution']))
+        sorted_list = sorted(results, key=lambda x: (x['algorithm'], x['threads'], x['read_prop'], x['value_size'], x['txn_size'], x['num_clients'], x['num_servers'], x['num_key'], x['distribution'], x['zipfian_constant']))
         for data in sorted_list:
             writer = csv.DictWriter(f, fieldnames=data.keys())
             writer.writerow(data)
