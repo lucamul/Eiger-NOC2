@@ -3,6 +3,11 @@ import os
 import argparse
 from datetime import datetime
 
+staleness = [10,20,30,40,50,100,150,200,500,1000,3000]
+staleness_string = []
+for s in staleness:
+    staleness_string.append(str(s))
+
 def get_parameters(dir_name):
     parts = dir_name.split('-')
 
@@ -17,6 +22,126 @@ def get_parameters(dir_name):
             'num_key': int(parts[8][2:]),
             'distribution': parts[-1][2:]}
     return data
+
+def get_freshness_ramp_fast(dir_name):
+    final_results = {}
+    tot = 0
+    for stale in staleness:
+        final_results[stale] = 0
+    for g in os.listdir(dir_name):
+        if(g.find("S") == -1):
+            continue
+        g = dir_name + '/' + g
+        lastAp = {}
+        lastFresh = {}
+        key = ""
+        s = g.split("/S")[1]
+        for line in open(g + "/server-0.log"):
+            if line.find("Freshness") == -1:
+                continue
+            lookoutKey = False
+            lookout = False
+            for word in line.split():
+                if word == "key:":
+                    lookoutKey = True
+                    key = ""
+                    continue
+                elif lookoutKey:
+                    key = word
+                    lookoutKey = False
+                if word == "=":
+                    lookout = True
+                elif lookout:
+                    lookout = False
+                    if lastAp.get(key) is None:
+                        if(line.find("Round 2") != -1):
+                            lastAp[key] = 2
+                            lastFresh[key] = int(word)
+                            for stale in staleness:
+                                if(int(word) <= stale):
+                                    if stale not in final_results:
+                                        final_results[stale] = 0
+                                    final_results[stale] += 1
+                            tot += 1
+                        else:
+                            lastAp[key] = 1
+                            lastFresh[key] = int(word)
+                    else:
+                        if lastAp[key] == 2:
+                            if(line.find("Round 2") != -1):
+                                lastFresh[key] = int(word)
+                                for stale in staleness:
+                                    if(int(word) <= stale):
+                                        if stale not in final_results:
+                                            final_results[stale] = 0
+                                        final_results[stale] += 1
+                                tot += 1
+                            else:
+                                lastAp[key] = 1
+                                lastFresh[key] = int(word)
+                        else:
+                            if(line.find("Round 2") != -1):
+                                lastAp[key] = 2
+                                lastFresh[key] = int(word)
+                                for stale in staleness:
+                                    if(int(word) <= stale):
+                                        if stale not in final_results:
+                                            final_results[stale] = 0
+                                        final_results[stale] += 1
+                                tot += 1
+                            else:
+                                lastAp[key] = 1
+                                lastFresh[key] = int(word)
+                                tot += 1
+                                for stale in staleness:
+                                    if(int(word) <= stale):
+                                        if stale not in final_results:
+                                            final_results[stale] = 0
+                                        final_results[stale] += 1
+            for key in lastAp:
+                if lastAp[key] == 1:
+                    tot += 1
+                    for stale in staleness:
+                        if(lastFresh[key] <= stale):
+                            if stale not in final_results:
+                                final_results[stale] = 0
+                            final_results[stale] += 1
+    ret = []
+    for s in staleness:
+        ret.append(100*float(final_results[s] / tot))
+    return ret
+
+def get_freshness(dir_name, algo):
+    if algo == "READ_ATOMIC_KEY_LIST" or algo == "FASTOPW":
+        return get_freshness_ramp_fast(dir_name)
+    ret = []
+    final_results = {}
+    tot = 0
+    for stale in staleness:
+        final_results[stale] = 0
+    for g in os.listdir(dir_name):
+        if g.find("S") == -1:
+            continue
+        g = dir_name + '/' + g
+        s = g.split("/S")[1]
+        for line in open(g + "/server-0.log"):
+            if line.find("Freshness") == -1:
+                continue
+            if line.find("timestamp : -1 = ") != -1:
+                continue
+            lookout = False
+            for word in line.split():
+                if word == "=":
+                    lookout = True
+                elif lookout:
+                    lookout = False
+                    tot += 1
+                    for stale in staleness:
+                        if(int(word) <= stale):
+                            final_results[stale] += 1
+    for s in staleness:
+        ret.append(100*float(final_results[s] / tot))
+    return ret
 
 def get_tp_and_latency(dir_name, num_clients):
     var = "AverageLatency(us),"   
@@ -153,13 +278,41 @@ def extract_data(experiment_dir, result_file):
             writer = csv.DictWriter(f, fieldnames=data.keys())
             writer.writerow(data)
 
+def extract_freshness(experiment_dir, result_file):
+    with open(result_file, 'w') as f:
+        names = ['algorithm', 'threads', 'read_prop', 'value_size', 'txn_size', 'num_clients', 'num_servers', 'num_key', 'distribution']
+        for s in staleness_string:
+            names.append(s)
+        writer = csv.DictWriter(f, fieldnames=names)
+        writer.writeheader()
+    # iterate through the directories in the root directory
+        results = []
+        for dirname in os.listdir(experiment_dir):
+            if dirname.find("IT0") == -1:
+                continue
+            data = get_parameters(dirname)
+            ret = get_freshness(experiment_dir + '/' + dirname, int(data["algorithm"]))
+            for i in range(len(staleness_string)):
+                data[staleness_string[i]] = ret[i]
+            results.append(data)
+        sorted_list = sorted(results, key=lambda x: (x['algorithm'], x['threads'], x['read_prop'], x['value_size'], x['txn_size'], x['num_clients'], x['num_servers'], x['num_key'], x['distribution']))
+        for data in sorted_list:
+            writer = csv.DictWriter(f, fieldnames=data.keys())
+            writer.writerow(data)
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('directory', type=str, help='Directory path')
-    args = parser.parse_args()
     now = datetime.now()
-    file_name = now.strftime("%Y-%m-%d-%H-%M-%S") + ".csv"
+    parser.add_argument('experiment', type=str, help='Experiment name', default="experiment")
+    parser.add_argument('--freshness', action='store_true', help='Extract freshness data')
+
+    args = parser.parse_args()
+    file_name = args.experiment + "-" + now.strftime("%Y-%m-%d-%H-%M-%S") + ".csv"
     directory = '/home/ubuntu/results/'
     file_path = os.path.join(directory, file_name)
-    extract_data(args.directory, file_path)
+    if args.freshness:
+        extract_freshness(args.directory, file_path)
+    else:
+        extract_data(args.directory, file_path)
     print("Results in " + file_path)

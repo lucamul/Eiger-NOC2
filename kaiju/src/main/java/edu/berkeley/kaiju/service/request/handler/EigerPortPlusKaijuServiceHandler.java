@@ -20,10 +20,10 @@ import edu.berkeley.kaiju.service.request.message.request.EigerPutAllRequest;
 import edu.berkeley.kaiju.service.request.message.response.KaijuResponse;
 import edu.berkeley.kaiju.util.Timestamp;
 
-public class EigerPortKaijuServiceHandler implements IKaijuHandler{
+public class EigerPortPlusKaijuServiceHandler implements IKaijuHandler{
     RequestDispatcher dispatcher;
     
-    public EigerPortKaijuServiceHandler(RequestDispatcher dispatcher) {
+    public EigerPortPlusKaijuServiceHandler(RequestDispatcher dispatcher) {
         this.dispatcher = dispatcher;
     }
 
@@ -118,5 +118,5 @@ public class EigerPortKaijuServiceHandler implements IKaijuHandler{
         if(KaijuServer.gst < min_ts) KaijuServer.gst = min_ts;
         return KaijuServer.gst;
     }
-    
+       
 }

@@ -85,6 +85,8 @@ public class KaijuServiceHandler implements IKaijuHandler {
                     handler = new EigerPortKaijuServiceHandler(dispatcher);   
                 }else if(Config.getConfig().readatomic_algorithm == Config.ReadAtomicAlgorithm.EIGER){
                     handler = new EigerKaijuServiceHandler(dispatcher);
+                }else if(Config.getConfig().readatomic_algorithm == Config.ReadAtomicAlgorithm.EIGER_PORT_PLUS){
+                    handler = new EigerPortPlusKaijuServiceHandler(dispatcher);
                 }
                 break;
             default:

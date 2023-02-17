@@ -368,6 +368,10 @@ if __name__ == "__main__":
                                                         algo = "EIGER_PORT"
                                                         ra_algorithm = "EIGER_PORT"
                                                         isolation_level = "EIGER"
+                                                    elif(config == "EIGER_PORT_PLUS"):
+                                                        algo = "EIGER_PORT_PLUS"
+                                                        ra_algorithm = "EIGER_PORT_PLUS"
+                                                        isolation_level = "EIGER"
                                                     
 
                                                     firstrun = True

@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.Vector;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -20,16 +19,11 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Queues;
-import com.google.common.collect.Sets;
-import com.yammer.metrics.Histogram;
-import com.yammer.metrics.MetricRegistry;
-import com.yammer.metrics.Timer;
 
 import edu.berkeley.kaiju.config.Config;
 import edu.berkeley.kaiju.data.DataItem;
 import edu.berkeley.kaiju.exception.ClientException;
 import edu.berkeley.kaiju.exception.KaijuException;
-import edu.berkeley.kaiju.monitor.MetricsManager;
 import edu.berkeley.kaiju.net.routing.OutboundRouter;
 import edu.berkeley.kaiju.service.MemoryStorageEngine;
 import edu.berkeley.kaiju.service.request.RequestDispatcher;
@@ -42,7 +36,7 @@ import edu.berkeley.kaiju.service.request.message.response.EigerPreparedResponse
 import edu.berkeley.kaiju.service.request.message.response.KaijuResponse;
 import edu.berkeley.kaiju.util.Timestamp;
 
-public class EigerPortExecutor implements IEigerExecutor{
+public class EigerPortPlusExecutor implements IEigerExecutor{
     private static Logger logger = LoggerFactory.getLogger(EigerExecutor.class);
 
     private RequestDispatcher dispatcher;
@@ -56,10 +50,9 @@ public class EigerPortExecutor implements IEigerExecutor{
     private ConcurrentMap<Long,Long> tidToPendingTime = Maps.newConcurrentMap();
     // a roughly time-ordered queue of KVPs to GC; exact real-time ordering not necessary for correctness
     private BlockingQueue<CommittedGarbage> candidatesForGarbageCollection = Queues.newLinkedBlockingQueue();
-
     Long lst = Timestamp.NO_TIMESTAMP;
     Long latest_commit = Timestamp.NO_TIMESTAMP;
-    public EigerPortExecutor(RequestDispatcher dispatcher,
+    public EigerPortPlusExecutor(RequestDispatcher dispatcher,
                          MemoryStorageEngine storageEngine) {
         this.dispatcher = dispatcher;
         this.storageEngine = storageEngine;
@@ -134,46 +127,14 @@ public class EigerPortExecutor implements IEigerExecutor{
                  result.put(entry.getKey(), DataItem.getNullItem());
                  continue;
             }
-            if(!ver.getCid().equals(entry.getValue().getCid())){
-                result.put(entry.getKey(), ver);
-                continue;
-            }
-
-            result.put(entry.getKey(), find_isolated(ver,entry.getKey()));
+            result.put(entry.getKey(), ver);
         }
 
         KaijuResponse response = new KaijuResponse(result);
         response.setHct(this.lst);
         dispatcher.sendResponse(getAllRequest.senderID, getAllRequest.requestID, response);
 
-    }
-
-    private DataItem find_isolated(DataItem ver, String key) {
-        Long gst = ver.getPrepTs();
-        Long commit_t = ver.getTimestamp();
-        if(gst >= commit_t) return ver;
-        if(!storageEngine.eigerMap.containsKey(key)) return ver;
-        NavigableMap<Long,DataItem> subMap = storageEngine.eigerMap.get(key).subMap(gst, commit_t).descendingMap();
-        Iterator<NavigableMap.Entry<Long, DataItem> > itr = subMap.entrySet().iterator();
-        while(itr.hasNext()){
-            NavigableMap.Entry<Long, DataItem> entry = itr.next();
-            while(entry.getValue().getCid() == ver.getCid()) {
-                ver = entry.getValue();
-                Long new_gst = ver.getPrepTs();
-                Long new_commit_t = ver.getTimestamp();
-                if(new_gst >= commit_t) return ver;
-                if(!storageEngine.eigerMap.containsKey(key)) return ver;
-                subMap = storageEngine.eigerMap.get(key).subMap(new_gst, new_commit_t).descendingMap();
-                itr = subMap.entrySet().iterator();
-                if(!itr.hasNext()) {
-                    return ver;
-                }
-                entry = itr.next();
-            }
-            return entry.getValue();
-        }
-        return ver;
-    }    
+    }   
 
     @Override
     public void processMessage(EigerPreparedResponse preparedNotification)
@@ -369,5 +330,5 @@ public class EigerPortExecutor implements IEigerExecutor{
                 CommittedGarbage rhs = (CommittedGarbage) obj;
                 return rhs.getTimestamp() == timestamp ;
            }
-       }
+       }    
 }

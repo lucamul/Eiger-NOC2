@@ -50,8 +50,10 @@ public class KaijuServer {
         RequestDispatcher dispatcher = new RequestDispatcher(requestExecutorFactory);
         if(Config.getConfig().readatomic_algorithm == Config.ReadAtomicAlgorithm.EIGER_PORT)
             requestExecutorFactory.setEigerExecutor(new EigerPortExecutor(dispatcher, storage));
-        else
-        requestExecutorFactory.setEigerExecutor(new EigerExecutor(dispatcher, storage));
+        else if(Config.getConfig().readatomic_algorithm == Config.ReadAtomicAlgorithm.EIGER_PORT_PLUS)
+            requestExecutorFactory.setEigerExecutor(new EigerPortPlusExecutor(dispatcher, storage));
+        else 
+            requestExecutorFactory.setEigerExecutor(new EigerExecutor(dispatcher, storage));
 
         new CooperativeCommitter(storage, new KaijuServiceHandler(dispatcher, storage, lockManager));
         

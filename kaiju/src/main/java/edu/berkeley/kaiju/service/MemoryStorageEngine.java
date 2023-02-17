@@ -229,9 +229,10 @@ public class MemoryStorageEngine {
         if(!this.keyCidVersions.containsKey(new KeyCidPair(key, cid))) return Timestamp.NO_TIMESTAMP;
 
         Long res =  this.keyCidVersions.get(new KeyCidPair(key, cid));
-
-        if(res == null || requestedTimestamp >= res) return Timestamp.NO_TIMESTAMP;
-        
+        if(is_PLUS())
+            if(res == null || requestedTimestamp > res) return Timestamp.NO_TIMESTAMP;
+        else
+            if(res == null || requestedTimestamp >= res) return Timestamp.NO_TIMESTAMP;
         return res;
     }
 
@@ -461,7 +462,7 @@ public class MemoryStorageEngine {
             if(!eigerMap.containsKey(key))
                 eigerMap.putIfAbsent(key, new ConcurrentSkipListMap<Long, DataItem>());
             eigerMap.get(key).put(timestamp, dataItems.get(new KeyTimestampPair(key, timestamp)));
-        }else if(Config.getConfig().readatomic_algorithm == Config.ReadAtomicAlgorithm.EIGER_PORT){
+        }else if(is_PORT()){
             String cid = getItemByVersion(key, timestamp).getCid();
             KeyCidPair pair = new KeyCidPair(key, cid);
             if(!keyCidVersions.containsKey(pair) || keyCidVersions.get(pair) < timestamp){
@@ -706,5 +707,13 @@ public class MemoryStorageEngine {
 
     public static boolean is_NOC(){
         return Config.getConfig().readatomic_algorithm == ReadAtomicAlgorithm.NOC;
+    }
+
+    public static boolean is_PORT(){
+        return Config.getConfig().readatomic_algorithm == ReadAtomicAlgorithm.EIGER_PORT || Config.getConfig().readatomic_algorithm == ReadAtomicAlgorithm.EIGER_PORT_PLUS;
+    }
+
+    public static boolean is_PLUS(){
+        return Config.getConfig().readatomic_algorithm == ReadAtomicAlgorithm.EIGER_PORT_PLUS;
     }
 }
