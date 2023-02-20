@@ -412,7 +412,9 @@ if __name__ == "__main__":
                                                                                                                                                 drop_commit_pct,
                                                                                                                                                 check_commit_delay,
                                                                                                                                                 iteration,
-                                                                                                                                                distribution,zipf)),
+                                                                                                                                                distribution,
+                                                                                                                                                round(zipf,2)
+                                                                                                                                                )),
                                                                 bootstrap_time_ms=experiment["bootstrap_time_ms"],
                                                                 threads=threads,
                                                                 txnlen=txnlen,

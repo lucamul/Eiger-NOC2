@@ -35,6 +35,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /*
@@ -143,7 +144,6 @@ public class MemoryStorageEngine {
 
     // a roughly time-ordered queue of KVPs to GC; exact real-time ordering not necessary for correctness
     private BlockingQueue<KeyTimestampPair> candidatesForGarbageCollection = Queues.newLinkedBlockingQueue();
-    
     // used for freshness:
     public ConcurrentMap<KeyTimestampPair,Long> timesPerVersion = Maps.newConcurrentMap();
     public ConcurrentMap<String,Long> latestTime = Maps.newConcurrentMap();

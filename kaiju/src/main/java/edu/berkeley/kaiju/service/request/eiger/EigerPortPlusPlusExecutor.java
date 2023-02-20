@@ -118,18 +118,24 @@ public class EigerPortPlusPlusExecutor implements IEigerExecutor{
                                                                                                     pending_t));
         KaijuResponse response = new KaijuResponse();
         response.setHct(this.lst);
+        response.setPrepTs(pending_t);
         dispatcher.sendResponse(putAllRequest.senderID, putAllRequest.requestID, response);
     }
 
     public void getAll(EigerPutAllRequest getAllRequest)throws KaijuException, IOException, InterruptedException{
         Map<String,DataItem> result = new HashMap<String,DataItem>();
         for(Map.Entry<String,DataItem> entry : getAllRequest.keyValuePairs.entrySet()){
-            Long prep_t = tidToPendingTime.getOrDefault(entry.getValue().getPrepTs(), Timestamp.NO_TIMESTAMP);
-            Long version = storageEngine.getHighestCommittedNotGreaterThan(entry.getKey(),entry.getValue().getTimestamp(),prep_t);
-            Long latestByClient = storageEngine.getHighestCommittedPerCid(entry.getKey(), entry.getValue().getCid(), (version > prep_t) ? version : prep_t);
-            if(version == prep_t && latestByClient == Timestamp.NO_TIMESTAMP && prep_t != Timestamp.NO_TIMESTAMP && pendingTransactionsNonCoordinated.containsKey(entry.getValue().getPrepTs())){
-                DataItem prepData = pendingTransactionsNonCoordinated.get(entry.getValue().getPrepTs()).keyValuePairs.get(entry.getKey());
-                result.put(entry.getKey(), prepData);
+            Long prepTs = entry.getValue().getPrepTs();
+            Long version = storageEngine.getHighestCommittedNotGreaterThan(entry.getKey(),entry.getValue().getTimestamp());
+            Long latestByClient = storageEngine.getHighestCommittedPerCid(entry.getKey(), entry.getValue().getCid(), version);
+            if(prepTs > version && prepTs > latestByClient){
+                if(pendingTransactionsNonCoordinated.containsKey(entry.getValue().getTid())){
+                    DataItem prepData = pendingTransactionsNonCoordinated.get(entry.getValue().getTid()).keyValuePairs.get(entry.getKey());
+                    result.put(entry.getKey(), prepData);
+                }else{
+                    result.put(entry.getKey(), storageEngine.getByTimestamp(entry.getKey(), prepTs));
+                }
+                
             }else if(latestByClient != Timestamp.NO_TIMESTAMP){
                 result.put(entry.getKey(), storageEngine.getByTimestamp(entry.getKey(), latestByClient));
             }else{
@@ -147,33 +153,6 @@ public class EigerPortPlusPlusExecutor implements IEigerExecutor{
         response.setHct(this.lst);
         dispatcher.sendResponse(getAllRequest.senderID, getAllRequest.requestID, response);
     }
-
-    // private DataItem find_isolated(DataItem ver, String key) {
-    //     Long gst = ver.getPrepTs();
-    //     Long commit_t = ver.getTimestamp();
-    //     if(gst >= commit_t) return ver;
-    //     if(!storageEngine.eigerMap.containsKey(key)) return ver;
-    //     NavigableMap<Long,DataItem> subMap = storageEngine.eigerMap.get(key).subMap(gst, commit_t).descendingMap();
-    //     Iterator<NavigableMap.Entry<Long, DataItem> > itr = subMap.entrySet().iterator();
-    //     while(itr.hasNext()){
-    //         NavigableMap.Entry<Long, DataItem> entry = itr.next();
-    //         while(entry.getValue().getCid() == ver.getCid()) {
-    //             ver = entry.getValue();
-    //             Long new_gst = ver.getPrepTs();
-    //             Long new_commit_t = ver.getTimestamp();
-    //             if(new_gst >= commit_t) return ver;
-    //             if(!storageEngine.eigerMap.containsKey(key)) return ver;
-    //             subMap = storageEngine.eigerMap.get(key).subMap(new_gst, new_commit_t).descendingMap();
-    //             itr = subMap.entrySet().iterator();
-    //             if(!itr.hasNext()) {
-    //                 return ver;
-    //             }
-    //             entry = itr.next();
-    //         }
-    //         return entry.getValue();
-    //     }
-    //     return ver;
-    // }    
 
     @Override
     public void processMessage(EigerPreparedResponse preparedNotification)
@@ -293,11 +272,6 @@ public class EigerPortPlusPlusExecutor implements IEigerExecutor{
         }
 
         public synchronized boolean hasCommitted() {
-            commitTimeLock.lock();
-            if(!committed.get())
-                highestPreparedTime = Timestamp.assignNewTimestamp(highestPreparedTime);
-            commitTimeLock.unlock();
-
             return committed.get();
         }
 
@@ -321,7 +295,7 @@ public class EigerPortPlusPlusExecutor implements IEigerExecutor{
 
         public synchronized void recordPreparedKeys(int server, int numKeys, long preparedTime) {
             if(highestPreparedTime < preparedTime)
-                highestPreparedTime = Timestamp.assignNewTimestamp(preparedTime);
+                highestPreparedTime = preparedTime;
             serversToNotifyCommit.add(server);
             numKeysSeen.getAndAdd(numKeys);
 

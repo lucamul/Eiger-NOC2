@@ -27,6 +27,8 @@ public class KaijuResponse extends KaijuMessage {
 
     public Long hct;
 
+    public Long prepTs;
+
     public KaijuResponse(Map<String, DataItem> keyValuePairs) {
         this.keyValuePairs = keyValuePairs;
     }
@@ -60,6 +62,14 @@ public class KaijuResponse extends KaijuMessage {
         return errors != null;
     }
 
+    public Long getPrepTs() {
+        return prepTs;
+    }
+
+    public void setPrepTs(Long prepTs) {
+        this.prepTs = prepTs;
+    }
+    
     public String getErrorString() {
         Joiner joiner = Joiner.on(";");
         return joiner.join(errors);

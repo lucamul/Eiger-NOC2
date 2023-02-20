@@ -27,7 +27,17 @@ public class DataItem {
     private String cid = null;
     private Boolean flag = null;
     private Long prepTs = null;
+    private Long tid = null;
 
+    public Long getTid(){
+        if(this.tid == null) return Timestamp.NO_TIMESTAMP;
+        return this.tid;
+    }
+
+    public void setTid(Long tid){
+        this.tid = tid;
+    }
+    
     public DataItem(long timestamp, byte[] value) {
         this.timestamp = timestamp;
         this.value = value;

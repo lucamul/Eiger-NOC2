@@ -12,7 +12,8 @@ def setup(setup_ssh=False):
 
     # Remove newline characters from the nodes
     nodes = [node.strip() for node in nodes]
-
+    print("The nodes are: ", nodes)
+     
     os.system("cd /home/ubuntu/kaiju ; mvn package")
     if setup_ssh:
         os.system("ssh-keygen -t rsa")

@@ -1268,3 +1268,157 @@ Feb 17, 2023 3:59:07 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellat
 WARNING: Unmatched cancel notification for request id 7811
 2023.02.17 15:59:14 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java
 2023.02.17 15:59:15 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java
+2023.02.18 13:35:36 INFO  tracing is disabled for protocol LSP, to enable tracing of incoming and outgoing JSON messages create an empty file at /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/.metals/lsp.trace.json or /home/luca/.cache/metals/lsp.trace.json
+2023.02.18 13:35:37 INFO  logging to file /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/.metals/metals.log
+2023.02.18 13:35:37 INFO  Started: Metals version 0.11.10 in workspace '/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus' for client Visual Studio Code 1.75.1.
+SLF4J: No SLF4J providers were found.
+SLF4J: Defaulting to no-operation (NOP) logger implementation
+SLF4J: See https://www.slf4j.org/codes.html#noProviders for further details.
+SLF4J: Class path contains SLF4J bindings targeting slf4j-api versions 1.7.x or earlier.
+SLF4J: Ignoring binding found at [jar:file:/home/luca/.cache/coursier/v1/https/repo1.maven.org/maven2/com/outr/scribe-slf4j_2.13/3.10.5/scribe-slf4j_2.13-3.10.5.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See https://www.slf4j.org/codes.html#ignoredBindings for an explanation.
+2023.02.18 13:35:42 INFO  time: initialize in 4.95s
+2023.02.18 13:35:43 WARN  Build server is not auto-connectable.
+2023.02.18 13:35:43 WARN  no build tool detected in workspace '/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. 
+2023.02.18 13:35:43 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/contrib/YCSB/core/src/main/java/com/yahoo/ycsb/generator/ZipfianGenerator.java
+2023.02.18 13:35:44 INFO  time: code lens generation in 1.34s
+2023.02.18 13:35:46 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/contrib/YCSB/core/src/main/java/com/yahoo/ycsb/generator/ScrambledZipfianGenerator.java
+2023.02.18 13:35:55 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/contrib/YCSB/core/src/main/java/com/yahoo/ycsb/generator/ZipfianGenerator.java
+2023.02.18 13:35:59 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/contrib/YCSB/core/src/main/java/com/yahoo/ycsb/generator/ZipfianGenerator.java
+2023.02.18 13:39:16 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java
+2023.02.18 13:39:19 INFO  time: code lens generation in 2.4s
+Feb 18, 2023 1:40:53 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 126
+2023.02.18 13:41:15 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java
+2023.02.18 13:41:15 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java
+2023.02.18 13:41:17 INFO  time: code lens generation in 1.43s
+Feb 18, 2023 1:41:25 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 285
+2023.02.18 13:41:29 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java
+2023.02.18 13:41:29 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java
+2023.02.18 13:41:30 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java
+2023.02.18 13:41:38 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java
+2023.02.18 13:41:39 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java
+2023.02.18 13:41:39 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java
+2023.02.18 13:51:44 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/eiger/IEigerExecutor.java
+2023.02.20 09:48:18 INFO  tracing is disabled for protocol LSP, to enable tracing of incoming and outgoing JSON messages create an empty file at /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/.metals/lsp.trace.json or /home/luca/.cache/metals/lsp.trace.json
+2023.02.20 09:48:21 INFO  logging to file /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/.metals/metals.log
+2023.02.20 09:48:21 INFO  Started: Metals version 0.11.10 in workspace '/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus' for client Visual Studio Code 1.75.1.
+SLF4J: No SLF4J providers were found.
+SLF4J: Defaulting to no-operation (NOP) logger implementation
+SLF4J: See https://www.slf4j.org/codes.html#noProviders for further details.
+SLF4J: Class path contains SLF4J bindings targeting slf4j-api versions 1.7.x or earlier.
+SLF4J: Ignoring binding found at [jar:file:/home/luca/.cache/coursier/v1/https/repo1.maven.org/maven2/com/outr/scribe-slf4j_2.13/3.10.5/scribe-slf4j_2.13-3.10.5.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See https://www.slf4j.org/codes.html#ignoredBindings for an explanation.
+2023.02.20 09:48:28 INFO  time: initialize in 7.47s
+2023.02.20 09:48:30 WARN  Build server is not auto-connectable.
+2023.02.20 09:48:30 WARN  no build tool detected in workspace '/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. 
+2023.02.20 09:48:30 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/eiger/IEigerExecutor.java
+2023.02.20 09:48:32 INFO  time: code lens generation in 2.42s
+2023.02.20 09:48:32 INFO  time: code lens generation in 2.4s
+2023.02.20 09:54:40 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/handler/EigerPortPlusPlusKaijuServiceHandler.java
+2023.02.20 09:54:42 INFO  time: code lens generation in 1.62s
+2023.02.20 09:55:13 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/data/DataItem.java
+2023.02.20 09:55:15 INFO  time: code lens generation in 1.06s
+2023.02.20 09:55:29 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/data/TidTimestampPair.java
+Feb 20, 2023 9:55:32 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 62
+Feb 20, 2023 9:55:43 AM org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+INFO: Unsupported notification method: $/setTrace
+2023.02.20 09:56:00 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/data/TidTimestampPair.java
+2023.02.20 09:56:00 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/data/TidTimestampPair.java
+Feb 20, 2023 9:56:20 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 190
+2023.02.20 09:56:57 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/data/TidTimestampPair.java
+Feb 20, 2023 9:57:34 AM org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+INFO: Unsupported notification method: $/setTrace
+Feb 20, 2023 9:57:39 AM org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+INFO: Unsupported notification method: $/setTrace
+2023.02.20 09:57:59 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/data/TidTimestampPair.java
+2023.02.20 09:57:59 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/data/TidTimestampPair.java
+2023.02.20 09:58:00 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/data/TidTimestampPair.java
+2023.02.20 09:58:06 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/KaijuServer.java
+Feb 20, 2023 9:58:26 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 416
+2023.02.20 09:58:47 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/KaijuServer.java
+2023.02.20 09:58:47 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/KaijuServer.java
+2023.02.20 09:58:48 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/KaijuServer.java
+2023.02.20 09:58:48 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/KaijuServer.java
+2023.02.20 09:58:49 INFO  time: code lens generation in 1.2s
+Feb 20, 2023 10:00:01 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 573
+2023.02.20 10:01:04 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/handler/EigerPortPlusPlusKaijuServiceHandler.java
+2023.02.20 10:01:05 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/handler/EigerPortPlusPlusKaijuServiceHandler.java
+2023.02.20 10:01:38 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/message/response/KaijuResponse.java
+2023.02.20 10:01:51 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/message/response/KaijuResponse.java
+2023.02.20 10:01:51 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/message/response/KaijuResponse.java
+2023.02.20 10:01:51 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/message/response/KaijuResponse.java
+2023.02.20 10:02:05 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/message/response/KaijuResponse.java
+2023.02.20 10:02:06 WARN  Running javac-semanticdb failed for file:///home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/message/response/KaijuResponse.java. Output:
+/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/message/response/KaijuResponse.java:73: error: ';' expected
+    ublic String getErrorString() {
+         ^
+1 error
+2023.02.20 10:02:08 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/message/response/KaijuResponse.java
+2023.02.20 10:02:39 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/handler/EigerPortPlusPlusKaijuServiceHandler.java
+2023.02.20 10:02:39 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/handler/EigerPortPlusPlusKaijuServiceHandler.java
+2023.02.20 10:02:39 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/handler/EigerPortPlusPlusKaijuServiceHandler.java
+2023.02.20 10:02:39 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/handler/EigerPortPlusPlusKaijuServiceHandler.java
+2023.02.20 10:02:44 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/handler/EigerPortPlusPlusKaijuServiceHandler.java
+2023.02.20 10:02:44 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/handler/EigerPortPlusPlusKaijuServiceHandler.java
+2023.02.20 10:02:44 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/handler/EigerPortPlusPlusKaijuServiceHandler.java
+2023.02.20 10:02:45 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/handler/EigerPortPlusPlusKaijuServiceHandler.java
+2023.02.20 10:02:45 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/handler/EigerPortPlusPlusKaijuServiceHandler.java
+2023.02.20 10:02:44 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/handler/EigerPortPlusPlusKaijuServiceHandler.java
+2023.02.20 10:02:45 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/handler/EigerPortPlusPlusKaijuServiceHandler.java
+2023.02.20 10:02:45 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/handler/EigerPortPlusPlusKaijuServiceHandler.java
+2023.02.20 10:02:46 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/handler/EigerPortPlusPlusKaijuServiceHandler.java
+2023.02.20 10:02:46 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/handler/EigerPortPlusPlusKaijuServiceHandler.java
+2023.02.20 10:02:46 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/handler/EigerPortPlusPlusKaijuServiceHandler.java
+2023.02.20 10:02:47 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/handler/EigerPortPlusPlusKaijuServiceHandler.java
+2023.02.20 10:04:13 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/data/DataItem.java
+2023.02.20 10:04:14 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/data/DataItem.java
+2023.02.20 10:06:29 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/handler/EigerPortPlusPlusKaijuServiceHandler.java
+2023.02.20 10:06:30 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/handler/EigerPortPlusPlusKaijuServiceHandler.java
+2023.02.20 10:06:30 WARN  Running javac-semanticdb failed for file:///home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/handler/EigerPortPlusPlusKaijuServiceHandler.java. Output:
+/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/handler/EigerPortPlusPlusKaijuServiceHandler.java:51: error: ';' expected
+                        tid = pair.getTransaction_id()
+                                                      ^
+/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/handler/EigerPortPlusPlusKaijuServiceHandler.java:52: error: ';' expected
+                        prepTs = pair.getPrepared_t()
+                                                     ^
+2 errors
+2023.02.20 10:06:30 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/handler/EigerPortPlusPlusKaijuServiceHandler.java
+2023.02.20 10:06:30 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/handler/EigerPortPlusPlusKaijuServiceHandler.java
+2023.02.20 10:06:30 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/handler/EigerPortPlusPlusKaijuServiceHandler.java
+2023.02.20 10:06:47 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/handler/EigerPortPlusPlusKaijuServiceHandler.java
+2023.02.20 10:06:48 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/handler/EigerPortPlusPlusKaijuServiceHandler.java
+2023.02.20 10:06:48 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/handler/EigerPortPlusPlusKaijuServiceHandler.java
+2023.02.20 10:06:50 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/eiger/EigerPortPlusPlusExecutor.java
+2023.02.20 10:06:51 INFO  time: code lens generation in 1.44s
+2023.02.20 10:08:24 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/eiger/EigerPortPlusExecutor.java
+2023.02.20 10:08:25 INFO  time: code lens generation in 1.07s
+Feb 20, 2023 10:11:19 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 1862
+Feb 20, 2023 10:12:05 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 1942
+Feb 20, 2023 10:12:54 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 2098
+2023.02.20 10:13:43 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/eiger/EigerPortPlusPlusExecutor.java
+2023.02.20 10:13:44 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/eiger/EigerPortPlusPlusExecutor.java
+Feb 20, 2023 10:13:49 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 2136
+2023.02.20 10:14:22 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/eiger/EigerPortPlusPlusExecutor.java
+2023.02.20 10:14:22 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/eiger/EigerPortPlusPlusExecutor.java
+2023.02.20 10:14:22 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/eiger/EigerPortPlusPlusExecutor.java
+2023.02.20 10:14:23 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/eiger/EigerPortPlusPlusExecutor.java
+2023.02.20 10:14:23 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/eiger/EigerPortPlusPlusExecutor.java
+2023.02.20 10:14:23 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/eiger/EigerPortPlusPlusExecutor.java
+2023.02.20 10:14:32 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/eiger/EigerPortPlusPlusExecutor.java
+2023.02.20 10:15:23 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/eiger/EigerPortPlusPlusExecutor.java
+2023.02.20 10:15:24 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/eiger/EigerPortPlusPlusExecutor.java
+2023.02.20 10:15:24 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/eiger/EigerPortPlusPlusExecutor.java
+2023.02.20 10:15:24 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/eiger/EigerPortPlusPlusExecutor.java
+2023.02.20 10:15:24 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/eiger/EigerPortPlusPlusExecutor.java
+2023.02.20 10:15:24 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/eiger/EigerPortPlusPlusExecutor.java
+2023.02.20 10:16:10 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/eiger/EigerPortPlusPlusExecutor.java

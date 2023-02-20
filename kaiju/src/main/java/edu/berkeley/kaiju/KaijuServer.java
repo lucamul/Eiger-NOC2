@@ -2,6 +2,7 @@
 package edu.berkeley.kaiju;
 
 import edu.berkeley.kaiju.config.Config;
+import edu.berkeley.kaiju.data.TidTimestampPair;
 import edu.berkeley.kaiju.frontend.FrontendServer;
 import edu.berkeley.kaiju.monitor.MetricsManager;
 import edu.berkeley.kaiju.net.InboundMessagingService;
@@ -38,7 +39,10 @@ public class KaijuServer {
     public static Map<String,Long> prep = Maps.newConcurrentMap();
     public static Map<Integer,Long> hcts = Maps.newConcurrentMap();
 
+    // PORT
     public static Long gst = Timestamp.NO_TIMESTAMP;
+    public static Map<String,TidTimestampPair> pending = Maps.newConcurrentMap();
+    
     public static void main(String[] args) {
         Config.serverSideInitialize(args);
 

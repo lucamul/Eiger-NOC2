@@ -13,6 +13,7 @@ import com.google.common.collect.Maps;
 import edu.berkeley.kaiju.KaijuServer;
 import edu.berkeley.kaiju.config.Config;
 import edu.berkeley.kaiju.data.DataItem;
+import edu.berkeley.kaiju.data.TidTimestampPair;
 import edu.berkeley.kaiju.exception.HandlerException;
 import edu.berkeley.kaiju.net.routing.OutboundRouter;
 import edu.berkeley.kaiju.service.request.RequestDispatcher;
@@ -43,7 +44,15 @@ public class EigerPortPlusPlusKaijuServiceHandler implements IKaijuHandler{
                 for(String key : keysByServerID.get(serverID)){
                     keysWithMd.put(key, new DataItem(gst,new byte[0]));
                     keysWithMd.get(key).setCid(cid);
-                    keysWithMd.get(key).setPrepTs(KaijuServer.prep.getOrDefault(key, Timestamp.NO_TIMESTAMP));
+                    Long prepTs = Timestamp.NO_TIMESTAMP;
+                    Long tid = Timestamp.NO_TIMESTAMP;
+                    if(KaijuServer.pending.containsKey(key)){
+                        TidTimestampPair pair = KaijuServer.pending.get(key);
+                        tid = pair.getTransaction_id();
+                        prepTs = pair.getPrepared_t();
+                    }
+                    keysWithMd.get(key).setPrepTs(prepTs);
+                    keysWithMd.get(key).setTid(tid);
                 }
                 requestsByServerID.put(serverID, new EigerPutAllRequest(keysWithMd, readStamp));
             }
@@ -96,19 +105,22 @@ public class EigerPortPlusPlusKaijuServiceHandler implements IKaijuHandler{
             Collection<KaijuResponse> responses = dispatcher.multiRequest(requestsByServerID);
 
             KaijuResponse.coalesceErrorsIntoException(responses);
-            
+            Long prepared_t = Timestamp.NO_TIMESTAMP;
             synchronized(this){
                 for(KaijuResponse response : responses){
                     if(!KaijuServer.hcts.containsKey(Integer.valueOf(response.senderID)) || KaijuServer.hcts.get(Integer.valueOf(response.senderID)) < response.getHct()){
                         KaijuServer.hcts.put(Integer.valueOf(response.senderID),response.getHct());
                     }
+                    if(prepared_t == Timestamp.NO_TIMESTAMP || response.getPrepTs() > prepared_t){
+                        prepared_t = response.getPrepTs();
+                    }   
                 }
             }
 
             synchronized(this){
                 for(String key : keyValuePairs.keySet()){
-                    if(!KaijuServer.prep.containsKey(key) || KaijuServer.prep.get(key) < timestamp){
-                        KaijuServer.prep.put(key, timestamp);
+                    if(!KaijuServer.pending.containsKey(key) || KaijuServer.pending.get(key).getPrepared_t() < timestamp){
+                        KaijuServer.pending.put(key, new TidTimestampPair(timestamp, prepared_t));
                     }
                 }
             }
