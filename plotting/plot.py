@@ -105,7 +105,9 @@ def generate_plot(x_axis, y_axises, title, x_label, y_label, directory, barPlot 
         ax.tick_params(axis='both', which='major', labelsize=tick_font)
         ax.set_xticklabels(x_axis, fontsize=tick_font)
         ax.legend()
-        plt.grid(haveGrid)
+        if haveGrid:
+            ax.grid(haveGrid, color='gray', linestyle='--', linewidth=1, axis='y')
+        
         title_no_spaces = title.replace(" ", "_")
         filename = os.path.basename(directory)
 
@@ -117,7 +119,8 @@ def generate_plot(x_axis, y_axises, title, x_label, y_label, directory, barPlot 
             os.mkdir(new_dir_path)
         
         dir_name += "/"
-        plt.savefig(saveTo + dir_name + title_no_spaces + ".pdf")
+        plt.gcf().set_size_inches(10, 6)
+        plt.savefig(saveTo + dir_name + title_no_spaces + ".pdf",dpi=200)
         if showPlot:
             plt.show()
         return
@@ -126,15 +129,16 @@ def generate_plot(x_axis, y_axises, title, x_label, y_label, directory, barPlot 
     for algorithm in y_axises:
         # if x_axis is a dict
         if isinstance(x_axis, dict):
-            ax.plot(x_axis[algorithm], y_axises[algorithm], label=names[algorithm], color=colors[algorithm], marker=markers[algorithm], markersize=marker_size, linewidth=line_width)
+            ax.plot(x_axis[algorithm], y_axises[algorithm], label=names[algorithm], color=colors[algorithm], marker=markers[algorithm], linewidth=line_width,markersize=marker_size,markeredgewidth=2, markeredgecolor= colors[algorithm], markerfacecolor='None')
         else:
-            ax.plot(x_axis, y_axises[algorithm], label=names[algorithm], color=colors[algorithm], marker=markers[algorithm], markersize=marker_size, linewidth=line_width)
+            ax.plot(x_axis, y_axises[algorithm], label=names[algorithm], color=colors[algorithm], marker=markers[algorithm],linewidth = line_width,markersize=marker_size,markeredgewidth=2, markeredgecolor= colors[algorithm], markerfacecolor='None')
     ax.set_title(title, **title_info)
     ax.set_xlabel(x_label, fontsize=axis_font)
     ax.set_ylabel(y_label, fontsize=axis_font)
     ax.tick_params(axis='both', which='major', labelsize=tick_font)
     ax.legend()
-    plt.grid(haveGrid)
+    if haveGrid:
+        ax.grid(haveGrid, color='gray', linestyle='--', linewidth=1, axis='y')
     title_no_spaces = title.replace(" ","_")
     filename = os.path.basename(directory)
 
@@ -146,8 +150,8 @@ def generate_plot(x_axis, y_axises, title, x_label, y_label, directory, barPlot 
         os.mkdir(new_dir_path)
     
     dir_name += "/"
-    
-    plt.savefig(saveTo+dir_name+title_no_spaces+".pdf")
+    plt.gcf().set_size_inches(10, 6)
+    plt.savefig(saveTo+dir_name+title_no_spaces+".pdf",dpi=200)
     
     if showPlot:
         plt.show()
