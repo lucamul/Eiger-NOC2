@@ -31,7 +31,7 @@ sudo apt install -y maven
 
 ## Running an Experiment
 
-In `experiment.py`, you will find different experiments that you can run from the RAMP paper. You can expand and modify these experiments by altering the lists of parameters in the dictionary. For example, `tsize_test` is a test of varying transaction size. To run any experiment, change to the `/home/ubuntu/experiment` folder and run:
+In `experiments.py`, you will find different experiments that you can run from the RAMP paper. You can expand and modify these experiments by altering the lists of parameters in the dictionary. For example, `port` is a test with default parameters. To run any experiment, change to the `/home/ubuntu/experiment` folder and run:
 
 ```
 python setup_hosts.py --color -c us-west-2 -nc 5 -ns 5 --experiment EXP --tag example
