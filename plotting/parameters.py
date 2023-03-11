@@ -1,7 +1,6 @@
 import numpy as np
 
 # parameters for plot
-
 title_font = 20
 axis_font = 18
 tick_font = 16
@@ -14,7 +13,7 @@ marker_size = 13
 line_width = 2.5
 tick_font_inaxis = 10
 haveGrid = False
-showPlot = False
+showPlot = True
 bar_width = 0.2
 
 # edit this if you want to change the algorithms you can plot
