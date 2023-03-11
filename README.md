@@ -38,11 +38,15 @@ python setup_hosts.py --color -c us-west-2 -nc 5 -ns 5 --experiment EXP --tag ex
 ```
 Where `EXP` is the name of the experiment in `experiments.py`.
 
-Alternatively, you can run one of the existing experiments by running `bash run_default.sh`, `bash run_number_clients.sh`, `bash run_number_servers.sh`, or `bash run_zipf_const.sh`.
+Alternatively, you can run one of the existing experiments by running:
+1. `bash run_default.sh`: runs a simple experiment with default parameters.
+2. `bash run_number_clients.sh`: runs an experiment varying the number of client threads.
+3. `bash run_number_servers.sh`: runs an experiment varying the number of servers (beware you need enough nodes for this).
+4. `bash run_zipf_const.sh`: used to run experiment with zipfian constants, but edit the zipf in the Java code first (info in the script). 
 
 The logs will be uploaded to the `output` folder.
 
-You can process the latest results by calling `bash process_latest_results.sh` or process a specific result by calling `python3 process_results.py "folder_name" "experiment_name"` and adding `--freshness` if you want to process data freshness.
+You can process the latest results by calling `bash process_latest_results.sh` or process a specific result by calling `python3 process_results.py "folder_name" "experiment_name"` and adding `--freshness` if you want to process data freshness and not latency/throughput.
 
 ## Further Questions
 
