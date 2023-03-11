@@ -1,45 +1,49 @@
-This repo contains the prototype from the EIGER-PORT++ project. It takes as base the repository from the SIGMOD 2014 paper titled [Scalable Atomic Visibility with RAMP Transactions](http://www.bailis.org/papers/ramp-sigmod2014.pdf) and enhances it to also run experiments on EIGER-PORT, EIGER-PORT+ and EIGER-PORT++, alongside the enhancements provided by the ORA repository.
 
-### Setting up the CloudLab cluster
-On CloudLab start an experiment with an OpenStack profile. Select link-speed 1Gbps and the required number of nodes (clients + servers) (use d710 from Emulab). Please note that the results were calculated using 8 servers and 8 clients unless otherwise specified.
+# EIGER-PORT++ Prototype
 
-Once the CloudLab experiment is ready access to the OpenStack Dashboard as explained by cloudlab and create 16 nodes of size m1.large using the bionic-server image. Make sure to insert the following bash script in the configuration option:
+This repository contains the prototype for the EIGER-PORT++ project. It is based on the repository from the SIGMOD 2014 paper titled [Scalable Atomic Visibility with RAMP Transactions](http://www.bailis.org/papers/ramp-sigmod2014.pdf) and includes enhancements to run experiments on EIGER-PORT, EIGER-PORT+, and EIGER-PORT++ along with the enhancements provided by the ORA repository.
 
-        #!bin/bash
+## Setting up the CloudLab Cluster
 
-        sudo apt update
-        sudo apt install -y default-jdk
-        sudo apt install -y pssh
-        sudo apt install -y maven
+1. Start an experiment with an OpenStack profile. 
+2. Select a link speed of 1Gbps and the required number of nodes (clients + servers) using d710 from Emulab. Note that the results were calculated using eight servers and eight clients unless otherwise specified.
+3. Once the CloudLab experiment is ready, access the OpenStack Dashboard as explained by CloudLab and create 16 nodes of size m1.large using the bionic-server image. Make sure to insert the following bash script in the configuration option:
 
-Then do the same with 1 m1.medium instance instead of large which we will refer to as Host and is the machine from which we will run our experiment.
-Assign a floating IP to the Host machine, copy the codebase on it and SSH to it. 
-The codebase should be copied so that in /home/ubuntu 3 folders appear:
+```
+#!bin/bash
+sudo apt update
+sudo apt install -y default-jdk
+sudo apt install -y pssh
+sudo apt install -y maven
+```
+
+
+4. Next, create one m1.medium instance, which we refer to as the Host and is the machine from which we will run our experiment. 
+5. Assign a floating IP to the Host machine, copy the codebase to it, and SSH to it. The codebase should be copied so that in `/home/ubuntu` three folders appear:
+
 - kaiju
 - hosts
 - results
-Access the files all-cliens-txt and write there the IP addresses of all client machines, same for all-servers.txt. Finally in all-hosts.txt write all clients and all servers.
-Now use the commmand:
-    for h in IP_address_1 IP_address_2 etc. ; { ssh-copy-id ubuntu@$h ; }
-substituting IP address for all the IPs of all clients and server instances as listed on OpenStack. And enter the same password used to access OpenStack. (this is to avoid needing the password every time).
-Then compile the codebase by running the following 2 commands:
-    cd ./kaiju
-    mvn package
-Finally copy the codebase to all machines. You can do so by using:
-    cd /home/ubuntu
-    for h in IP_address_1 IP_address_2 etc ; { scp -prq ./* ubuntu@$h:/home/ubuntu ; }
 
-### Running an experiment
-In experiment.py you find different experiments you can run that come from the RAMP paper. You can similarly expand and modify these experiments by altering the lists of parameters in the dictionary. For example the "tsize_test" is a test of varying transaction size. To run any experiment change to /home/ubuntu/experiment folder and run:
+6. Access the `all-clients.txt` file and write the IP addresses of all client machines, the same for `all-servers.txt`. Finally, in `all-hosts.txt`, write all clients and all servers.
 
-    python setup_hosts.py --color -c us-west-2 -nc 5 -ns 5 --experiment port --tag example
+7. Now, change to the `/home/ubuntu/experiment` folder and run `bash setup_cluster.sh`. (It will ask for a password to setup passwordless ssh among all the nodes, it's the same password that is used for the Openstack dahsboard)
 
-The logs will be uploaded in the output folder.
+## Running an Experiment
 
-You may use python3 process_results.py name_of_result_repo to generate a csv file containing all the data from latency and throughput.
+In `experiment.py`, you will find different experiments that you can run from the RAMP paper. You can expand and modify these experiments by altering the lists of parameters in the dictionary. For example, `tsize_test` is a test of varying transaction size. To run any experiment, change to the `/home/ubuntu/experiment` folder and run:
 
-### Running an experiment on Data Freshness
-To run data freshness please turn the freshness_test variable in Config.java to 1, there is also an option to do so in the starting script or you can do it manually then compile. The freshness will be logged in the servers logs.
+```
+python setup_hosts.py --color -c us-west-2 -nc 5 -ns 5 --experiment EXP --tag example
+```
+Where `EXP` is the name of the experiment in `experiments.py`.
 
-### Further questions
-Please refer to the RAMP github for further information on the codebase.
+Alternatively, you can run one of the existing experiments by running `bash run_default.sh`, `bash run_number_clients.sh`, `bash run_number_servers.sh`, or `bash run_zipf_const.sh`.
+
+The logs will be uploaded to the `output` folder.
+
+You can process the latest results by calling `bash process_latest_results.sh` or process a specific result by calling `python3 process_results.py "folder_name" "experiment_name"` and adding `--freshness` if you want to process data freshness.
+
+## Further Questions
+
+For further information on the codebase, please refer to the RAMP GitHub repository.
