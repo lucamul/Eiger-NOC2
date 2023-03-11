@@ -3,3 +3,7 @@ __pycache__
 
 # Ignore files in ./results
 results/
+
+# Ignore files in ./plotting
+
+plotting/plots
