@@ -50,4 +50,4 @@ You can process the latest results by calling `bash process_latest_results.sh` o
 
 ## Further Questions
 
-For further information on the codebase, please refer to the RAMP GitHub repository.
+For further information on the codebase, please refer to the [RAMP GitHub repository](https://github.com/pbailis/ramp-sigmod2014-code).
