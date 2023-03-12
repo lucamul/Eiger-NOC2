@@ -1,31 +1,4 @@
-
-defaultsettings = { "serversList" : [(5,5)],
-                    "txnlen" : [4],
-                    "threads" : [1000],
-                    "numseconds" : 60,
-                    "configs" : [ #"READ_COMMITTED",
-                                  "READ_ATOMIC_STAMP", 
-                                  #"EIGER",
-                                  "READ_ATOMIC_LORA",
-                                  "READ_ATOMIC_LIST",
-                                  "READ_ATOMIC_BLOOM"
-                                  #,"LWLR",
-                                  #"LWSR",
-                                  #"LWNR"
-                                ],
-                    "readprop" : [0.95],
-                    "iterations" : range(0,3),
-                    "numkeys" : [1000000],
-                    "valuesize" : [1],
-                    "keydistribution" : "zipfian",
-                    "bootstrap_time_ms" : 10000,
-                    "launch_in_bg" : False,
-                    "drop_commit_pcts" : [0],
-                    "check_commit_delays" : [-1],
-                 }
-
-
-test_port = {
+default = {
     "serversList" : [(8,8)],
                     "txnlen" : [5],
                     "threads" : [32],
@@ -97,7 +70,7 @@ num_servers = {
 
 
 experiments = { 
-                "port" : test_port,
+                "default" : default,
                 "num_clients" : num_clients,
                 "num_servers" : num_servers,               
 }
