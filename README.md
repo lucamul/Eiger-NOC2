@@ -34,9 +34,9 @@ sudo apt install -y maven
 In `experiments.py`, you will find different experiments that you can run from the RAMP paper. You can expand and modify these experiments by altering the lists of parameters in the dictionary. For example, `port` is a test with default parameters. To run any experiment, change to the `/home/ubuntu/experiment` folder and run:
 
 ```
-python setup_hosts.py --color -c us-west-2 -nc 5 -ns 5 --experiment EXP --tag example
+python setup_hosts.py --color -c us-west-2 -nc NUM_CLIENTS -ns NUM_SERVERS --experiment EXP --tag example
 ```
-Where `EXP` is the name of the experiment in `experiments.py`.
+Where `EXP` is the name of the experiment in `experiments.py`, and `NUM_CLIENTS` and `NUM_SERVERS` are the number of physical nodes, by default write 8 and 8.
 
 Alternatively, you can run one of the existing experiments by running:
 1. `bash run_default.sh`: runs a simple experiment with default parameters.
