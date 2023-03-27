@@ -203,6 +203,7 @@ public class MemoryStorageEngine {
                             for(Long stale : staleness){
                                 logger.warn("Freshness = " + stale);
                             }
+                            return;
                         }
                     } catch (InterruptedException e) {
                         e.printStackTrace();
