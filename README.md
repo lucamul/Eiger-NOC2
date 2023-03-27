@@ -27,11 +27,11 @@ sudo apt install -y maven
 
 6. Access the `all-clients.txt` file and write the IP addresses of all client machines, the same for `all-servers.txt`. Finally, in `all-hosts.txt`, write all clients and all servers.
 
-7. Now, change to the `/home/ubuntu/experiment` folder and run `bash setup_cluster.sh`. (It will ask for a password to setup passwordless ssh among all the nodes, it's the same password that is used for the Openstack dahsboard)
+7. Now, change to the `/home/ubuntu/kaiju/experiment` folder and run `bash setup_cluster.sh`. (It will ask for a password to setup passwordless ssh among all the nodes, it's the same password that is used for the Openstack dahsboard)
 
 ## Running an Experiment
 
-In `experiments.py`, you will find different experiments that you can run from the RAMP paper. You can expand and modify these experiments by altering the lists of parameters in the dictionary. For example, `port` is a test with default parameters. To run any experiment, change to the `/home/ubuntu/experiment` folder and run:
+In `experiments.py`, you will find different experiments that you can run from the RAMP paper. You can expand and modify these experiments by altering the lists of parameters in the dictionary. For example, `port` is a test with default parameters. To run any experiment, change to the `/home/ubuntu/kaiju/experiment` folder and run:
 
 ```
 python setup_hosts.py --color -c us-west-2 -nc NUM_CLIENTS -ns NUM_SERVERS --experiment EXP --tag example

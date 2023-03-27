@@ -1451,3 +1451,132 @@ WARNING: Unmatched cancel notification for request id 1
 2023.03.11 11:24:35 INFO  time: code lens generation in 1.66s
 2023.03.11 11:24:39 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java
 2023.03.11 11:24:42 INFO  time: code lens generation in 2.13s
+2023.03.27 09:40:19 INFO  Started: Metals version 0.11.11 in workspace '/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus' for client Visual Studio Code 1.76.2.
+SLF4J: No SLF4J providers were found.
+SLF4J: Defaulting to no-operation (NOP) logger implementation
+SLF4J: See https://www.slf4j.org/codes.html#noProviders for further details.
+SLF4J: Class path contains SLF4J bindings targeting slf4j-api versions 1.7.x or earlier.
+SLF4J: Ignoring binding found at [jar:file:/home/luca/.cache/coursier/v1/https/repo1.maven.org/maven2/com/outr/scribe-slf4j_2.13/3.11.0/scribe-slf4j_2.13-3.11.0.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See https://www.slf4j.org/codes.html#ignoredBindings for an explanation.
+2023.03.27 09:40:21 INFO  time: initialize in 1.29s
+2023.03.27 09:40:22 WARN  Build server is not auto-connectable.
+2023.03.27 09:40:22 WARN  no build tool detected in workspace '/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. 
+2023.03.27 09:40:22 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/KaijuServer.java
+Mar 27, 2023 9:40:23 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 5
+2023.03.27 09:40:24 INFO  time: code lens generation in 1.32s
+2023.03.27 09:40:24 INFO  time: code lens generation in 1.45s
+Mar 27, 2023 9:40:32 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 40
+2023.03.27 09:40:39 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/KaijuServer.java
+2023.03.27 09:41:22 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/frontend/FrontendServer.java
+2023.03.27 09:41:24 INFO  time: code lens generation in 1.62s
+Mar 27, 2023 9:42:12 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 183
+2023.03.27 09:42:14 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/frontend/FrontendServer.java
+2023.03.27 09:42:14 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/frontend/FrontendServer.java
+Mar 27, 2023 9:42:58 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 270
+2023.03.27 09:42:59 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/frontend/FrontendServer.java
+2023.03.27 09:43:59 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/frontend/FrontendServer.java
+2023.03.27 09:44:17 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/frontend/FrontendServer.java
+2023.03.27 09:44:30 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/frontend/FrontendServer.java
+2023.03.27 09:44:48 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java
+2023.03.27 09:44:51 INFO  time: code lens generation in 1.84s
+Mar 27, 2023 9:45:02 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 366
+Mar 27, 2023 9:45:26 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 465
+2023.03.27 09:45:27 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java
+2023.03.27 09:47:29 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java
+Mar 27, 2023 9:47:33 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 781
+Mar 27, 2023 9:48:28 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 908
+2023.03.27 09:48:51 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java
+2023.03.27 09:49:01 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java
+2023.03.27 09:49:54 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java
+2023.03.27 09:49:57 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java
+2023.03.27 09:49:57 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java
+2023.03.27 09:51:52 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/eiger/EigerExecutor.java
+2023.03.27 09:51:54 INFO  time: code lens generation in 1.6s
+2023.03.27 09:52:07 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/eiger/EigerExecutor.java
+2023.03.27 09:52:08 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/eiger/EigerPortExecutor.java
+2023.03.27 09:52:10 INFO  time: code lens generation in 1.29s
+2023.03.27 09:52:14 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/eiger/EigerPortExecutor.java
+2023.03.27 09:52:16 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/eiger/EigerPortPlusExecutor.java
+2023.03.27 09:52:17 INFO  time: code lens generation in 1.33s
+2023.03.27 09:52:21 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/eiger/EigerPortPlusExecutor.java
+2023.03.27 09:52:22 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/eiger/EigerPortPlusPlusExecutor.java
+2023.03.27 09:52:24 INFO  time: code lens generation in 1.34s
+2023.03.27 09:52:24 INFO  time: code lens generation in 2.02s
+2023.03.27 09:52:27 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/eiger/EigerPortPlusPlusExecutor.java
+2023.03.27 09:53:21 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java
+2023.03.27 09:53:21 WARN  Running javac-semanticdb failed for file:///home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java. Output:
+/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java:220: error: ';' expected
+        Long f this.latestTime.get(key) - this.timesPerVersion.get(kts);
+              ^
+/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java:220: error: not a statement
+        Long f this.latestTime.get(key) - this.timesPerVersion.get(kts);
+                                        ^
+2 errors
+2023.03.27 09:53:25 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java
+2023.03.27 09:53:25 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java
+2023.03.27 09:53:26 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java
+2023.03.27 09:53:30 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java
+2023.03.27 09:53:31 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java
+2023.03.27 09:53:31 WARN  Running javac-semanticdb failed for file:///home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java. Output:
+/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java:222: error: ';' expected
+        return f
+                ^
+1 error
+2023.03.27 09:53:35 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java
+2023.03.27 09:53:35 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java
+2023.03.27 09:54:22 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java
+2023.03.27 09:54:33 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java
+2023.03.27 09:54:33 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java
+2023.03.27 09:55:05 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java
+2023.03.27 09:55:05 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java
+Mar 27, 2023 11:30:29 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 1826
+Mar 27, 2023 11:31:21 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 1936
+2023.03.27 11:31:24 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java
+2023.03.27 11:31:25 WARN  Running javac-semanticdb failed for file:///home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java. Output:
+/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java:152: error: -> expected
+    public ConcurrentLinkedQueue<Long> staleness = new ConcurrentLinkedQueue()<Long>();
+                                                                                      ^
+/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java:152: error: ';' expected
+    public ConcurrentLinkedQueue<Long> staleness = new ConcurrentLinkedQueue()<Long>();
+                                                                                       ^
+2 errors
+Mar 27, 2023 11:31:42 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 1987
+Mar 27, 2023 11:31:48 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 2037
+2023.03.27 11:31:49 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java
+2023.03.27 11:32:03 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java
+2023.03.27 11:32:03 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java
+Mar 27, 2023 2:52:00 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 2122
+Mar 27, 2023 2:52:01 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 2132
+Mar 27, 2023 2:52:28 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 2324
+2023.03.27 14:53:02 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java
+Mar 27, 2023 2:53:03 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 2448
+Mar 27, 2023 3:10:26 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 2615
+Mar 27, 2023 3:10:35 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 2662
+2023.03.27 15:10:50 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java
+2023.03.27 15:10:50 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java
+2023.03.27 15:10:50 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java
+2023.03.27 15:10:51 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java
+2023.03.27 15:10:51 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java
+2023.03.27 15:10:53 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java
+2023.03.27 15:10:53 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java
+2023.03.27 15:10:53 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java
+2023.03.27 15:11:05 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java
+2023.03.27 15:11:05 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/MemoryStorageEngine.java

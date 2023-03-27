@@ -333,6 +333,6 @@ public class EigerPortPlusExecutor implements IEigerExecutor{
     public void logFreshness(String key, DataItem value) {
         if(Config.getConfig().freshness_test == 0) return;
         Long freshness = storageEngine.freshness(key, value.getTimestamp());
-        logger.warn("Freshness for key: " + key + " timestamp: " + value.getTimestamp() + " = " + freshness);
+        //logger.warn("Freshness for key: " + key + " timestamp: " + value.getTimestamp() + " = " + freshness);
     }
 }

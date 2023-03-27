@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.google.common.collect.Maps;
 
@@ -43,6 +44,7 @@ public class KaijuServer {
     public static Long gst = Timestamp.NO_TIMESTAMP;
     public static Map<String,TidTimestampPair> pending = Maps.newConcurrentMap();
     
+    public static AtomicBoolean hasEnded = new AtomicBoolean(false);
     public static void main(String[] args) {
         Config.serverSideInitialize(args);
 

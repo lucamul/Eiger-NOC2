@@ -95,6 +95,7 @@ public class FrontendServer {
 
                     if(request instanceof String) {
                         if(request.equals("EXIT")) {
+                            KaijuServer.hasEnded.compareAndSet(false, true);
                             clientSocket.close();
                             return;
                         }

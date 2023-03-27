@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.Time;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -32,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.ConcurrentSkipListSet;
@@ -147,6 +149,7 @@ public class MemoryStorageEngine {
     // used for freshness:
     public ConcurrentMap<KeyTimestampPair,Long> timesPerVersion = Maps.newConcurrentMap();
     public ConcurrentMap<String,Long> latestTime = Maps.newConcurrentMap();
+    public ConcurrentLinkedQueue<Long> staleness = new ConcurrentLinkedQueue<Long>();
 
     // ORA:
     private long latest = Timestamp.NO_TIMESTAMP;
@@ -187,14 +190,38 @@ public class MemoryStorageEngine {
                 }
             }
         }, "Storage-GC-Thread").start();
+
+        new Thread(new Runnable(){
+
+            @Override
+            public void run() {
+                if(Config.getConfig().freshness_test == 0) return;
+                while(true){
+                    try {
+                        Thread.sleep(1000);
+                        if(KaijuServer.hasEnded.get()){
+                            for(Long stale : staleness){
+                                logger.warn("Freshness = " + stale);
+                            }
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            
+        }, "Freshness-Thread").start();
     }
 
     //freshness functions:
     public long freshness(String key, long timestamp){
         if(timestamp == Timestamp.NO_TIMESTAMP) return 0;
         KeyTimestampPair kts = this.createNewKeyTimestampPair(key, timestamp);
-        if(!this.timesPerVersion.containsKey(kts) || !this.latestTime.containsKey(key)) return 0;
-        return this.latestTime.get(key) - this.timesPerVersion.get(kts);
+        Long f = 0l;
+        if(!this.timesPerVersion.containsKey(kts) || !this.latestTime.containsKey(key)) f = 0l;
+        else f = this.latestTime.get(key) - this.timesPerVersion.get(kts);
+        this.staleness.add(f);
+        return f;
     }
 
     public long freshness_ORA(String key, long timestamp, long late){
@@ -439,6 +466,18 @@ public class MemoryStorageEngine {
 
         for(Map.Entry<String, DataItem> pair : pairs.entrySet()) {
             put(pair.getKey(), pair.getValue());
+        }
+
+        if(Config.getConfig().freshness_test == 1 && isEiger){
+            long time = System.currentTimeMillis();
+            for(Map.Entry<String,DataItem> pair : pairs.entrySet()){
+                Long timestamp = pair.getValue().getTimestamp();
+                String key = pair.getKey();
+                this.timesPerVersion.putIfAbsent(this.createNewKeyTimestampPair(key, timestamp),time);
+                if(!this.latestTime.containsKey(key) || this.latestTime.get(key) < time){
+                    this.latestTime.put(key, time);
+                }
+            }
         }
     }
 
