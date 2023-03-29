@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Get the latest folder name
-latest_folder_name=$(ls -d /home/ubuntu/kaiju/experiment/output/* | sort -r | head -n 1)
+latest_folder_name=$(ls -td /home/ubuntu/kaiju/experiment/output/*/ | head -n1)
 
 # Get the experiment name from the user
 read -p "Enter the experiment name: " exp_name

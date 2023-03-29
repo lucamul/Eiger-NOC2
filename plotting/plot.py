@@ -174,7 +174,7 @@ def plot_freshness(directory):
             for i in ids:
                 y_axis.append(line[i])
             y_axises[algorithm] = y_axis
-        generate_plot(x_axis, y_axises, "Data Staleness" ,"Staleness (ms)", "Read Staleness CDF")
+        generate_plot(x_axis, y_axises, "Data Staleness" ,"Staleness (ms)", "Read Staleness CDF",directory)
 
 def plot_threads(directory):
     with open(directory,"r") as f:
