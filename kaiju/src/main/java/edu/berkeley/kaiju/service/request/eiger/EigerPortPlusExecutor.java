@@ -108,7 +108,7 @@ public class EigerPortPlusExecutor implements IEigerExecutor{
                                                                                                     putAllRequest
                                                                                                             .keyValuePairs
                                                                                                             .size(),
-                                                                                                    pending_t));
+                                                                                                    Timestamp.assignNewTimestamp()));
     }
 
     public void getAll(EigerPutAllRequest getAllRequest)throws KaijuException, IOException, InterruptedException{

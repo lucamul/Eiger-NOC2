@@ -111,14 +111,15 @@ public class EigerPortPlusPlusExecutor implements IEigerExecutor{
         Long pending_t = Timestamp.assignNewTimestamp();
         pending.add(pending_t);
         tidToPendingTime.putIfAbsent(transactionID, pending_t);
+        Long prepared_t = Timestamp.assignNewTimestamp();
         dispatcher.requestOneWay(putAllRequest.coordinatorKey.hashCode(), new EigerPreparedResponse(transactionID,
                                                                                                     putAllRequest
                                                                                                             .keyValuePairs
                                                                                                             .size(),
-                                                                                                    pending_t));
+                                                                                                    prepared_t));
         KaijuResponse response = new KaijuResponse();
         response.setHct(this.lst);
-        response.setPrepTs(pending_t);
+        response.setPrepTs(prepared_t);
         dispatcher.sendResponse(putAllRequest.senderID, putAllRequest.requestID, response);
     }
 
