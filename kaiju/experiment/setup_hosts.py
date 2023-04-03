@@ -112,12 +112,12 @@ def start_servers(**kwargs):
 
 def setup_hosts():
     pprint("Appending authorized key...")
-    run_cmd("all-hosts", "sudo chown ubuntu /etc/security/limits.conf; sudo chmod u+w /etc/security/limits.conf; sudo echo '* soft nofile 1000000\n* hard nofile 1000000' >> /etc/security/limits.conf; sudo chown ubuntu /etc/pam.d/common-session; sudo echo 'session required pam_limits.so' >> /etc/pam.d/common-session")
+    run_cmd("all-hosts", "sudo chown ubuntu /etc/security/limits.conf; sudo chmod u+w /etc/security/limits.conf; sudo echo '* soft nofile 1000000\n* hard nofile 1000000' >> /etc/security/limits.conf; sudo chown ubuntu /etc/pam.d/common-session; sudo echo 'session required pam_limits.so' >> /etc/pam.d/common-session",n_servers+n_clients)
     #run_cmd("all-hosts", "cat /home/ubuntu/.ssh/kaiju_rsa.pub >> /home/ubuntu/.ssh/authorized_keys", user="ubuntu")
     pprint("Done")
 
-    run_cmd("all-hosts", " wget --output-document sigar.tar.gz 'http://downloads.sourceforge.net/project/sigar/sigar/1.6/hyperic-sigar-1.6.4.tar.gz?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fsigar%2Ffiles%2Fsigar%2F1.6%2F&ts=1375479576&use_mirror=iweb'; tar -xvf sigar*; sudo rm /usr/local/lib/libsigar*; sudo cp ./hyperic-sigar-1.6.4/sigar-bin/lib/libsigar-amd64-linux.so /usr/local/lib/; rm -rf *sigar*")
-    run_cmd("all-hosts", "sudo echo 'include /usr/local/lib' >> /etc/ld.so.conf; sudo ldconfig")
+    run_cmd("all-hosts", " wget --output-document sigar.tar.gz 'http://downloads.sourceforge.net/project/sigar/sigar/1.6/hyperic-sigar-1.6.4.tar.gz?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fsigar%2Ffiles%2Fsigar%2F1.6%2F&ts=1375479576&use_mirror=iweb'; tar -xvf sigar*; sudo rm /usr/local/lib/libsigar*; sudo cp ./hyperic-sigar-1.6.4/sigar-bin/lib/libsigar-amd64-linux.so /usr/local/lib/; rm -rf *sigar*",n_clients+n_servers)
+    run_cmd("all-hosts", "sudo echo 'include /usr/local/lib' >> /etc/ld.so.conf; sudo ldconfig",n_clients+n_servers)
 
 def fetch_logs(runid, clients, servers, **kwargs):
     def fetchYCSB(rundir, client):
@@ -151,6 +151,8 @@ def fetch_logs(runid, clients, servers, **kwargs):
     pprint("Fetching YCSB logs from clients.")
     
     for i,client in enumerate(clients):
+        if i == n_clients:
+            break
         if not bgfetch:
             t = Thread(target=fetchYCSB, args=(outroot, client))
             t.start()
@@ -165,6 +167,8 @@ def fetch_logs(runid, clients, servers, **kwargs):
     ths = []
     pprint("Fetching logs from servers.")
     for i,server in enumerate(servers):
+        if i == n_servers:
+            break
         if not bgfetch:
             t = Thread(target=fetchkaiju, args=(outroot, server, "S"))
             t.start()
@@ -181,7 +185,14 @@ def fetch_logs(runid, clients, servers, **kwargs):
     if bgfetch:
         sleep(30)
 def run_cmd_in_kaiju(hosts, cmd, user='ubuntu'):
-    run_cmd(hosts, "cd /home/ubuntu/kaiju/; %s" % cmd, user)
+    n = 0
+    if hosts == "all-clients":
+        n = n_clients
+    elif hosts == "all-servers":
+        n = n_servers
+    elif hosts == "all-hosts":
+        n = n_servers+n_clients
+    run_cmd(hosts, "cd /home/ubuntu/kaiju/; %s" % cmd, user, n)
 
 def pprint(str):
     global USE_COLOR
@@ -221,13 +232,17 @@ def start_ycsb_clients(**kwargs):
     sleep(10)
 
     pprint("Running YCSB on all clients.")
+    i = 0
     if kwargs.get("bgrun", False):
         for client in clients_list:
+            if i == n_clients:
+                break
+            i += 1
             start_cmd_disown(client, fmt_ycsb_string("run"))
 
         sleep(kwargs.get("time")+15)
     else:
-        run_cmd("all-clients", fmt_ycsb_string("run"), time=kwargs.get("time", 60)+30)
+        run_cmd("all-clients", fmt_ycsb_string("run"), n_clients,time=kwargs.get("time", 60)+30)
     pprint("Done")
 
 
@@ -326,9 +341,10 @@ if __name__ == "__main__":
         system("cp experiments.py "+args.output_dir)
         fresh = experiment["freshness"]
         for nc, ns in experiment["serversList"]:
+            n_clients = nc
+            n_servers = ns
             args.servers = ns
             args.clients = nc
-            n_servers = ns
             KAIJU_HOSTS_INTERNAL = None
             i = 0
             for server in server_list:
