@@ -14,7 +14,7 @@ def get_parameters(dir_name):
     # create a dictionary mapping column names to their respective values
     data = {'algorithm': parts[0],
             'threads': int(parts[2][7:]),
-            'read_prop': float(parts[3][6:]),
+            'read_prop': float(parts[3][5:]),
             'value_size': int(parts[4][2:]),
             'txn_size': int(parts[5][3:]),
             'num_clients': int(parts[6][2:]),
