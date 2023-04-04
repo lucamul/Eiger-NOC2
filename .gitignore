@@ -7,6 +7,8 @@ results/*
 # Ignore files in ./plotting
 plotting/plots/*
 
+plotting/plotsNoPlus/*
+
 .metals/
 
 .vscode/

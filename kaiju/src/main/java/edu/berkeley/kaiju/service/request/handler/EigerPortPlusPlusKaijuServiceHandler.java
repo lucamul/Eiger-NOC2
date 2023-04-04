@@ -1,6 +1,5 @@
 package edu.berkeley.kaiju.service.request.handler;
 
-import java.sql.Time;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;

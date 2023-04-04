@@ -89,12 +89,16 @@ def generate_plot(x_axis, y_axises, title, x_label, y_label, directory, barPlot 
         fig, ax = plt.subplots()
 
         x_positions = np.arange(len(x_axis))  # create an array of x positions for each set of bars
-
+        le = 0
         for i, algorithm in enumerate(y_axises):
-            offset = i * bar_width
+            if(algorithm not in algorithms):
+                continue
+            
+            offset = le * bar_width
+            le += 1
             ax.bar(x=x_positions + offset, height=y_axises[algorithm], width=bar_width, label=names[algorithm], color=colors[algorithm])
         
-        mid_pos = (len(y_axises) - 1) / 2.0
+        mid_pos = (le - 1) / 2.0
 
         # Set the tick position to the middle position of the middle bar
         ax.set_xticks(x_positions + (mid_pos * bar_width))
@@ -127,6 +131,8 @@ def generate_plot(x_axis, y_axises, title, x_label, y_label, directory, barPlot 
     x_axis, y_axises = convert_str_to_int(x_axis, y_axises)
     fig, ax = plt.subplots()
     for algorithm in y_axises:
+        if(algorithm not in algorithms):
+            continue
         # if x_axis is a dict
         if isinstance(x_axis, dict):
             ax.plot(x_axis[algorithm], y_axises[algorithm], label=names[algorithm], color=colors[algorithm], marker=markers[algorithm], linewidth=line_width,markersize=marker_size,markeredgewidth=2, markeredgecolor= colors[algorithm], markerfacecolor='None')
