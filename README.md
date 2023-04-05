@@ -31,7 +31,7 @@ sudo apt install -y maven
 
 ## Running an Experiment
 
-In `experiments.py`, you will find different experiments that you can run from the RAMP paper. You can expand and modify these experiments by altering the lists of parameters in the dictionary. For example, `port` is a test with default parameters. To run any experiment, change to the `/home/ubuntu/kaiju/experiment` folder and run:
+In `experiments.py`, you will find different experiments that you can run from the RAMP paper. You can expand and modify these experiments by altering the lists of parameters in the dictionary. For example, `default` is a test with default parameters. To run any experiment, change to the `/home/ubuntu/kaiju/experiment` folder and run:
 
 ```
 python setup_hosts.py --color -c us-west-2 -nc NUM_CLIENTS -ns NUM_SERVERS --experiment EXP --tag example
@@ -43,6 +43,8 @@ Alternatively, you can run one of the existing experiments by running:
 2. `bash run_number_clients.sh`: runs an experiment varying the number of client threads.
 3. `bash run_number_servers.sh`: runs an experiment varying the number of servers (beware you need enough nodes for this).
 4. `bash run_zipf_const.sh`: used to run experiment with zipfian constants, but edit the zipf in the Java code first (info in the script). 
+
+and many others. You can also run all by doing `bash run_all.sh`,this will take several hours.
 
 The logs will be uploaded to the `output` folder.
 
