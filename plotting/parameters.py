@@ -20,7 +20,7 @@ bar_width = 0.2
 algorithms = ["EIGER", "EIGER_PORT", "EIGER_PORT_PLUS", "EIGER_PORT_PLUS_PLUS"]
 #algorithms = ["EIGER", "EIGER_PORT", "EIGER_PORT_PLUS_PLUS"]
 # save the images as pdfs here
-saveTo = "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/plotting/plots/VSize128/plus"
+saveTo = "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/plotting/plots/VSize128/plus/"
 
 colors = {
     "EIGER": "#1f77b4",

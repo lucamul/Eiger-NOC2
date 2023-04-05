@@ -12,7 +12,9 @@ def get_parameters(dir_name):
     parts = dir_name.split('-')
 
     # create a dictionary mapping column names to their respective values
-    data = {'algorithm': parts[0],
+    data = {
+            'iteration' : int(parts[12][2:]),
+            'algorithm': parts[0],
             'threads': int(parts[2][7:]),
             'read_prop': float(parts[3][5:]),
             'value_size': int(parts[4][2:]),
@@ -263,25 +265,30 @@ def get_tp_and_latency(dir_name, num_clients):
     
         
 def extract_data(experiment_dir, result_file):
+    num_iter = 1
     with open(result_file, 'w') as f:
-        writer = csv.DictWriter(f, fieldnames=['algorithm', 'threads', 'read_prop', 'value_size', 'txn_size', 'num_clients', 'num_servers', 'num_key', 'distribution', 'zipfian_constant', 'throughput', 'average_latency', 'read_latency', 'write_latency', '99th_latency', '95th_latency'])
+        writer = csv.DictWriter(f, fieldnames=['iteration','algorithm', 'threads', 'read_prop', 'value_size', 'txn_size', 'num_clients', 'num_servers', 'num_key', 'distribution', 'zipfian_constant', 'throughput', 'average_latency', 'read_latency', 'write_latency', '99th_latency', '95th_latency'])
         writer.writeheader()
     # iterate through the directories in the root directory
         results = []
         for dirname in os.listdir(experiment_dir):
-            if dirname.find("IT0") == -1:
+            if "IT" not in dirname:
                 continue
             data = get_parameters(dirname)
+            num_iter = max(int(data["iteration"])+1, num_iter)
             data['throughput'], data['average_latency'], data['read_latency'], data['write_latency'], data['99th_latency'], data['95th_latency'] = get_tp_and_latency(experiment_dir + '/' + dirname, int(data["num_clients"]))
             results.append(data)
-        sorted_list = sorted(results, key=lambda x: (x['algorithm'], x['threads'], x['read_prop'], x['value_size'], x['txn_size'], x['num_clients'], x['num_servers'], x['num_key'], x['distribution'], x['zipfian_constant'], x['throughput'], x['average_latency'], x['read_latency'], x['write_latency'], x['99th_latency'], x['95th_latency']))
+        sorted_list = sorted(results, key=lambda x: (x['iteration'],x['algorithm'], x['threads'], x['read_prop'], x['value_size'], x['txn_size'], x['num_clients'], x['num_servers'], x['num_key'], x['distribution'], x['zipfian_constant'], x['throughput'], x['average_latency'], x['read_latency'], x['write_latency'], x['99th_latency'], x['95th_latency']))
         for data in sorted_list:
             writer = csv.DictWriter(f, fieldnames=data.keys())
             writer.writerow(data)
+    average_over_iter(num_iter,result_file)
+    
 
 def extract_freshness(experiment_dir, result_file):
+    num_iter = 1
     with open(result_file, 'w') as f:
-        names = ['algorithm', 'threads', 'read_prop', 'value_size', 'txn_size', 'num_clients', 'num_servers', 'num_key', 'distribution', 'zipfian_constant']
+        names = ['iteration','algorithm', 'threads', 'read_prop', 'value_size', 'txn_size', 'num_clients', 'num_servers', 'num_key', 'distribution', 'zipfian_constant']
         for s in staleness_string:
             names.append(s)
         writer = csv.DictWriter(f, fieldnames=names)
@@ -289,17 +296,102 @@ def extract_freshness(experiment_dir, result_file):
     # iterate through the directories in the root directory
         results = []
         for dirname in os.listdir(experiment_dir):
-            if dirname.find("IT0") == -1:
+            if "IT" not in dirname:
                 continue
             data = get_parameters(dirname)
+            num_iter = max(int(data["iteration"])+1, num_iter)
             ret = get_freshness(experiment_dir + '/' + dirname, data["algorithm"])
             for i in range(len(staleness_string)):
                 data[staleness_string[i]] = ret[i]
             results.append(data)
-        sorted_list = sorted(results, key=lambda x: (x['algorithm'], x['threads'], x['read_prop'], x['value_size'], x['txn_size'], x['num_clients'], x['num_servers'], x['num_key'], x['distribution'], x['zipfian_constant']))
+        sorted_list = sorted(results, key=lambda x: (x['iteration'],x['algorithm'], x['threads'], x['read_prop'], x['value_size'], x['txn_size'], x['num_clients'], x['num_servers'], x['num_key'], x['distribution'], x['zipfian_constant']))
         for data in sorted_list:
             writer = csv.DictWriter(f, fieldnames=data.keys())
             writer.writerow(data)
+    average_freshness_over_iter(num_iter,result_file)
+
+def average_over_iter(num_iters, file_name):
+    # Read in the data from the CSV file
+    with open(file_name, 'r') as infile:
+        reader = csv.DictReader(infile)
+        data = [row for row in reader]
+    
+    # Compute the averages over the specified number of iterations
+    averages = {}
+    for row in data:
+        key = tuple((k, v) for k, v in row.items() if k not in ['iteration', 'throughput', 'average_latency', 'read_latency', 'write_latency', '99th_latency', '95th_latency'])
+        if key not in averages:
+            averages[key] = {'latencies': {'average_latency': [], 'read_latency': [], 'write_latency': [], '99th_latency': [], '95th_latency': []}, 'throughputs': []}
+        averages[key]['latencies']['average_latency'].append(float(row['average_latency']))
+        averages[key]['latencies']['read_latency'].append(float(row['read_latency']))
+        averages[key]['latencies']['write_latency'].append(float(row['write_latency']))
+        averages[key]['latencies']['99th_latency'].append(float(row['99th_latency']))
+        averages[key]['latencies']['95th_latency'].append(float(row['95th_latency']))
+        averages[key]['throughputs'].append(float(row['throughput']))
+    for key, values in averages.items():
+        avg_avg_latency = sum(values['latencies']['average_latency']) / num_iters
+        avg_read_latency = sum(values['latencies']['read_latency']) / num_iters
+        avg_write_latency = sum(values['latencies']['write_latency'])  / num_iters
+        avg_99th_latency = sum(values['latencies']['99th_latency'])  / num_iters
+        avg_95th_latency = sum(values['latencies']['95th_latency'])  / num_iters
+        avg_throughput = sum(values['throughputs']) / num_iters
+        averages[key]['average_latency'] = f"{avg_avg_latency:.2f}"
+        averages[key]['read_latency'] = f"{avg_read_latency:.2f}"
+        averages[key]['write_latency'] = f"{avg_write_latency:.2f}"
+        averages[key]['99th_latency'] = f"{avg_99th_latency:.2f}"
+        averages[key]['95th_latency'] = f"{avg_95th_latency:.2f}"
+        averages[key]['throughput'] = f"{avg_throughput:.2f}"
+    
+    # Write out the new CSV file with the averages
+
+    with open(file_name, 'w', newline='') as outfile:
+        writer = csv.DictWriter(outfile, fieldnames=[f[0] for f in data[0].items() if f[0] not in ['iteration']])
+        writer.writeheader()
+        for key, values in averages.items():
+            row = dict(key)
+            row['throughput'] = values['throughput']
+            row['average_latency'] = values['average_latency']
+            row['read_latency'] = values['read_latency']
+            row['write_latency'] = values['write_latency']
+            row['99th_latency'] = values['99th_latency']
+            row['95th_latency'] = values['95th_latency']
+            writer.writerow(row)
+
+def average_freshness_over_iter(num_iters, file_name):
+    # Read in the data from the CSV file
+    with open(file_name, 'r') as infile:
+        reader = csv.DictReader(infile)
+        data = [row for row in reader]
+    
+    # Compute the averages over the specified number of iterations
+    averages = {}
+
+    names = ['iteration']
+    for s in staleness_string:
+        names.append(s)
+    for row in data:
+        key = tuple((k, v) for k, v in row.items() if k not in names)
+        if key not in averages:
+            averages[key] = {}
+            for s in staleness_string:
+                averages[key][s] = []
+        for s in staleness_string:
+            averages[key][s].append(float(row[s]))
+    for key, values in averages.items():
+        for s in staleness_string:
+            avg = sum(values[s]) / num_iters
+            averages[key][s] = f"{avg:.2f}"
+    
+    # Write out the new CSV file with the averages
+    with open(file_name, 'w', newline='') as outfile:
+        writer = csv.DictWriter(outfile, fieldnames=[f[0] for f in data[0].items() if f[0] not in ['iteration']])
+        writer.writeheader()
+        for key, values in averages.items():
+            row = dict(key)
+            for s in staleness_string:
+                row[s] = values[s]
+            writer.writerow(row)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
