@@ -25,7 +25,7 @@ sudo apt install -y maven
 - hosts
 - results
 
-6. Access the `all-clients.txt` file and write the IP addresses of all client machines, the same for `all-servers.txt`. Finally, in `all-hosts.txt`, write all clients and all servers.
+6. Access the `all-clients.txt` file and write the IP addresses of all client machines, the same for `all-servers.txt`. Finally, in `all-hosts.txt`, write all clients and all servers (servers first).
 
 7. Now, change to the `/home/ubuntu/kaiju/experiment` folder and run `bash setup_cluster.sh`. (It will ask for a password to setup passwordless ssh among all the nodes, it's the same password that is used for the Openstack dahsboard)
 
