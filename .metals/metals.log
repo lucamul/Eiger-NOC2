@@ -1649,3 +1649,41 @@ WARNING: Unmatched cancel notification for request id 65
 2023.04.04 09:46:30 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/handler/EigerPortPlusPlusKaijuServiceHandler.java
 2023.04.04 09:48:39 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/KaijuServer.java
 2023.04.04 09:48:40 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/KaijuServer.java
+2023.04.05 11:50:24 INFO  Started: Metals version 0.11.11 in workspace '/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus' for client Visual Studio Code 1.77.0.
+SLF4J: No SLF4J providers were found.
+SLF4J: Defaulting to no-operation (NOP) logger implementation
+SLF4J: See https://www.slf4j.org/codes.html#noProviders for further details.
+SLF4J: Class path contains SLF4J bindings targeting slf4j-api versions 1.7.x or earlier.
+SLF4J: Ignoring binding found at [jar:file:/home/luca/.cache/coursier/v1/https/repo1.maven.org/maven2/com/outr/scribe-slf4j_2.13/3.11.0/scribe-slf4j_2.13-3.11.0.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See https://www.slf4j.org/codes.html#ignoredBindings for an explanation.
+2023.04.05 11:50:24 INFO  time: initialize in 0.76s
+2023.04.05 11:50:26 WARN  Build server is not auto-connectable.
+2023.04.05 11:50:26 WARN  no build tool detected in workspace '/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. 
+2023.04.05 11:50:26 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/eiger/EigerPortExecutor.java
+2023.04.05 11:50:28 INFO  time: code lens generation in 1.6s
+2023.04.05 20:08:39 INFO  Started: Metals version 0.11.11 in workspace '/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus' for client Visual Studio Code 1.77.0.
+SLF4J: No SLF4J providers were found.
+SLF4J: Defaulting to no-operation (NOP) logger implementation
+SLF4J: See https://www.slf4j.org/codes.html#noProviders for further details.
+SLF4J: Class path contains SLF4J bindings targeting slf4j-api versions 1.7.x or earlier.
+SLF4J: Ignoring binding found at [jar:file:/home/luca/.cache/coursier/v1/https/repo1.maven.org/maven2/com/outr/scribe-slf4j_2.13/3.11.0/scribe-slf4j_2.13-3.11.0.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See https://www.slf4j.org/codes.html#ignoredBindings for an explanation.
+2023.04.05 20:08:43 INFO  time: initialize in 4.38s
+2023.04.05 20:08:45 WARN  Build server is not auto-connectable.
+2023.04.05 20:08:45 WARN  no build tool detected in workspace '/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. 
+2023.04.05 20:08:45 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/eiger/EigerPortExecutor.java
+2023.04.05 20:08:46 INFO  time: code lens generation in 1.56s
+2023.04.06 09:01:03 INFO  Started: Metals version 0.11.11 in workspace '/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus' for client Visual Studio Code 1.77.0.
+SLF4J: No SLF4J providers were found.
+SLF4J: Defaulting to no-operation (NOP) logger implementation
+SLF4J: See https://www.slf4j.org/codes.html#noProviders for further details.
+SLF4J: Class path contains SLF4J bindings targeting slf4j-api versions 1.7.x or earlier.
+SLF4J: Ignoring binding found at [jar:file:/home/luca/.cache/coursier/v1/https/repo1.maven.org/maven2/com/outr/scribe-slf4j_2.13/3.11.0/scribe-slf4j_2.13-3.11.0.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See https://www.slf4j.org/codes.html#ignoredBindings for an explanation.
+2023.04.06 09:01:09 INFO  time: initialize in 5.23s
+2023.04.06 09:01:12 WARN  Build server is not auto-connectable.
+2023.04.06 09:01:12 WARN  no build tool detected in workspace '/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. 
+2023.04.06 09:01:12 WARN  no build target for: /home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/kaiju/src/main/java/edu/berkeley/kaiju/service/request/eiger/EigerPortExecutor.java
+Apr 06, 2023 9:01:12 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 2
+2023.04.06 09:01:15 INFO  time: code lens generation in 2.76s
