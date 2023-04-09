@@ -78,6 +78,12 @@ def get_separate_y_axis(y_axises):
         y_axis_95th_latency[algorithm] = y_axises[algorithm]["latency_95th"]
     return y_axis_average_latency,y_axis_throughput,y_axis_read_latency,y_axis_write_latency,y_axis_99th_latency,y_axis_95th_latency
 
+def export_legend(legend, filename="legend.pdf"):
+    fig  = legend.figure
+    fig.canvas.draw()
+    bbox  = legend.get_window_extent().transformed(fig.dpi_scale_trans.inverted())
+    fig.savefig(saveTo + filename, dpi="figure", bbox_inches=bbox)
+
 def convert_str_to_int(x_axis, y_axises):
     # check if x_axis is a dict
     if isinstance(x_axis, dict):
@@ -129,7 +135,10 @@ def generate_plot(x_axis, y_axises, title, x_label, y_label, directory, barPlot 
         ax.set_ylabel(y_label, fontsize=axis_font)
         ax.tick_params(axis='both', which='major', labelsize=tick_font)
         ax.set_xticklabels(x_axis, fontsize=tick_font)
-        ax.legend()
+        legend = ax.legend(bbox_to_anchor=(0.5, 1.8), loc='center', ncol = len(algorithms),frameon = False ,prop = {"size" : 16}, fontsize = 12)
+        legend.get_frame().set_edgecolor('black')
+        legend.get_frame().set_linewidth(1.4)
+        export_legend(legend)
         if haveGrid:
             ax.grid(haveGrid, color='gray', linestyle='--', linewidth=1, axis='y')
         
@@ -163,7 +172,7 @@ def generate_plot(x_axis, y_axises, title, x_label, y_label, directory, barPlot 
     ax.set_xlabel(x_label, fontsize=axis_font)
     ax.set_ylabel(y_label, fontsize=axis_font)
     ax.tick_params(axis='both', which='major', labelsize=tick_font)
-    ax.legend()
+   # ax.legend()
     if haveGrid:
         ax.grid(haveGrid, color='gray', linestyle='--', linewidth=1, axis='y')
     title_no_spaces = title.replace(" ","_")
@@ -201,7 +210,7 @@ def plot_freshness(directory):
             for i in ids:
                 y_axis.append(line[i])
             y_axises[algorithm] = y_axis
-        generate_plot(x_axis, y_axises, title_letters["freshness"] + " " + "Data Staleness" ,"Staleness (ms)", "Read Staleness CDF",directory)
+        generate_plot(x_axis, y_axises, title_letters["freshness"] + " " + "Data Staleness" ,"Staleness (ms)", "Read Staleness CDF",directory, freshBar)
 
 def plot_threads(directory):
     with open(directory,"r") as f:
@@ -221,12 +230,12 @@ def plot_threads(directory):
             line = line.split(",")
             x_axises, y_axises = read_line(x_axises,y_axises,id_threads, id_algorithm, id_average_latency, id_throughput,id_read_latency,id_write_latency,id_99th_latency,id_95th_latency,line)
         y_axis_average_latency,y_axis_throughput,y_axis_read_latency,y_axis_write_latency,y_axis_99th_latency,y_axis_95th_latency = get_separate_y_axis(y_axises)
-        generate_plot(x_axises, y_axis_average_latency, title_letters["num_servers_average_latency"] + " " + "Number of Clients vs. Average Latency", "Number of Client Threads", "Average Latency (ms)",directory,True)
-        generate_plot(x_axises, y_axis_throughput,title_letters["num_servers_throughput"] + " " "Number of Clients vs. Throughput", "Number of Client Threads", "Throughput (ops/s)",directory,True)
-        generate_plot(x_axises, y_axis_read_latency, "Number of Clients vs. Read Latency", "Number of Client Threads", "Read Latency (ms)", directory,True)
-        generate_plot(x_axises, y_axis_write_latency,title_letters["num_servers_write_latency"] + " " + "Number of Clients vs. Write Latency", "Number of Client Threads", "Write Latency (ms)", directory,True)
-        generate_plot(x_axises, y_axis_99th_latency, "Number of Clients vs. 99th Latency", "Number of Client Threads", "99th Latency (ms)", directory,True)
-        generate_plot(x_axises, y_axis_95th_latency, "Number of Clients vs. 95th Latency", "Number of Client Threads", "95th Latency (ms)", directory,True)
+        generate_plot(x_axises, y_axis_average_latency, title_letters["num_servers_average_latency"] + " " + "Number of Clients vs. Average Latency", "Number of Client Threads", "Average Latency (ms)",directory,allBar)
+        generate_plot(x_axises, y_axis_throughput,title_letters["num_servers_throughput"] + " " "Number of Clients vs. Throughput", "Number of Client Threads", "Throughput (ops/s)",directory,allBar)
+        generate_plot(x_axises, y_axis_read_latency, "Number of Clients vs. Read Latency", "Number of Client Threads", "Read Latency (ms)", directory,allBar)
+        generate_plot(x_axises, y_axis_write_latency,title_letters["num_servers_write_latency"] + " " + "Number of Clients vs. Write Latency", "Number of Client Threads", "Write Latency (ms)", directory,allBar)
+        generate_plot(x_axises, y_axis_99th_latency, "Number of Clients vs. 99th Latency", "Number of Client Threads", "99th Latency (ms)", directory,allBar)
+        generate_plot(x_axises, y_axis_95th_latency, "Number of Clients vs. 95th Latency", "Number of Client Threads", "95th Latency (ms)", directory,allBar)
         generate_plot(y_axis_throughput, y_axis_average_latency,title_letters["average_latency_vs_throughput"] + " " + "Throughput vs. Average Latency", "Throughput (ops/s)", "Average Latency (ms)", directory)
         generate_plot(y_axis_throughput, y_axis_read_latency, "Throughput vs. Read Latency", "Throughput (ops/s)", "Read Latency (ms)",directory)
         generate_plot(y_axis_throughput, y_axis_write_latency,title_letters["write_latency_vs_throughput"] + " " + "Throughput vs. Write Latency", "Throughput (ops/s)", "Write Latency (ms)",directory)
@@ -250,12 +259,12 @@ def plot_read_prop(directory):
             line = line.split(",")
             x_axises, y_axises = read_line(x_axises,y_axises,id_read_prop, id_algorithm, id_average_latency, id_throughput,id_read_latency,id_write_latency,id_99th_latency,id_95th_latency,line)
         y_axis_average_latency,y_axis_throughput,y_axis_read_latency,y_axis_write_latency,y_axis_99th_latency,y_axis_95th_latency = get_separate_y_axis(y_axises)
-        generate_plot(x_axises, y_axis_average_latency,title_letters["read_prop_average_latency"] + " " + "Read Proportion vs. Average Latency", "Read Proportion", "Average Latency (ms)",directory,True)
-        generate_plot(x_axises, y_axis_throughput, title_letters["read_prop_throughput"] + " " + "Read Proportion vs. Throughput", "Read Proportion", "Throughput (ops/s)",directory,True)
-        generate_plot(x_axises, y_axis_read_latency, "Read Proportion vs. Read Latency", "Read Proportion", "Read Latency (ms)",directory,True)
-        generate_plot(x_axises, y_axis_write_latency,title_letters["read_prop_write_latency"] + " " + "Read Proportion vs. Write Latency", "Read Proportion", "Write Latency (ms)",directory,True)
-        generate_plot(x_axises, y_axis_99th_latency, "Read Proportion vs. 99th Latency", "Read Proportion", "99th Latency (ms)",directory,True)
-        generate_plot(x_axises, y_axis_95th_latency, "Read Proportion vs. 95th Latency", "Read Proportion", "95th Latency (ms)",directory,True)
+        generate_plot(x_axises, y_axis_average_latency,title_letters["read_prop_average_latency"] + " " + "Read Proportion vs. Average Latency", "Read Proportion", "Average Latency (ms)",directory,allBar)
+        generate_plot(x_axises, y_axis_throughput, title_letters["read_prop_throughput"] + " " + "Read Proportion vs. Throughput", "Read Proportion", "Throughput (ops/s)",directory,allBar)
+        generate_plot(x_axises, y_axis_read_latency, "Read Proportion vs. Read Latency", "Read Proportion", "Read Latency (ms)",directory,allBar)
+        generate_plot(x_axises, y_axis_write_latency,title_letters["read_prop_write_latency"] + " " + "Read Proportion vs. Write Latency", "Read Proportion", "Write Latency (ms)",directory,allBar)
+        generate_plot(x_axises, y_axis_99th_latency, "Read Proportion vs. 99th Latency", "Read Proportion", "99th Latency (ms)",directory,allBar)
+        generate_plot(x_axises, y_axis_95th_latency, "Read Proportion vs. 95th Latency", "Read Proportion", "95th Latency (ms)",directory,allBar)
     return
 
 def plot_value_size(directory):
@@ -276,12 +285,12 @@ def plot_value_size(directory):
             line = line.split(",")
             x_axises, y_axises = read_line(x_axises,y_axises,id_value_size, id_algorithm, id_average_latency, id_throughput,id_read_latency,id_write_latency,id_99th_latency,id_95th_latency,line)
         y_axis_average_latency,y_axis_throughput,y_axis_read_latency,y_axis_write_latency,y_axis_99th_latency,y_axis_95th_latency = get_separate_y_axis(y_axises)
-        generate_plot(x_axises, y_axis_average_latency,title_letters["value_size_average_latency"] + " " + "Value Size vs. Average Latency", "Value Size", "Average Latency (ms)",directory,True)
-        generate_plot(x_axises, y_axis_throughput,title_letters["value_size_throughput"] + " " + "Value Size vs. Throughput", "Value Size", "Throughput (ops/s)",directory,True)
-        generate_plot(x_axises, y_axis_read_latency, "Value Size vs. Read Latency", "Value Size", "Read Latency (ms)",directory,True)
-        generate_plot(x_axises, y_axis_write_latency,title_letters["value_size_write_latency"] + " " + "Value Size vs. Write Latency", "Value Size", "Write Latency (ms)",directory,True)
-        generate_plot(x_axises, y_axis_99th_latency, "Value Size vs. 99th Latency", "Value Size", "99th Latency (ms)",directory,True)
-        generate_plot(x_axises, y_axis_95th_latency, "Value Size vs. 95th Latency", "Value Size", "95th Latency (ms)",directory,True)
+        generate_plot(x_axises, y_axis_average_latency,title_letters["value_size_average_latency"] + " " + "Value Size vs. Average Latency", "Value Size", "Average Latency (ms)",directory,allBar)
+        generate_plot(x_axises, y_axis_throughput,title_letters["value_size_throughput"] + " " + "Value Size vs. Throughput", "Value Size", "Throughput (ops/s)",directory,allBar)
+        generate_plot(x_axises, y_axis_read_latency, "Value Size vs. Read Latency", "Value Size", "Read Latency (ms)",directory,allBar)
+        generate_plot(x_axises, y_axis_write_latency,title_letters["value_size_write_latency"] + " " + "Value Size vs. Write Latency", "Value Size", "Write Latency (ms)",directory,allBar)
+        generate_plot(x_axises, y_axis_99th_latency, "Value Size vs. 99th Latency", "Value Size", "99th Latency (ms)",directory,allBar)
+        generate_plot(x_axises, y_axis_95th_latency, "Value Size vs. 95th Latency", "Value Size", "95th Latency (ms)",directory,allBar)
     return
 def plot_txn_size(directory):
     with open(directory,"r") as f:
@@ -301,12 +310,12 @@ def plot_txn_size(directory):
             line = line.split(",")
             x_axises, y_axises = read_line(x_axises,y_axises,id_txn_size, id_algorithm, id_average_latency, id_throughput,id_read_latency,id_write_latency,id_99th_latency,id_95th_latency,line)
         y_axis_average_latency,y_axis_throughput,y_axis_read_latency,y_axis_write_latency,y_axis_99th_latency,y_axis_95th_latency = get_separate_y_axis(y_axises)
-        generate_plot(x_axises, y_axis_average_latency,title_letters["txn_size_average_latency"] + " " + "Transaction Size vs. Average Latency", "Transaction Size", "Average Latency (ms)",directory,True)
-        generate_plot(x_axises, y_axis_throughput,title_letters["txn_size_throughput"] + " " + "Transaction Size vs. Throughput", "Transaction Size", "Throughput (ops/s)",directory,True)
-        generate_plot(x_axises, y_axis_read_latency, "Transaction Size vs. Read Latency", "Transaction Size", "Read Latency (ms)",directory,True)
-        generate_plot(x_axises, y_axis_write_latency,title_letters["txn_size_write_latency"] + " " + "Transaction Size vs. Write Latency", "Transaction Size", "Write Latency (ms)",directory,True)
-        generate_plot(x_axises, y_axis_99th_latency, "Transaction Size vs. 99th Latency", "Transaction Size", "99th Latency (ms)",directory,True)
-        generate_plot(x_axises, y_axis_95th_latency, "Transaction Size vs. 95th Latency", "Transaction Size", "95th Latency (ms)",directory,True)
+        generate_plot(x_axises, y_axis_average_latency,title_letters["txn_size_average_latency"] + " " + "Transaction Size vs. Average Latency", "Transaction Size", "Average Latency (ms)",directory,allBar)
+        generate_plot(x_axises, y_axis_throughput,title_letters["txn_size_throughput"] + " " + "Transaction Size vs. Throughput", "Transaction Size", "Throughput (ops/s)",directory,allBar)
+        generate_plot(x_axises, y_axis_read_latency, "Transaction Size vs. Read Latency", "Transaction Size", "Read Latency (ms)",directory,allBar)
+        generate_plot(x_axises, y_axis_write_latency,title_letters["txn_size_write_latency"] + " " + "Transaction Size vs. Write Latency", "Transaction Size", "Write Latency (ms)",directory,allBar)
+        generate_plot(x_axises, y_axis_99th_latency, "Transaction Size vs. 99th Latency", "Transaction Size", "99th Latency (ms)",directory,allBar)
+        generate_plot(x_axises, y_axis_95th_latency, "Transaction Size vs. 95th Latency", "Transaction Size", "95th Latency (ms)",directory,allBar)
     return
 def plot_num_servers(directory):
     with open(directory,"r") as f:
@@ -326,12 +335,12 @@ def plot_num_servers(directory):
             line = line.split(",")
             x_axises, y_axises = read_line(x_axises,y_axises,id_num_servers, id_algorithm, id_average_latency, id_throughput,id_read_latency,id_write_latency,id_99th_latency,id_95th_latency,line)
         y_axis_average_latency,y_axis_throughput,y_axis_read_latency,y_axis_write_latency,y_axis_99th_latency,y_axis_95th_latency = get_separate_y_axis(y_axises)
-        generate_plot(x_axises, y_axis_average_latency,title_letters["num_servers_average_latency"] + " " + "Number of Servers vs. Average Latency", "Number of Servers", "Average Latency (ms)",directory,True)
-        generate_plot(x_axises, y_axis_throughput,title_letters["num_servers_throughput"] + " " + "Number of Servers vs. Throughput", "Number of Servers", "Throughput (ops/s)",directory,True)
-        generate_plot(x_axises, y_axis_read_latency, "Number of Servers vs. Read Latency", "Number of Servers", "Read Latency (ms)",directory,True)
-        generate_plot(x_axises, y_axis_write_latency,title_letters["num_servers_write_latency"] + " " + "Number of Servers vs. Write Latency", "Number of Servers", "Write Latency (ms)",directory,True)
-        generate_plot(x_axises, y_axis_99th_latency, "Number of Servers vs. 99th Latency", "Number of Servers", "99th Latency (ms)",directory,True)
-        generate_plot(x_axises, y_axis_95th_latency, "Number of Servers vs. 95th Latency", "Number of Servers", "95th Latency (ms)",directory,True)
+        generate_plot(x_axises, y_axis_average_latency,title_letters["num_servers_average_latency"] + " " + "Number of Servers vs. Average Latency", "Number of Servers", "Average Latency (ms)",directory,allBar)
+        generate_plot(x_axises, y_axis_throughput,title_letters["num_servers_throughput"] + " " + "Number of Servers vs. Throughput", "Number of Servers", "Throughput (ops/s)",directory,allBar)
+        generate_plot(x_axises, y_axis_read_latency, "Number of Servers vs. Read Latency", "Number of Servers", "Read Latency (ms)",directory,allBar)
+        generate_plot(x_axises, y_axis_write_latency,title_letters["num_servers_write_latency"] + " " + "Number of Servers vs. Write Latency", "Number of Servers", "Write Latency (ms)",directory,allBar)
+        generate_plot(x_axises, y_axis_99th_latency, "Number of Servers vs. 99th Latency", "Number of Servers", "99th Latency (ms)",directory,allBar)
+        generate_plot(x_axises, y_axis_95th_latency, "Number of Servers vs. 95th Latency", "Number of Servers", "95th Latency (ms)",directory,allBar)
     return
 
 def plot_num_key(directory):
@@ -352,12 +361,12 @@ def plot_num_key(directory):
             line = line.split(",")
             x_axises, y_axises = read_line(x_axises,y_axises,id_num_key, id_algorithm, id_average_latency, id_throughput,id_read_latency,id_write_latency,id_99th_latency,id_95th_latency,line)
         y_axis_average_latency,y_axis_throughput,y_axis_read_latency,y_axis_write_latency,y_axis_99th_latency,y_axis_95th_latency = get_separate_y_axis(y_axises)
-        generate_plot(x_axises, y_axis_average_latency, "Number of Keys vs. Average Latency", "Number of Keys", "Average Latency (ms)",directory,True)
-        generate_plot(x_axises, y_axis_throughput, "Number of Keys vs. Throughput", "Number of Keys", "Throughput (ops/s)",directory,True)
-        generate_plot(x_axises, y_axis_read_latency, "Number of Keys vs. Read Latency", "Number of Keys", "Read Latency (ms)",directory,True)
-        generate_plot(x_axises, y_axis_write_latency, "Number of Keys vs. Write Latency", "Number of Keys", "Write Latency (ms)",directory,True)
-        generate_plot(x_axises, y_axis_99th_latency, "Number of Keys vs. 99th Latency", "Number of Keys", "99th Latency (ms)",directory,True)
-        generate_plot(x_axises, y_axis_95th_latency, "Number of Keys vs. 95th Latency", "Number of Keys", "95th Latency (ms)",directory,True)
+        generate_plot(x_axises, y_axis_average_latency, "Number of Keys vs. Average Latency", "Number of Keys", "Average Latency (ms)",directory,allBar)
+        generate_plot(x_axises, y_axis_throughput, "Number of Keys vs. Throughput", "Number of Keys", "Throughput (ops/s)",directory,allBar)
+        generate_plot(x_axises, y_axis_read_latency, "Number of Keys vs. Read Latency", "Number of Keys", "Read Latency (ms)",directory,allBar)
+        generate_plot(x_axises, y_axis_write_latency, "Number of Keys vs. Write Latency", "Number of Keys", "Write Latency (ms)",directory,allBar)
+        generate_plot(x_axises, y_axis_99th_latency, "Number of Keys vs. 99th Latency", "Number of Keys", "99th Latency (ms)",directory,allBar)
+        generate_plot(x_axises, y_axis_95th_latency, "Number of Keys vs. 95th Latency", "Number of Keys", "95th Latency (ms)",directory,allBar)
     return
 def plot_distribution(directory):
     with open(directory,"f") as f:
@@ -377,12 +386,12 @@ def plot_distribution(directory):
             line = line.split(",")
             x_axises, y_axises = read_line(x_axises,y_axises,id_distribution, id_algorithm, id_average_latency, id_throughput,id_read_latency,id_write_latency,id_99th_latency,id_95th_latency,line)
         y_axis_average_latency,y_axis_throughput,y_axis_read_latency,y_axis_write_latency,y_axis_99th_latency,y_axis_95th_latency = get_separate_y_axis(y_axises)
-        generate_plot(x_axises, y_axis_average_latency, "Distribution vs. Average Latency", "Distribution", "Average Latency (ms)",directory,barPlot=True)
-        generate_plot(x_axises, y_axis_throughput, "Distribution vs. Throughput", "Distribution", "Throughput (ops/s)",directory,barPlot=True)
-        generate_plot(x_axises, y_axis_read_latency, "Distribution vs. Read Latency", "Distribution", "Read Latency (ms)",directory, barPlot=True)
-        generate_plot(x_axises, y_axis_write_latency, "Distribution vs. Write Latency", "Distribution", "Write Latency (ms)",directory,barPlot=True)
-        generate_plot(x_axises, y_axis_99th_latency, "Distribution vs. 99th Latency", "Distribution", "99th Latency (ms)",directory,barPlot=True)
-        generate_plot(x_axises, y_axis_95th_latency, "Distribution vs. 95th Latency", "Distribution", "95th Latency (ms)",directory,barPlot=True)
+        generate_plot(x_axises, y_axis_average_latency, "Distribution vs. Average Latency", "Distribution", "Average Latency (ms)",directory,barPlot=allBar)
+        generate_plot(x_axises, y_axis_throughput, "Distribution vs. Throughput", "Distribution", "Throughput (ops/s)",directory,barPlot=allBar)
+        generate_plot(x_axises, y_axis_read_latency, "Distribution vs. Read Latency", "Distribution", "Read Latency (ms)",directory, barPlot=allBar)
+        generate_plot(x_axises, y_axis_write_latency, "Distribution vs. Write Latency", "Distribution", "Write Latency (ms)",directory,barPlot=allBar)
+        generate_plot(x_axises, y_axis_99th_latency, "Distribution vs. 99th Latency", "Distribution", "99th Latency (ms)",directory,barPlot=allBar)
+        generate_plot(x_axises, y_axis_95th_latency, "Distribution vs. 95th Latency", "Distribution", "95th Latency (ms)",directory,barPlot=allBar)
     return
 
 def plot(ylabel, directory):

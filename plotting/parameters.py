@@ -15,6 +15,8 @@ tick_font_inaxis = 10
 haveGrid = False
 showPlot = True
 bar_width = 0.2
+allBar = True
+freshBar = True
 
 # edit this if you want to change the algorithms you can plot
 algorithms = ["EIGER", "EIGER_PORT", "EIGER_PORT_PLUS", "EIGER_PORT_PLUS_PLUS"]
