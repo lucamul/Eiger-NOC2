@@ -17,8 +17,9 @@ showPlot = False
 bar_width = 0.2
 allBar = True
 freshBar = True
-plus = False
-normalize = True
+plus = True
+normalize = False
+normalizer = "EIGER_PORT"
 tp_label = "Throughput (ops/s)"
 lat_label = "Latency (ms)"
 
@@ -37,7 +38,9 @@ if normalize:
 #algorithms = ["EIGER","EIGER_PORT", "EIGER_PORT_PLUS_PLUS"]
 # save the images as pdfs here
 
-
+if not allBar:
+    saveTo = saveTo + "noBar/"
+ 
 colors = {
     "EIGER": "#1f77b4",
     "EIGER_PORT": "#ff7f0e",

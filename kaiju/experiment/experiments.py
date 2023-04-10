@@ -160,6 +160,7 @@ num_servers = {
                     "check_commit_delays" : [-1],
 }
 
+zipf_constants = [0,0.3,0.7,0.8,0.9,0.99,1.1,1.2]
 
 experiments = { 
                 "default" : default,
