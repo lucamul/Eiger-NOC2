@@ -22,8 +22,8 @@ def get_parameters(dir_name):
             'num_clients': int(parts[6][2:]),
             'num_servers': int(parts[7][2:]),
             'num_key': int(parts[8][2:]),
-            'distribution': parts[-2][2:],
-            'zipfian_constant': float(parts[-1][2:]),}
+            'distribution': parts[-2][2:] + '-' + parts[-1][2:],
+    }
     return data
 
 def get_freshness_ramp_fast(dir_name):

@@ -21,6 +21,29 @@ default = {
                     "check_commit_delays" : [-1],
 }
 
+num_keys = {
+    "serversList" : [(8,8)],
+                    "txnlen" : [5],
+                    "threads" : [32],
+                    "numseconds" : 60,
+                    "configs" : [
+                                  "EIGER",
+                                  "EIGER_PORT",
+                                  "EIGER_PORT_PLUS",
+                                  "EIGER_PORT_PLUS_PLUS"
+                                ],
+                    "readprop" : [.9],
+                    "iterations" : range(0,5),
+                    "freshness" : 0,
+                    "numkeys" : [100,1000,10000,1000000],
+                    "valuesize" : [128],
+                    "keydistribution" : ["zipfian"],
+                    "bootstrap_time_ms" : 10000,
+                    "launch_in_bg" : False,
+                    "drop_commit_pcts" : [0],
+                    "check_commit_delays" : [-1],
+}
+
 read_prop = {
     "serversList" : [(8,8)],
                     "txnlen" : [5],
@@ -169,5 +192,6 @@ experiments = {
                 "freshness" : freshness,     
                 "txn_len" : txn_len,
                 "value_size" : value_size,
-                "read_prop" : read_prop,          
+                "read_prop" : read_prop,
+                "num_keys" : num_keys,
 }
