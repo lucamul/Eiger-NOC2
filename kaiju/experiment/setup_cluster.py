@@ -16,6 +16,10 @@ def setup_ssh(node, password):
         print(f"ssh-copy-id command executed on {node}")
     os.system(f"ssh -o StrictHostKeyChecking=no {username}@{node} \"sudo apt update ; sudo apt install -y default-jdk ; sudo apt install -y pssh ; sudo apt install -y maven \"")
 
+def setup_no_ssh(node):
+    username = "ubuntu"
+    os.system(f"scp -prq /home/ubuntu/* {username}@{node}:/home/ubuntu/")
+
 def setup(setup_ssh=False):
     file_name = "/home/ubuntu/hosts/all-hosts.txt"
     username = "ubuntu"
@@ -34,8 +38,8 @@ def setup(setup_ssh=False):
         with Pool(processes=len(nodes)) as pool:
             pool.starmap(setup_ssh, [(node, password) for node in nodes])
     else:
-        for node in nodes:
-            os.system(f"scp -prq /home/ubuntu/* {username}@{node}:/home/ubuntu/")
+        with Pool(processes=len(nodes)) as pool:
+            pool.starmap(setup_no_ssh, [(node,) for node in nodes])
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
