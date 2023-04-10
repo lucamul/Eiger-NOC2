@@ -14,4 +14,4 @@ for value in $(grep -oP 'zipf_constants = \[\K[^\]]+' "$experiments_file" | tr '
   python setup_hosts.py --color -c us-west-2 --experiment default --tag $TAG
 done
 
-bash "$change_constant_script" "0.8"
+bash "$change_constant_script" 0.8
