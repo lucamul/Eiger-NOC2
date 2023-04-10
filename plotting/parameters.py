@@ -13,16 +13,30 @@ marker_size = 13
 line_width = 2.5
 tick_font_inaxis = 10
 haveGrid = False
-showPlot = True
+showPlot = False
 bar_width = 0.2
 allBar = True
 freshBar = True
+plus = False
+normalize = True
+tp_label = "Throughput (ops/s)"
+lat_label = "Latency (ms)"
 
+algorithms = ["EIGER", "EIGER_PORT", "EIGER_PORT_PLUS_PLUS"]
+saveTo = "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/plotting/plots/noplus/"
 # edit this if you want to change the algorithms you can plot
-algorithms = ["EIGER", "EIGER_PORT", "EIGER_PORT_PLUS", "EIGER_PORT_PLUS_PLUS"]
-#algorithms = ["EIGER", "EIGER_PORT", "EIGER_PORT_PLUS_PLUS"]
+if plus:
+    algorithms = ["EIGER", "EIGER_PORT", "EIGER_PORT_PLUS", "EIGER_PORT_PLUS_PLUS"]
+    saveTo = "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/plotting/plots/plus/"
+
+if normalize:
+    algorithms = ["EIGER_PORT", "EIGER_PORT_PLUS_PLUS"]
+    saveTo = "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/plotting/plots/normalized/"
+    tp_label = "Normalized Throughput"
+    lat_label = "Normalized Latency"
+#algorithms = ["EIGER","EIGER_PORT", "EIGER_PORT_PLUS_PLUS"]
 # save the images as pdfs here
-saveTo = "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/plotting/plots/plus/"
+
 
 colors = {
     "EIGER": "#1f77b4",
