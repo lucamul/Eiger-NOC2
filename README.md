@@ -15,6 +15,8 @@ sudo apt update
 sudo apt install -y default-jdk
 sudo apt install -y pssh
 sudo apt install -y maven
+sudo apt install -y python3-pip
+pip3 install pexpect
 ```
 
 

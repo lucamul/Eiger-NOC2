@@ -1,5 +1,7 @@
 import argparse
 import os
+import pexpect
+import getpass
 
 def setup(setup_ssh=False):
     username = "ubuntu"
@@ -17,9 +19,17 @@ def setup(setup_ssh=False):
     os.system("cd /home/ubuntu/kaiju ; mvn package")
     if setup_ssh:
         os.system("ssh-keygen -t rsa")
+        password = getpass.getpass("Enter your password: ")
     for node in nodes:
         if setup_ssh:
-            os.system(f"ssh-copy-id -o StrictHostKeyChecking=no {username}@{node}")
+            child = pexpect.spawn(f"ssh-copy-id -o StrictHostKeyChecking=no {username}@{node}")
+            i = child.expect([pexpect.TIMEOUT, 'password:'])
+            if i == 0:
+                print(f"Timeout when connecting to {node}")
+            else:
+                child.sendline(password)
+                child.expect(pexpect.EOF)
+                print(f"ssh-copy-id command executed on {node}")
         os.system(f"scp -prq /home/ubuntu/* {username}@{node}:/home/ubuntu/")
 
 if __name__ == "__main__":
