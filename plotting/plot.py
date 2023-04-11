@@ -13,13 +13,13 @@ title_letters = {
     "threads_average_latency": "(b) ",
     "threads_write_latency": "(c) ",
     "threads_read_latency": "",
-    "threads_99th_latency": "",
-    "threads_95th_latency": "",
+    "threads_99th_latency": "(s) ",
+    "threads_95th_latency": "(t) ",
     "read_prop_throughput": "(d) ",
     "read_prop_average_latency": "(e) ",
     "read_prop_write_latency": "(f) ",
     "read_prop_read_latency": "",
-    "read_prop_99th_latency": "",
+    "read_prop_99th_latency": "(u) ",
     "read_prop_95th_latency": "",
     "value_size_throughput": "(m) ",
     "value_size_average_latency": "(n) ",
@@ -408,7 +408,7 @@ def plot_num_key(directory):
         generate_plot(x_axises, y_axis_95th_latency, "Number of Keys vs. 95th Latency", "Number of Keys", "95th Latency",directory,allBar,latThrough=True)
     return
 def plot_distribution(directory):
-    with open(directory,"f") as f:
+    with open(directory,"r") as f:
         lines = f.readlines()
         header = lines[0].rstrip("\n")
         id_distribution = header.split(",").index("distribution")

@@ -6,7 +6,8 @@ dirs = {
     "num_servers" : "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/num_servers-2023-04-05-20-52-39.csv",
     "read_prop" : "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/read_prop-2023-04-06-02-19-04.csv",
     "txn_size" : "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/txn_len-2023-04-06-10-21-03.csv",
-    "value_size" : "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/value_size-2023-04-06-16-00-08.csv"
+    "value_size" : "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/value_size-2023-04-06-16-00-08.csv",
+    "distribution" : "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/zipf-2023-04-11-08-18-38.csv",
 }
 
 def plot_all():
