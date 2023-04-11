@@ -425,12 +425,15 @@ def plot_distribution(directory):
             line = line.split(",")
             x_axises, y_axises = read_line(x_axises,y_axises,id_distribution, id_algorithm, id_average_latency, id_throughput,id_read_latency,id_write_latency,id_99th_latency,id_95th_latency,line)
         y_axis_average_latency,y_axis_throughput,y_axis_read_latency,y_axis_write_latency,y_axis_99th_latency,y_axis_95th_latency = get_separate_y_axis(y_axises)
-        generate_plot(x_axises, y_axis_average_latency, "Distribution vs. Average Latency", "Distribution", "Average " + lat_label,directory,barPlot=True)
-        generate_plot(x_axises, y_axis_throughput, "Distribution vs. Throughput", "Distribution", tp_label,directory,barPlot=True)
-        generate_plot(x_axises, y_axis_read_latency, "Distribution vs. Read Latency", "Distribution", "Read " + lat_label,directory, barPlot=True)
-        generate_plot(x_axises, y_axis_write_latency, "Distribution vs. Write Latency", "Distribution", "Write " + lat_label,directory,barPlot=True)
-        generate_plot(x_axises, y_axis_99th_latency, "Distribution vs. 99th Latency", "Distribution", "99th Latency",directory,barPlot=True,latThrough=True)
-        generate_plot(x_axises, y_axis_95th_latency, "Distribution vs. 95th Latency", "Distribution", "95th Latency",directory,barPlot=True,latThrough=True)
+        new_x_axises = []
+        for x in x_axises:
+            new_x_axises.append(round(float(x.split("-")[1]),2))
+        generate_plot(new_x_axises, y_axis_average_latency, "Distribution vs. Average Latency", "Distribution", "Average " + lat_label,directory,barPlot=True)
+        generate_plot(new_x_axises, y_axis_throughput, "Distribution vs. Throughput", "Distribution", tp_label,directory,barPlot=True)
+        generate_plot(new_x_axises, y_axis_read_latency, "Distribution vs. Read Latency", "Distribution", "Read " + lat_label,directory, barPlot=True)
+        generate_plot(new_x_axises, y_axis_write_latency, "Distribution vs. Write Latency", "Distribution", "Write " + lat_label,directory,barPlot=True)
+        generate_plot(new_x_axises, y_axis_99th_latency, "Distribution vs. 99th Latency", "Distribution", "99th Latency",directory,barPlot=True,latThrough=True)
+        generate_plot(new_x_axises, y_axis_95th_latency, "Distribution vs. 95th Latency", "Distribution", "95th Latency",directory,barPlot=True,latThrough=True)
     return
 
 def plot(ylabel, directory):
