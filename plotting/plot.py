@@ -5,6 +5,7 @@ from sys import argv
 import matplotlib.pyplot as plt
 from matplotlib import rcParams
 from parameters import *
+import re
 
 possible_labels = ["threads","read_prop","value_size","txn_size","num_servers","num_key","distribution", "freshness"]
 
@@ -46,6 +47,15 @@ title_letters = {
     "99th_latency_vs_throughput" : "",
     "95th_latency_vs_throughput" : "",
 }
+
+def remove_prefix(my_string):
+    prefix_regex = r"^\([a-zA-Z]\)_"
+
+    match = re.match(prefix_regex, my_string)
+
+    if match is not None:
+        my_string = my_string[len(match.group(0)):]
+    return my_string
 
 def read_line(x_axises,y_axises,id_var, id_algorthm, id_average_latency, id_throughput,id_read_latency,id_write_latency,id_99th_latency,id_95th_latency,line):
     var = line[id_var]
@@ -181,7 +191,7 @@ def generate_plot(x_axis, y_axises, title, x_label, y_label, directory, barPlot 
         if haveGrid:
             ax.grid(haveGrid, color='gray', linestyle='--', linewidth=1, axis='y')
         
-        title_no_spaces = title.replace(" ", "_")
+        title_no_spaces = remove_prefix(title.replace(" ", "_"))
         filename = os.path.basename(directory)
 
         dir_name = filename.replace(".csv", "")
@@ -214,7 +224,8 @@ def generate_plot(x_axis, y_axises, title, x_label, y_label, directory, barPlot 
    # ax.legend()
     if haveGrid:
         ax.grid(haveGrid, color='gray', linestyle='--', linewidth=1, axis='y')
-    title_no_spaces = title.replace(" ","_")
+    
+    title_no_spaces = remove_prefix(title.replace(" ","_"))
     filename = os.path.basename(directory)
 
     dir_name = filename.replace(".csv", "")
@@ -324,10 +335,10 @@ def plot_value_size(directory):
             line = line.split(",")
             x_axises, y_axises = read_line(x_axises,y_axises,id_value_size, id_algorithm, id_average_latency, id_throughput,id_read_latency,id_write_latency,id_99th_latency,id_95th_latency,line)
         y_axis_average_latency,y_axis_throughput,y_axis_read_latency,y_axis_write_latency,y_axis_99th_latency,y_axis_95th_latency = get_separate_y_axis(y_axises)
-        generate_plot(x_axises, y_axis_average_latency,title_letters["value_size_average_latency"] + " " + "Value Size vs. Average Latency", "Value Size", "Average " + lat_label,directory,allBar)
-        generate_plot(x_axises, y_axis_throughput,title_letters["value_size_throughput"] + " " + "Value Size vs. Throughput", "Value Size", tp_label,directory,allBar)
+        generate_plot(x_axises, y_axis_average_latency,title_letters["value_size_average_latency"]  + "Value Size vs. Average Latency", "Value Size", "Average " + lat_label,directory,allBar)
+        generate_plot(x_axises, y_axis_throughput,title_letters["value_size_throughput"] + "Value Size vs. Throughput", "Value Size", tp_label,directory,allBar)
         generate_plot(x_axises, y_axis_read_latency,title_letters["value_size_read_latency"] + "Value Size vs. Read Latency", "Value Size", "Read " + lat_label,directory,allBar)
-        generate_plot(x_axises, y_axis_write_latency,title_letters["value_size_write_latency"] + " " + "Value Size vs. Write Latency", "Value Size", "Write " + lat_label,directory,allBar)
+        generate_plot(x_axises, y_axis_write_latency,title_letters["value_size_write_latency"]  + "Value Size vs. Write Latency", "Value Size", "Write " + lat_label,directory,allBar)
         generate_plot(x_axises, y_axis_99th_latency,title_letters["value_size_99th_latency"] + "Value Size vs. 99th Latency", "Value Size", "99th Latency",directory,allBar,latThrough=True)
         generate_plot(x_axises, y_axis_95th_latency,title_letters["value_size_95th_latency"] + "Value Size vs. 95th Latency", "Value Size", "95th Latency",directory,allBar,latThrough=True)
     return
