@@ -46,6 +46,18 @@ title_letters = {
     "read_latency_vs_throughput" : "",
     "99th_latency_vs_throughput" : "",
     "95th_latency_vs_throughput" : "",
+    "num_keys_throughput" : "",
+    "num_keys_average_latency" : "",
+    "num_keys_write_latency" : "",
+    "num_keys_read_latency" : "",
+    "num_keys_99th_latency" : "",
+    "num_keys_95th_latency" : "",
+    "distribution_throughput" : "(v) ",
+    "distribution_average_latency" : "(w) ",
+    "distribution_write_latency" : "(x) ",
+    "distribution_read_latency" : "",
+    "distribution_99th_latency" : "",
+    "distribution_95th_latency" : "",
 }
 
 def remove_prefix(my_string):
@@ -411,12 +423,12 @@ def plot_num_key(directory):
             line = line.split(",")
             x_axises, y_axises = read_line(x_axises,y_axises,id_num_key, id_algorithm, id_average_latency, id_throughput,id_read_latency,id_write_latency,id_99th_latency,id_95th_latency,line)
         y_axis_average_latency,y_axis_throughput,y_axis_read_latency,y_axis_write_latency,y_axis_99th_latency,y_axis_95th_latency = get_separate_y_axis(y_axises)
-        generate_plot(x_axises, y_axis_average_latency, "Number of Keys vs. Average Latency", "Number of Keys", "Average " + lat_label,directory,allBar)
-        generate_plot(x_axises, y_axis_throughput, "Number of Keys vs. Throughput", "Number of Keys", tp_label,directory,allBar)
-        generate_plot(x_axises, y_axis_read_latency, "Number of Keys vs. Read Latency", "Number of Keys", "Read " + lat_label,directory,allBar)
-        generate_plot(x_axises, y_axis_write_latency, "Number of Keys vs. Write Latency", "Number of Keys", "Write " + lat_label,directory,allBar)
-        generate_plot(x_axises, y_axis_99th_latency, "Number of Keys vs. 99th Latency", "Number of Keys", "99th Latency",directory,allBar,latThrough=True)
-        generate_plot(x_axises, y_axis_95th_latency, "Number of Keys vs. 95th Latency", "Number of Keys", "95th Latency",directory,allBar,latThrough=True)
+        generate_plot(x_axises, y_axis_average_latency,title_letters["num_keys_average_latency"] + "Number of Keys vs. Average Latency", "Number of Keys", "Average " + lat_label,directory,allBar)
+        generate_plot(x_axises, y_axis_throughput,title_letters["num_keys_throughput"] + "Number of Keys vs. Throughput", "Number of Keys", tp_label,directory,allBar)
+        generate_plot(x_axises, y_axis_read_latency,title_letters["num_keys_read_latency"] + "Number of Keys vs. Read Latency", "Number of Keys", "Read " + lat_label,directory,allBar)
+        generate_plot(x_axises, y_axis_write_latency,title_letters["num_keys_write_latency"] + "Number of Keys vs. Write Latency", "Number of Keys", "Write " + lat_label,directory,allBar)
+        generate_plot(x_axises, y_axis_99th_latency,title_letters["num_servers_99th_latency"] + "Number of Keys vs. 99th Latency", "Number of Keys", "99th Latency",directory,allBar,latThrough=True)
+        generate_plot(x_axises, y_axis_95th_latency,title_letters["num_keys_95th_latency"] + "Number of Keys vs. 95th Latency", "Number of Keys", "95th Latency",directory,allBar,latThrough=True)
     return
 def plot_distribution(directory):
     with open(directory,"r") as f:
@@ -439,12 +451,12 @@ def plot_distribution(directory):
         new_x_axises = []
         for x in x_axises:
             new_x_axises.append(round(float(x.split("-")[1]),2))
-        generate_plot(new_x_axises, y_axis_average_latency, "Distribution vs. Average Latency", "Distribution", "Average " + lat_label,directory,barPlot=True)
-        generate_plot(new_x_axises, y_axis_throughput, "Distribution vs. Throughput", "Distribution", tp_label,directory,barPlot=True)
-        generate_plot(new_x_axises, y_axis_read_latency, "Distribution vs. Read Latency", "Distribution", "Read " + lat_label,directory, barPlot=True)
-        generate_plot(new_x_axises, y_axis_write_latency, "Distribution vs. Write Latency", "Distribution", "Write " + lat_label,directory,barPlot=True)
-        generate_plot(new_x_axises, y_axis_99th_latency, "Distribution vs. 99th Latency", "Distribution", "99th Latency",directory,barPlot=True,latThrough=True)
-        generate_plot(new_x_axises, y_axis_95th_latency, "Distribution vs. 95th Latency", "Distribution", "95th Latency",directory,barPlot=True,latThrough=True)
+        generate_plot(new_x_axises, y_axis_average_latency,title_letters["distribution_average_latency"] + "Distribution vs. Average Latency", "Distribution", "Average " + lat_label,directory,barPlot=True)
+        generate_plot(new_x_axises, y_axis_throughput,title_letters["distribution_throughput"] + "Distribution vs. Throughput", "Distribution", tp_label,directory,barPlot=True)
+        generate_plot(new_x_axises, y_axis_read_latency,title_letters["distribution_read_latency"] + "Distribution vs. Read Latency", "Distribution", "Read " + lat_label,directory, barPlot=True)
+        generate_plot(new_x_axises, y_axis_write_latency,title_letters["distribution_write_latency"] + "Distribution vs. Write Latency", "Distribution", "Write " + lat_label,directory,barPlot=True)
+        generate_plot(new_x_axises, y_axis_99th_latency,title_letters["distribution_99th_latency"] + "Distribution vs. 99th Latency", "Distribution", "99th Latency",directory,barPlot=True,latThrough=True)
+        generate_plot(new_x_axises, y_axis_95th_latency,title_letters["distribution_95th_latency"] + "Distribution vs. 95th Latency", "Distribution", "95th Latency",directory,barPlot=True,latThrough=True)
     return
 
 def plot(ylabel, directory):
