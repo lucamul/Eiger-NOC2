@@ -23,6 +23,8 @@ normalizer = "EIGER_PORT"
 tp_label = "Throughput (ops/s)"
 lat_label = "Latency (ms)"
 
+zipfs = ["0", "0.3", "0.7", "0.8", "0.9", "0.99", "1.1", "1.2"]
+
 algorithms = ["EIGER", "EIGER_PORT", "EIGER_PORT_PLUS_PLUS"]
 saveTo = "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/plotting/plots/noplus/"
 # edit this if you want to change the algorithms you can plot
@@ -46,6 +48,14 @@ colors = {
     "EIGER_PORT": "#ff7f0e",
     "EIGER_PORT_PLUS": "#2ca02c",
     "EIGER_PORT_PLUS_PLUS": "#9467bd",
+    "0" : 'gray',
+    "0.3": 'navy',
+    "0.7": 'maroon',
+    "0.8": 'teal',
+    "0.9": 'brown',
+    "0.99": 'olive',
+    "1.1": 'coral',
+    "1.2": 'indigo'
 }
 
 markers = {
@@ -60,6 +70,14 @@ names = {
     "EIGER_PORT": "Eiger-PORT",
     "EIGER_PORT_PLUS": "Eiger-PORT+",
     "EIGER_PORT_PLUS_PLUS": "Eiger-PORT++",
+    "0" : "0",
+    "0.3" : "0.3",
+    "0.7" : "0.7",
+    "0.8" : "0.8",
+    "0.9" : "0.9",
+    "0.99" : "0.99",
+    "1.1" : "1.1",
+    "1.2" : "1.2",
 }
 
 # data freshness x_axis

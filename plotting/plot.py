@@ -7,7 +7,7 @@ from matplotlib import rcParams
 from parameters import *
 import re
 
-possible_labels = ["threads","read_prop","value_size","txn_size","num_servers","num_key","distribution", "freshness"]
+possible_labels = ["threads","read_prop","value_size","txn_size","num_servers","num_key","distribution", "freshness", "freshness_vs_zipf"]
 
 title_letters = {
     "threads_throughput": "(a) ",
@@ -58,6 +58,7 @@ title_letters = {
     "distribution_read_latency" : "",
     "distribution_99th_latency" : "",
     "distribution_95th_latency" : "",
+    "freshness_vs_zipf" : "",
 }
 
 def remove_prefix(my_string):
@@ -173,13 +174,16 @@ def generate_plot(x_axis, y_axises, title, x_label, y_label, directory, barPlot 
                     miny = min(miny, min(new_y_axises[key]))
                     maxy = max(maxy, max(new_y_axises[key]))
         fig, ax = plt.subplots()
-
+        is_zipf = False
         x_positions = np.arange(len(x_axis))  # create an array of x positions for each set of bars
         le = 0
         for i, algorithm in enumerate(new_y_axises):
-            if(algorithm not in algorithms):
+            
+            if(algorithm not in algorithms) and (algorithm not in zipfs):
                 continue
             
+            if algorithm in zipfs:
+                is_zipf = True
             offset = le * bar_width
             le += 1
             ax.bar(x=x_positions + offset, height=new_y_axises[algorithm], width=bar_width, label=names[algorithm], color=colors[algorithm])
@@ -194,12 +198,18 @@ def generate_plot(x_axis, y_axises, title, x_label, y_label, directory, barPlot 
         ax.set_ylabel(y_label, fontsize=axis_font)
         ax.tick_params(axis='both', which='major', labelsize=tick_font)
         ax.set_xticklabels(x_axis, fontsize=tick_font)
-        legend = ax.legend(bbox_to_anchor=(0.5, 1.8), loc='center', ncol = len(algorithms),frameon = False ,prop = {"size" : 16}, fontsize = 12)
-        legend.get_frame().set_edgecolor('black')
-        legend.get_frame().set_linewidth(1.4)
+        if not is_zipf:
+            legend = ax.legend(bbox_to_anchor=(0.5, 1.8), loc='center', ncol = len(algorithms),frameon = False ,prop = {"size" : 16}, fontsize = 12)
+            legend.get_frame().set_edgecolor('black')
+            legend.get_frame().set_linewidth(1.4)
+            export_legend(legend)
+        else:
+            legend = ax.legend(bbox_to_anchor=(0.5, 1.112), loc='center', ncol = len(algorithms),frameon = True ,prop = {"size" : 16}, fontsize = 12)
+            legend.get_frame().set_edgecolor('black')
+            legend.get_frame().set_linewidth(1.4)
         if normalize and (not latThrough):
             plt.ylim(miny-0.05, maxy+0.01)
-        export_legend(legend)
+        
         if haveGrid:
             ax.grid(haveGrid, color='gray', linestyle='--', linewidth=1, axis='y')
         
@@ -273,6 +283,33 @@ def plot_freshness(directory):
                 y_axis.append(line[i])
             y_axises[algorithm] = y_axis
         generate_plot(x_axis, y_axises, title_letters["freshness"] + "Data Staleness" ,"Staleness (ms)", "Read Staleness CDF",directory, freshBar, latThrough=True)
+
+def plot_freshness_vs_zipf(directory):
+     with open(directory,"r") as f:
+        lines = f.readlines()
+        header = lines[0].rstrip("\n")
+        x_axis = staleness_string
+        id_algorithm = header.split(",").index("algorithm")
+        id_zipf_const = header.split(",").index("zipfian_constant")
+        ids = []
+        for i in range(len(x_axis)):
+            ids.append(header.split(",").index(x_axis[i]))
+        y_axises = {}
+        for line in lines[1:]:
+            line = line.split(",")
+            algorithm = line[id_algorithm]
+            distribution = str(round(float(line[id_zipf_const]),2))
+            y_axis = []
+            for i in ids:
+                y_axis.append(line[i])
+            if algorithm not in y_axises:
+                y_axises[algorithm] = {}
+            if distribution not in y_axises[algorithm]:
+                y_axises[algorithm][distribution] = []
+            y_axises[algorithm][distribution] = y_axis
+        
+        for algorithm in y_axises:
+            generate_plot(x_axis, y_axises[algorithm], title_letters["freshness_vs_zipf"] + "Data Staleness "  + names[algorithm] + " vs. Zipf Constant" ,"Staleness (ms)", "Read Staleness CDF",directory, freshBar, latThrough=True)
 
 def plot_threads(directory):
     with open(directory,"r") as f:
@@ -476,6 +513,8 @@ def plot(ylabel, directory):
         plot_distribution(directory)
     elif ylabel == "freshness":
         plot_freshness(directory)
+    elif ylabel == "freshness_vs_zipf":
+        plot_freshness_vs_zipf(directory)
 
 
 
