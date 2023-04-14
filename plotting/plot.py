@@ -14,23 +14,23 @@ title_letters = {
     "threads_average_latency": "(b) ",
     "threads_write_latency": "(c) ",
     "threads_read_latency": "",
-    "threads_99th_latency": "(s) ",
-    "threads_95th_latency": "(t) ",
+    "threads_99th_latency": "(m) ",
+    "threads_95th_latency": "(n) ",
     "read_prop_throughput": "(d) ",
     "read_prop_average_latency": "(e) ",
     "read_prop_write_latency": "(f) ",
     "read_prop_read_latency": "",
-    "read_prop_99th_latency": "(u) ",
+    "read_prop_99th_latency": "(o) ",
     "read_prop_95th_latency": "",
-    "value_size_throughput": "(m) ",
-    "value_size_average_latency": "(n) ",
-    "value_size_write_latency": "(o) ",
+    "value_size_throughput": "(a) ",
+    "value_size_average_latency": "(b) ",
+    "value_size_write_latency": "(c) ",
     "value_size_read_latency": "",
     "value_size_99th_latency": "",
     "value_size_95th_latency": "",
-    "txn_size_throughput": "(p) ",
-    "txn_size_average_latency": "(q) ",
-    "txn_size_write_latency": "(r) ",
+    "txn_size_throughput": "(d) ",
+    "txn_size_average_latency": "(e) ",
+    "txn_size_write_latency": "(f) ",
     "txn_size_read_latency": "",
     "txn_size_99th_latency": "",
     "txn_size_95th_latency": "",
@@ -52,13 +52,13 @@ title_letters = {
     "num_keys_read_latency" : "",
     "num_keys_99th_latency" : "",
     "num_keys_95th_latency" : "",
-    "distribution_throughput" : "(v) ",
-    "distribution_average_latency" : "(w) ",
-    "distribution_write_latency" : "(x) ",
+    "distribution_throughput" : "(g) ",
+    "distribution_average_latency" : "(h) ",
+    "distribution_write_latency" : "(i) ",
     "distribution_read_latency" : "",
-    "distribution_99th_latency" : "",
-    "distribution_95th_latency" : "",
-    "freshness_vs_zipf" : "",
+    "distribution_99th_latency" : "(j) ",
+    "distribution_95th_latency" : "(k) ",
+    "freshness_vs_zipf" : "(l) ",
 }
 
 def remove_prefix(my_string):
@@ -177,21 +177,24 @@ def generate_plot(x_axis, y_axises, title, x_label, y_label, directory, barPlot 
         is_zipf = False
         x_positions = np.arange(len(x_axis))  # create an array of x positions for each set of bars
         le = 0
+        ws = bar_width
+        if "0.0" in new_y_axises.keys():
+            is_zipf = True
+            ws = 0.1
+            # sort by key as if the key was a float but keep it a dict
+            new_y_axises = dict(sorted(new_y_axises.items(), key=lambda item: float(item[0])))
+
         for i, algorithm in enumerate(new_y_axises):
-            
             if(algorithm not in algorithms) and (algorithm not in zipfs):
                 continue
-            
-            if algorithm in zipfs:
-                is_zipf = True
-            offset = le * bar_width
+            offset = le * ws
             le += 1
-            ax.bar(x=x_positions + offset, height=new_y_axises[algorithm], width=bar_width, label=names[algorithm], color=colors[algorithm])
+            ax.bar(x=x_positions + offset, height=new_y_axises[algorithm], width=ws, label=names[algorithm], color=colors[algorithm])
         
         mid_pos = (le - 1) / 2.0
 
         # Set the tick position to the middle position of the middle bar
-        ax.set_xticks(x_positions + (mid_pos * bar_width))
+        ax.set_xticks(x_positions + (mid_pos * ws))
 
         ax.set_title(title, **title_info)
         ax.set_xlabel(x_label, fontsize=axis_font)
@@ -204,9 +207,10 @@ def generate_plot(x_axis, y_axises, title, x_label, y_label, directory, barPlot 
             legend.get_frame().set_linewidth(1.4)
             export_legend(legend)
         else:
-            legend = ax.legend(bbox_to_anchor=(0.5, 1.112), loc='center', ncol = len(algorithms),frameon = True ,prop = {"size" : 16}, fontsize = 12)
+            legend = ax.legend(bbox_to_anchor=(0.5, 1.8), loc='center', ncol = le,frameon = False ,prop = {"size" : 16}, fontsize = 12)
             legend.get_frame().set_edgecolor('black')
             legend.get_frame().set_linewidth(1.4)
+            export_legend(legend, "zipf_legend.pdf")
         if normalize and (not latThrough):
             plt.ylim(miny-0.05, maxy+0.01)
         
@@ -229,16 +233,24 @@ def generate_plot(x_axis, y_axises, title, x_label, y_label, directory, barPlot 
         if showPlot:
             plt.show()
         return
+    is_zipf = False
     x_axis, y_axises = convert_str_to_int(x_axis, y_axises)
+    new_y_axises = dict(y_axises)
+    if "0.0" in new_y_axises.keys():
+        is_zipf = True
+        # sort by key as if the key was a float but keep it a dict
+        new_y_axises = dict(sorted(new_y_axises.items(), key=lambda item: float(item[0])))
     fig, ax = plt.subplots()
-    for algorithm in y_axises:
-        if(algorithm not in algorithms):
+    le = 0
+    for algorithm in new_y_axises:
+        if(algorithm not in algorithms) and (algorithm not in zipfs):
             continue
         # if x_axis is a dict
+        le += 1
         if isinstance(x_axis, dict):
-            ax.plot(x_axis[algorithm], y_axises[algorithm], label=names[algorithm], color=colors[algorithm], marker=markers[algorithm], linewidth=line_width,markersize=marker_size,markeredgewidth=2, markeredgecolor= colors[algorithm], markerfacecolor='None')
+            ax.plot(x_axis[algorithm], new_y_axises[algorithm], label=names[algorithm], color=colors[algorithm], marker=markers[algorithm], linewidth=line_width,markersize=marker_size,markeredgewidth=2, markeredgecolor= colors[algorithm], markerfacecolor='None')
         else:
-            ax.plot(x_axis, y_axises[algorithm], label=names[algorithm], color=colors[algorithm], marker=markers[algorithm],linewidth = line_width,markersize=marker_size,markeredgewidth=2, markeredgecolor= colors[algorithm], markerfacecolor='None')
+            ax.plot(x_axis, new_y_axises[algorithm], label=names[algorithm], color=colors[algorithm], marker=markers[algorithm],linewidth = line_width,markersize=marker_size,markeredgewidth=2, markeredgecolor= colors[algorithm], markerfacecolor='None')
     ax.set_title(title, **title_info)
     ax.set_xlabel(x_label, fontsize=axis_font)
     ax.set_ylabel(y_label, fontsize=axis_font)
@@ -246,7 +258,10 @@ def generate_plot(x_axis, y_axises, title, x_label, y_label, directory, barPlot 
    # ax.legend()
     if haveGrid:
         ax.grid(haveGrid, color='gray', linestyle='--', linewidth=1, axis='y')
-    
+    if is_zipf:
+        legend = ax.legend(bbox_to_anchor=(0.5, 1.112), loc='center', ncol = le,frameon = True ,prop = {"size" : 16}, fontsize = 12)
+        legend.get_frame().set_edgecolor('black')
+        legend.get_frame().set_linewidth(1.4)
     title_no_spaces = remove_prefix(title.replace(" ","_"))
     filename = os.path.basename(directory)
 
@@ -256,6 +271,7 @@ def generate_plot(x_axis, y_axises, title, x_label, y_label, directory, barPlot 
 
     if not os.path.exists(new_dir_path):
         os.mkdir(new_dir_path)
+    
     
     dir_name += "/"
     plt.gcf().set_size_inches(10, 6)
