@@ -9,6 +9,10 @@ title_info = {'fontsize': title_font,
             'verticalalignment': 'baseline',
             'horizontalalignment': "center"}
 
+EIGER_PORT = "EIGER_PORT"
+EIGER_PORT_PLUS = "EIGER_PORT_PLUS"
+EIGER = "EIGER"
+
 marker_size = 13
 line_width = 2.5
 tick_font_inaxis = 10
@@ -19,7 +23,7 @@ allBar = True
 freshBar = True
 plus = True
 normalize = True
-normalizer = "EIGER_PORT"
+normalizer = EIGER_PORT_PLUS
 tp_label = "Throughput (ops/s)"
 lat_label = "Latency (ms)"
 
@@ -33,8 +37,11 @@ if plus:
     saveTo = "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/plotting/plots/plus/"
 
 if normalize:
-    algorithms = ["EIGER_PORT", "EIGER_PORT_PLUS_PLUS"]
-    saveTo = "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/plotting/plots/normalized/"
+    algorithms = [normalizer, "EIGER_PORT_PLUS_PLUS"]
+    if normalizer == EIGER_PORT:
+        saveTo = "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/plotting/plots/normalized/"
+    else:
+        saveTo = "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/plotting/plots/normalizedVsPlus/"
     tp_label = "Normalized Throughput"
     lat_label = "Normalized Latency"
 #algorithms = ["EIGER","EIGER_PORT", "EIGER_PORT_PLUS_PLUS"]
