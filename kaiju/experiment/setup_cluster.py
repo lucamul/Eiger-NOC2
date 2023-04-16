@@ -4,7 +4,7 @@ import getpass
 import pexpect
 from multiprocessing import Pool
 
-def setup_ssh(node, password):
+def setup_with_ssh(node, password):
     username = "ubuntu"
     child = pexpect.spawn(f"ssh-copy-id -o StrictHostKeyChecking=no {username}@{node}")
     i = child.expect([pexpect.TIMEOUT, 'password:'])
@@ -36,7 +36,7 @@ def setup(setup_ssh=False):
         os.system("ssh-keygen -t rsa")
         password = getpass.getpass("Enter your password: ")
         with Pool(processes=len(nodes)) as pool:
-            pool.starmap(setup_ssh, [(node, password) for node in nodes])
+            pool.starmap(setup_with_ssh, [(node, password) for node in nodes])
     else:
         with Pool(processes=len(nodes)) as pool:
             pool.starmap(setup_no_ssh, [(node,) for node in nodes])

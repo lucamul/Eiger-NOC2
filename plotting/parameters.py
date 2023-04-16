@@ -23,7 +23,7 @@ allBar = True
 freshBar = True
 plus = True
 normalize = True
-normalizer = EIGER_PORT_PLUS
+normalizer = EIGER_PORT
 tp_label = "Throughput (ops/s)"
 lat_label = "Latency (ms)"
 
@@ -40,6 +40,9 @@ if normalize:
     algorithms = [normalizer, "EIGER_PORT_PLUS_PLUS"]
     if normalizer == EIGER_PORT:
         saveTo = "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/plotting/plots/normalized/"
+        if plus:
+            saveTo = "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/plotting/plots/normalizedPlusVsPort/"
+            algorithms = [normalizer, "EIGER_PORT_PLUS"]
     else:
         saveTo = "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/plotting/plots/normalizedVsPlus/"
     tp_label = "Normalized Throughput"

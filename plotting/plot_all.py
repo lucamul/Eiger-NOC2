@@ -38,7 +38,7 @@ def plot_all(directories):
 
 if __name__ == "__main__":
     #print normalized
-    change_parameters(plus = True, normalize = True, normalizer = "EIGER_PORT")
+    change_parameters(plus = False, normalize = True, normalizer = "EIGER_PORT")
     plot_all(dirs)
     #print all except EP+
     change_parameters(plus = False, normalize = False, normalizer = "EIGER_PORT")
@@ -46,5 +46,7 @@ if __name__ == "__main__":
     #print all
     change_parameters(plus = True, normalize = False, normalizer = "EIGER_PORT")
     plot_all(dirs)
-    change_parameters(plus = True, normalize = True, normalizer = "EIGER_PORT_PLUS")
+    change_parameters(plus = False, normalize = True, normalizer = "EIGER_PORT_PLUS")
+    plot_all(dirs)
+    change_parameters(plus = True, normalize = True, normalizer = "EIGER_PORT")
     plot_all(dirs)
