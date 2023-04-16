@@ -207,10 +207,11 @@ def generate_plot(x_axis, y_axises, title, x_label, y_label, directory, barPlot 
             legend.get_frame().set_linewidth(1.4)
             export_legend(legend)
         else:
-            legend = ax.legend(bbox_to_anchor=(0.5, 1.8), loc='center', ncol = le,frameon = False ,prop = {"size" : 16}, fontsize = 12)
+            legend = ax.legend(bbox_to_anchor=(0.5, 1.17), loc='center', ncol = le//2,frameon = True ,prop = {"size" : 16}, fontsize = 12)
             legend.get_frame().set_edgecolor('black')
             legend.get_frame().set_linewidth(1.4)
             export_legend(legend, "zipf_legend.pdf")
+            fig.subplots_adjust(top=0.8)
         if normalize and (not latThrough):
             plt.ylim(miny-0.05, maxy+0.01)
         

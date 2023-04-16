@@ -16,18 +16,6 @@ dirs = {
     "freshness_vs_zipf" : "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/zipf_fresh-2023-04-13-08-42-14.csv",
 }
 
-dirs_0_9 = {
-    "freshness" :         "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/resultsZipf0.9/",
-    "threads" :           "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/resultsZipf0.9/",
-    "num_servers" :       "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/resultsZipf0.9/",
-    "read_prop" :         "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/resultsZipf0.9/",
-    "txn_size" :          "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/resultsZipf0.9/",
-    "value_size" :        "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/resultsZipf0.9/",
-    "distribution" :      "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/resultsZipf0.9/",
-    "num_key" :           "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/resultsZipf0.9/",
-    "freshness_vs_zipf" : "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/resultsZipf0.9/",
-}
-
 def change_parameters(plus, normalize, normalizer = "EIGER_PORT"):
     cmd = f"sed -i \"s/^plus = .*/plus = {plus}/\" parameters.py ; sed -i \"s/^normalize = .*/normalize = {normalize}/\" parameters.py ; sed -i \"s/^normalizer = .*/normalizer = \"{normalizer}\"/\" parameters.py"
     os.system(cmd)
