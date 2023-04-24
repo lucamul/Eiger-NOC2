@@ -44,6 +44,7 @@ if normalize:
             saveTo = "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/plotting/plots/normalizedPlusVsPort/"
             algorithms = [normalizer, "EIGER_PORT_PLUS"]
     else:
+        algorithms = ["EIGER_PORT", normalizer, "EIGER_PORT_PLUS_PLUS"]
         saveTo = "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/plotting/plots/normalizedVsPlus/"
     tp_label = "Normalized Throughput"
     lat_label = "Normalized Latency"
