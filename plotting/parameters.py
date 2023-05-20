@@ -19,6 +19,7 @@ tick_font_inaxis = 10
 haveGrid = False
 showPlot = False
 bar_width = 0.2
+spacing = 0.03
 allBar = True
 freshBar = True
 plus = True
@@ -60,12 +61,12 @@ colors = {
     "EIGER_PORT_PLUS": "#2ca02c",
     "EIGER_PORT_PLUS_PLUS": "#9467bd",
     "0.0" : 'gray',
-    "0.3": 'navy',
+    "0.3": 'coral',
     "0.7": 'maroon',
     "0.8": 'teal',
     "0.9": 'brown',
     "0.99": 'olive',
-    "1.1": 'coral',
+    "1.1": 'navy',
     "1.2": 'indigo'
 }
 
@@ -82,6 +83,28 @@ markers = {
     "0.99": 'p',
     "1.1": 'h',
     "1.2": '8'
+}
+bar_line_width = 1.5
+
+is_full = {
+    "EIGER": False,
+    "EIGER_PORT": False,
+    "EIGER_PORT_PLUS": False,
+    "EIGER_PORT_PLUS_PLUS": True,
+    "0.0" : False,
+    "0.8": False,
+    "0.99": False,
+    "1.1" : True,
+}
+bar_markers = {
+    "EIGER": "++++",
+    "EIGER_PORT": "/",
+    "EIGER_PORT_PLUS": "+",
+    "EIGER_PORT_PLUS_PLUS": "",
+    "0.0" : ".",
+    "0.8": "+",
+    "0.99": "/",
+    "1.1" : "",
 }
 
 names = {
@@ -100,7 +123,7 @@ names = {
 }
 
 # data freshness x_axis
-staleness = [10,20,30,40,50,100,150,200,500,1000,3000]
+staleness = [10,30,50,100,500,3000]
 staleness_string = []
 for s in staleness:
     staleness_string.append(str(s))

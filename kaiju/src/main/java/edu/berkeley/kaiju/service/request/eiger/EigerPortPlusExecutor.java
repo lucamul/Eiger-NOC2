@@ -22,6 +22,7 @@ import com.google.common.collect.Queues;
 
 import edu.berkeley.kaiju.config.Config;
 import edu.berkeley.kaiju.data.DataItem;
+import edu.berkeley.kaiju.data.Transaction;
 import edu.berkeley.kaiju.exception.ClientException;
 import edu.berkeley.kaiju.exception.KaijuException;
 import edu.berkeley.kaiju.net.routing.OutboundRouter;
@@ -208,6 +209,12 @@ public class EigerPortPlusExecutor implements IEigerExecutor{
             if(tmp == null) this.lst = this.latest_commit;
             else this.lst = tmp;
         }
+        if(Config.getConfig().ra_tester == 1){
+            for(String key : preparedRequest.keyValuePairs.keySet()){
+                DataItem item = preparedRequest.keyValuePairs.get(key);
+                logTransaction(key, commitTime, item.getCid(), transactionID, "WRITE");
+            }
+        }
         KaijuResponse response = new KaijuResponse();
         response.setHct(this.lst);
         dispatcher.sendResponse(preparedRequest.senderID, preparedRequest.requestID, response);
@@ -334,5 +341,11 @@ public class EigerPortPlusExecutor implements IEigerExecutor{
         if(Config.getConfig().freshness_test == 0) return;
         Long freshness = storageEngine.freshness(key, value.getTimestamp());
         //logger.warn("Freshness for key: " + key + " timestamp: " + value.getTimestamp() + " = " + freshness);
+    }
+
+    @Override
+    public void logTransaction(String key, Long timestamp, String client_id, Long transaction_id, String type) {
+        Transaction t = new Transaction(key, timestamp, client_id, transaction_id, type);
+        logger.warn(t.toString());
     }
 }

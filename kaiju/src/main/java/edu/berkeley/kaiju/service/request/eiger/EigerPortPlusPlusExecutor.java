@@ -1,9 +1,11 @@
 package edu.berkeley.kaiju.service.request.eiger;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.Vector;
@@ -27,6 +29,7 @@ import com.yammer.metrics.Timer;
 
 import edu.berkeley.kaiju.config.Config;
 import edu.berkeley.kaiju.data.DataItem;
+import edu.berkeley.kaiju.data.Transaction;
 import edu.berkeley.kaiju.exception.ClientException;
 import edu.berkeley.kaiju.exception.KaijuException;
 import edu.berkeley.kaiju.monitor.MetricsManager;
@@ -123,7 +126,46 @@ public class EigerPortPlusPlusExecutor implements IEigerExecutor{
         dispatcher.sendResponse(putAllRequest.senderID, putAllRequest.requestID, response);
     }
 
+    public void getAllTester(EigerPutAllRequest getAllRequest)throws KaijuException, IOException, InterruptedException{
+        Map<String,DataItem> result = new HashMap<String,DataItem>();
+        for(Map.Entry<String,DataItem> entry : getAllRequest.keyValuePairs.entrySet()){
+            Long prepTs = entry.getValue().getPrepTs();
+            Long version = storageEngine.getHighestCommittedNotGreaterThan(entry.getKey(),entry.getValue().getTimestamp());
+            Long latestByClient = storageEngine.getHighestCommittedPerCid(entry.getKey(), entry.getValue().getCid(), version);
+            if(prepTs > version && prepTs > latestByClient){
+                if(pendingTransactionsNonCoordinated.containsKey(entry.getValue().getTid())){
+                    DataItem prepData = pendingTransactionsNonCoordinated.get(entry.getValue().getTid()).keyValuePairs.get(entry.getKey());
+                    result.put(entry.getKey(), prepData);
+                    logTransaction(entry.getKey(), prepTs, entry.getValue().getCid(),Long.valueOf(getAllRequest.requestID), "READ");
+                }else{
+                    result.put(entry.getKey(), storageEngine.getByTimestamp(entry.getKey(), prepTs));
+                    logTransaction(entry.getKey(), prepTs, entry.getValue().getCid(),Long.valueOf(getAllRequest.requestID), "READ");
+                }
+                
+            }else if(latestByClient != Timestamp.NO_TIMESTAMP){
+                result.put(entry.getKey(), storageEngine.getByTimestamp(entry.getKey(), latestByClient));
+                logTransaction(entry.getKey(), latestByClient, entry.getValue().getCid(),Long.valueOf(getAllRequest.requestID), "READ");
+            }else{
+                DataItem ver = storageEngine.getByTimestamp(entry.getKey(), version);
+                if(version == Timestamp.NO_TIMESTAMP || ver.getTimestamp() == Timestamp.NO_TIMESTAMP){
+                    result.put(entry.getKey(), DataItem.getNullItem());
+                }else{
+                    result.put(entry.getKey(), ver);
+                    logTransaction(entry.getKey(), ver.getTimestamp(), entry.getValue().getCid(),Long.valueOf(getAllRequest.requestID), "READ");
+                }
+            }
+            logFreshness(entry.getKey(), result.get(entry.getKey()));
+        }
+        KaijuResponse response = new KaijuResponse(result);
+        response.setHct(this.lst);
+        dispatcher.sendResponse(getAllRequest.senderID, getAllRequest.requestID, response);
+    }
+
     public void getAll(EigerPutAllRequest getAllRequest)throws KaijuException, IOException, InterruptedException{
+        if(Config.getConfig().ra_tester == 1){
+            getAllTester(getAllRequest);
+            return;
+        }
         Map<String,DataItem> result = new HashMap<String,DataItem>();
         for(Map.Entry<String,DataItem> entry : getAllRequest.keyValuePairs.entrySet()){
             Long prepTs = entry.getValue().getPrepTs();
@@ -149,7 +191,6 @@ public class EigerPortPlusPlusExecutor implements IEigerExecutor{
             }
             logFreshness(entry.getKey(), result.get(entry.getKey()));
         }
-
         KaijuResponse response = new KaijuResponse(result);
         response.setHct(this.lst);
         dispatcher.sendResponse(getAllRequest.senderID, getAllRequest.requestID, response);
@@ -227,6 +268,12 @@ public class EigerPortPlusPlusExecutor implements IEigerExecutor{
             Long tmp = this.pending.pollFirst();
             if(tmp == null) this.lst = this.latest_commit;
             else this.lst = tmp;
+        }
+        if(Config.getConfig().ra_tester == 1){
+            for(String key : preparedRequest.keyValuePairs.keySet()){
+                DataItem item = preparedRequest.keyValuePairs.get(key);
+                logTransaction(key, commitTime, item.getCid(), transactionID, "WRITE");
+            }
         }
     }
 
@@ -347,4 +394,12 @@ public class EigerPortPlusPlusExecutor implements IEigerExecutor{
         Long freshness = storageEngine.freshness(key, value.getTimestamp());
         //logger.warn("Freshness for key: " + key + " timestamp: " + value.getTimestamp() + " = " + freshness);
     }
+
+    @Override
+    public void logTransaction(String key, Long timestamp, String client_id, Long transaction_id, String type) {
+        if(timestamp == Timestamp.NO_TIMESTAMP) return;
+        Transaction t = new Transaction(key, timestamp, client_id, transaction_id, type);
+        logger.warn(t.toString());
+    }
+
 }

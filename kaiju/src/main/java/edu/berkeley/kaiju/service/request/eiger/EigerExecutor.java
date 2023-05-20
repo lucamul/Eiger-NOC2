@@ -9,6 +9,7 @@ import com.yammer.metrics.Timer;
 import com.yammer.metrics.Timer.Context;
 import edu.berkeley.kaiju.config.Config;
 import edu.berkeley.kaiju.data.DataItem;
+import edu.berkeley.kaiju.data.Transaction;
 import edu.berkeley.kaiju.exception.KaijuException;
 import edu.berkeley.kaiju.monitor.MetricsManager;
 import edu.berkeley.kaiju.net.routing.OutboundRouter;
@@ -443,5 +444,11 @@ public class EigerExecutor implements IEigerExecutor{
         if(Config.getConfig().freshness_test == 0) return;
         Long freshness = storageEngine.freshness(key, value.getTimestamp());
         //logger.warn("Freshness for key: " + key + " timestamp: " + value.getTimestamp() + " = " + freshness);
+    }
+
+    @Override
+    public void logTransaction(String key, Long timestamp, String client_id, Long transaction_id, String type) {
+        Transaction t = new Transaction(key, timestamp, client_id, transaction_id, type);
+        logger.warn(t.toString());
     }
 }

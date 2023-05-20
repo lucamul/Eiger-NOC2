@@ -23,5 +23,5 @@ public interface IEigerExecutor {
 
     public void logFreshness(String key, DataItem value);
 
-
+    public void logTransaction(String key, Long timestamp, String client_id, Long transaction_id, String type);
 }

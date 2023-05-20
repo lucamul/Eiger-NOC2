@@ -13,7 +13,7 @@ dirs = {
     "value_size" :        "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/value_size-2023-04-06-16-00-08.csv",
     "distribution" :      "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/zipf-2023-04-11-08-18-38.csv",
     "num_key" :           "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/num_keys-2023-04-11-19-03-39.csv",
-    "freshness_vs_zipf" : "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/zipf_fresh-2023-04-13-08-42-14.csv",
+    "freshness_vs_zipf" : "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/zipf_fresh.csv",
 }
 
 def change_parameters(plus, normalize, normalizer = "EIGER_PORT"):

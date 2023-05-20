@@ -7,6 +7,10 @@ from matplotlib import rcParams
 from parameters import *
 import re
 
+bar_legend = {}
+
+scatter_legend = {}
+
 possible_labels = ["threads","read_prop","value_size","txn_size","num_servers","num_key","distribution", "freshness", "freshness_vs_zipf"]
 
 title_letters = {
@@ -26,20 +30,20 @@ title_letters = {
     "value_size_average_latency": "(b) ",
     "value_size_write_latency": "(c) ",
     "value_size_read_latency": "",
-    "value_size_99th_latency": "",
-    "value_size_95th_latency": "",
+    "value_size_99th_latency": "(d) ",
+    "value_size_95th_latency": "(a) ",
     "txn_size_throughput": "(d) ",
     "txn_size_average_latency": "(e) ",
     "txn_size_write_latency": "(f) ",
     "txn_size_read_latency": "",
-    "txn_size_99th_latency": "",
-    "txn_size_95th_latency": "",
+    "txn_size_99th_latency": "(e) ",
+    "txn_size_95th_latency": "(b) ",
     "num_servers_throughput": "(g) ",
     "num_servers_average_latency": "(h) ",
     "num_servers_write_latency": "(i) ",
     "num_servers_read_latency": "",
-    "num_servers_99th_latency": "",
-    "num_servers_95th_latency": "",
+    "num_servers_99th_latency": "(f) ",
+    "num_servers_95th_latency": "(c) ",
     "freshness" : "(l) ",
     "average_latency_vs_throughput" : "(j) ",
     "write_latency_vs_throughput" : "(k) ",
@@ -178,23 +182,47 @@ def generate_plot(x_axis, y_axises, title, x_label, y_label, directory, barPlot 
         x_positions = np.arange(len(x_axis))  # create an array of x positions for each set of bars
         le = 0
         ws = bar_width
+        n_bars = len(x_axis)
+        total_width = ws * n_bars  # Total width for all bars
+        spacing_ratio = spacing  # Adjust the spacing ratio between bars
+
+        ws = (1 - spacing_ratio) * total_width / n_bars
+        s = spacing_ratio * total_width / (n_bars - 1)
+        
         if "0.0" in new_y_axises.keys():
             is_zipf = True
-            ws = 0.1
+            #ws = 0.1
+            s = 0
             # sort by key as if the key was a float but keep it a dict
             new_y_axises = dict(sorted(new_y_axises.items(), key=lambda item: float(item[0])))
 
         for i, algorithm in enumerate(new_y_axises):
             if(algorithm not in algorithms) and (algorithm not in zipfs):
                 continue
-            offset = le * ws
+            offset = le * (ws + s) 
             le += 1
-            ax.bar(x=x_positions + offset, height=new_y_axises[algorithm], width=ws, label=names[algorithm], color=colors[algorithm])
+            zorder = 1
+            if is_zipf:
+                if is_full[algorithm]:
+                    color = colors[algorithm]
+                else:
+                    color = "white"
+                bar_style = {'hatch': bar_markers[algorithm], 'edgecolor': colors[algorithm], 'linewidth': bar_line_width}
+                
+                ax.bar(x=x_positions + offset, height=new_y_axises[algorithm], width=ws, label=names[algorithm], color=color, **bar_style)
+            else:
+                color = "white"
+                if is_full[algorithm]:
+                    color = colors[algorithm]
+                elif bar_markers[algorithm] == "":
+                    zorder = 2
+                bar_style = {'hatch': bar_markers[algorithm], 'edgecolor': colors[algorithm], 'linewidth': bar_line_width}
+                ax.bar(x=x_positions + offset, height=new_y_axises[algorithm], width=ws, zorder = zorder, label=names[algorithm], color=color, **bar_style)
         
         mid_pos = (le - 1) / 2.0
 
         # Set the tick position to the middle position of the middle bar
-        ax.set_xticks(x_positions + (mid_pos * ws))
+        ax.set_xticks(x_positions + (mid_pos * (ws+s)))
 
         ax.set_title(title, **title_info)
         ax.set_xlabel(x_label, fontsize=axis_font)
@@ -206,8 +234,11 @@ def generate_plot(x_axis, y_axises, title, x_label, y_label, directory, barPlot 
             legend.get_frame().set_edgecolor('black')
             legend.get_frame().set_linewidth(1.4)
             export_legend(legend)
+            existing_handles, existing_labels = ax.get_legend_handles_labels()
+            global bar_legend
+            bar_legend = dict(zip(existing_labels, existing_handles))
         else:
-            legend = ax.legend(bbox_to_anchor=(0.5, 1.17), loc='center', ncol = le//2,frameon = True ,prop = {"size" : 16}, fontsize = 12)
+            legend = ax.legend(bbox_to_anchor=(0.5, 1.17), loc='center', ncol = le,frameon = True ,prop = {"size" : 16}, fontsize = 12)
             legend.get_frame().set_edgecolor('black')
             legend.get_frame().set_linewidth(1.4)
             export_legend(legend, "zipf_legend.pdf")
@@ -263,6 +294,14 @@ def generate_plot(x_axis, y_axises, title, x_label, y_label, directory, barPlot 
         legend = ax.legend(bbox_to_anchor=(0.5, 1.112), loc='center', ncol = le,frameon = True ,prop = {"size" : 16}, fontsize = 12)
         legend.get_frame().set_edgecolor('black')
         legend.get_frame().set_linewidth(1.4)
+    else:
+        legend = ax.legend(bbox_to_anchor=(0.5, 1.8), loc='center', ncol = len(algorithms),frameon = False ,prop = {"size" : 16}, fontsize = 12)
+        legend.get_frame().set_edgecolor('black')
+        legend.get_frame().set_linewidth(1.4)
+        export_legend(legend, "lat_tp_legend.pdf")
+        existing_handles, existing_labels = ax.get_legend_handles_labels()
+        global scatter_legend
+        scatter_legend = dict(zip(existing_labels, existing_handles))
     title_no_spaces = remove_prefix(title.replace(" ","_"))
     filename = os.path.basename(directory)
 
@@ -346,10 +385,10 @@ def plot_threads(directory):
             line = line.split(",")
             x_axises, y_axises = read_line(x_axises,y_axises,id_threads, id_algorithm, id_average_latency, id_throughput,id_read_latency,id_write_latency,id_99th_latency,id_95th_latency,line)
         y_axis_average_latency,y_axis_throughput,y_axis_read_latency,y_axis_write_latency,y_axis_99th_latency,y_axis_95th_latency = get_separate_y_axis(y_axises)
-        generate_plot(x_axises, y_axis_average_latency, title_letters["threads_average_latency"] + "Number of Clients vs. Average Latency", "Number of Client Threads", "Average " + lat_label,directory,allBar)
+        generate_plot(x_axises, y_axis_average_latency, title_letters["threads_average_latency"] + "Number of Clients vs. Average Latency", "Number of Client Threads",f"{'Normalized ' if lat_label == 'Normalized Latency' else ''}Average {lat_label if lat_label != 'Normalized Latency' else 'Latency'}",directory,allBar)
         generate_plot(x_axises, y_axis_throughput,title_letters["threads_throughput"] + "Number of Clients vs. Throughput", "Number of Client Threads", tp_label,directory,allBar)
-        generate_plot(x_axises, y_axis_read_latency,title_letters["threads_read_latency"] + "Number of Clients vs. Read Latency", "Number of Client Threads", "Read " + lat_label, directory,allBar)
-        generate_plot(x_axises, y_axis_write_latency,title_letters["threads_write_latency"] + "Number of Clients vs. Write Latency", "Number of Client Threads", "Write " + lat_label, directory,allBar)
+        generate_plot(x_axises, y_axis_read_latency,title_letters["threads_read_latency"] + "Number of Clients vs. Read Latency", "Number of Client Threads", f"{'Normalized ' if lat_label == 'Normalized Latency' else ''}Read {lat_label if lat_label != 'Normalized Latency' else 'Latency'}", directory,allBar)
+        generate_plot(x_axises, y_axis_write_latency,title_letters["threads_write_latency"] + "Number of Clients vs. Write Latency", "Number of Client Threads",f"{'Normalized ' if lat_label == 'Normalized Latency' else ''}Write {lat_label if lat_label != 'Normalized Latency' else 'Latency'}", directory,allBar)
         generate_plot(x_axises, y_axis_99th_latency,title_letters["threads_99th_latency"] + "Number of Clients vs. 99th Latency", "Number of Client Threads", "99th Latency", directory,allBar,latThrough=True)
         generate_plot(x_axises, y_axis_95th_latency,title_letters["threads_95th_latency"] + "Number of Clients vs. 95th Latency", "Number of Client Threads", "95th Latency", directory,allBar,latThrough=True)
         generate_plot(y_axis_throughput, y_axis_average_latency,title_letters["average_latency_vs_throughput"]  + "Throughput vs. Average Latency", "Throughput (ops/s)", "Average Latency (ms)", directory,latThrough=True)
@@ -375,10 +414,10 @@ def plot_read_prop(directory):
             line = line.split(",")
             x_axises, y_axises = read_line(x_axises,y_axises,id_read_prop, id_algorithm, id_average_latency, id_throughput,id_read_latency,id_write_latency,id_99th_latency,id_95th_latency,line)
         y_axis_average_latency,y_axis_throughput,y_axis_read_latency,y_axis_write_latency,y_axis_99th_latency,y_axis_95th_latency = get_separate_y_axis(y_axises)
-        generate_plot(x_axises, y_axis_average_latency,title_letters["read_prop_average_latency"] + "Read Proportion vs. Average Latency", "Read Proportion", "Average " + lat_label,directory,allBar)
+        generate_plot(x_axises, y_axis_average_latency,title_letters["read_prop_average_latency"] + "Read Proportion vs. Average Latency", "Read Proportion", f"{'Normalized ' if lat_label == 'Normalized Latency' else ''}Average {lat_label if lat_label != 'Normalized Latency' else 'Latency'}",directory,allBar)
         generate_plot(x_axises, y_axis_throughput, title_letters["read_prop_throughput"] + "Read Proportion vs. Throughput", "Read Proportion", tp_label,directory,allBar)
-        generate_plot(x_axises, y_axis_read_latency,title_letters["read_prop_read_latency"] + "Read Proportion vs. Read Latency", "Read Proportion", "Read " + lat_label,directory,allBar, readLat=True)
-        generate_plot(x_axises, y_axis_write_latency,title_letters["read_prop_write_latency"] + "Read Proportion vs. Write Latency", "Read Proportion", "Write " + lat_label,directory,allBar, writeLat=True)
+        generate_plot(x_axises, y_axis_read_latency,title_letters["read_prop_read_latency"] + "Read Proportion vs. Read Latency", "Read Proportion",f"{'Normalized ' if lat_label == 'Normalized Latency' else ''}Read {lat_label if lat_label != 'Normalized Latency' else 'Latency'}",directory,allBar, readLat=True)
+        generate_plot(x_axises, y_axis_write_latency,title_letters["read_prop_write_latency"] + "Read Proportion vs. Write Latency", "Read Proportion",f"{'Normalized ' if lat_label == 'Normalized Latency' else ''}Write {lat_label if lat_label != 'Normalized Latency' else 'Latency'}",directory,allBar, writeLat=True)
         generate_plot(x_axises, y_axis_99th_latency,title_letters["read_prop_99th_latency"] + "Read Proportion vs. 99th Latency", "Read Proportion", "99th Latency",directory,allBar,latThrough=True)
         generate_plot(x_axises, y_axis_95th_latency,title_letters["read_prop_95th_latency"] + "Read Proportion vs. 95th Latency", "Read Proportion", "95th Latency",directory,allBar,latThrough=True)
     return
@@ -401,10 +440,10 @@ def plot_value_size(directory):
             line = line.split(",")
             x_axises, y_axises = read_line(x_axises,y_axises,id_value_size, id_algorithm, id_average_latency, id_throughput,id_read_latency,id_write_latency,id_99th_latency,id_95th_latency,line)
         y_axis_average_latency,y_axis_throughput,y_axis_read_latency,y_axis_write_latency,y_axis_99th_latency,y_axis_95th_latency = get_separate_y_axis(y_axises)
-        generate_plot(x_axises, y_axis_average_latency,title_letters["value_size_average_latency"]  + "Value Size vs. Average Latency", "Value Size", "Average " + lat_label,directory,allBar)
+        generate_plot(x_axises, y_axis_average_latency,title_letters["value_size_average_latency"]  + "Value Size vs. Average Latency", "Value Size",f"{'Normalized ' if lat_label == 'Normalized Latency' else ''}Average {lat_label if lat_label != 'Normalized Latency' else 'Latency'}",directory,allBar)
         generate_plot(x_axises, y_axis_throughput,title_letters["value_size_throughput"] + "Value Size vs. Throughput", "Value Size", tp_label,directory,allBar)
-        generate_plot(x_axises, y_axis_read_latency,title_letters["value_size_read_latency"] + "Value Size vs. Read Latency", "Value Size", "Read " + lat_label,directory,allBar)
-        generate_plot(x_axises, y_axis_write_latency,title_letters["value_size_write_latency"]  + "Value Size vs. Write Latency", "Value Size", "Write " + lat_label,directory,allBar)
+        generate_plot(x_axises, y_axis_read_latency,title_letters["value_size_read_latency"] + "Value Size vs. Read Latency", "Value Size",f"{'Normalized ' if lat_label == 'Normalized Latency' else ''}Read {lat_label if lat_label != 'Normalized Latency' else 'Latency'}",directory,allBar)
+        generate_plot(x_axises, y_axis_write_latency,title_letters["value_size_write_latency"]  + "Value Size vs. Write Latency", "Value Size",f"{'Normalized ' if lat_label == 'Normalized Latency' else ''}Write {lat_label if lat_label != 'Normalized Latency' else 'Latency'}",directory,allBar)
         generate_plot(x_axises, y_axis_99th_latency,title_letters["value_size_99th_latency"] + "Value Size vs. 99th Latency", "Value Size", "99th Latency",directory,allBar,latThrough=True)
         generate_plot(x_axises, y_axis_95th_latency,title_letters["value_size_95th_latency"] + "Value Size vs. 95th Latency", "Value Size", "95th Latency",directory,allBar,latThrough=True)
     return
@@ -426,10 +465,10 @@ def plot_txn_size(directory):
             line = line.split(",")
             x_axises, y_axises = read_line(x_axises,y_axises,id_txn_size, id_algorithm, id_average_latency, id_throughput,id_read_latency,id_write_latency,id_99th_latency,id_95th_latency,line)
         y_axis_average_latency,y_axis_throughput,y_axis_read_latency,y_axis_write_latency,y_axis_99th_latency,y_axis_95th_latency = get_separate_y_axis(y_axises)
-        generate_plot(x_axises, y_axis_average_latency,title_letters["txn_size_average_latency"] + "Transaction Size vs. Average Latency", "Transaction Size", "Average " + lat_label,directory,allBar)
+        generate_plot(x_axises, y_axis_average_latency,title_letters["txn_size_average_latency"] + "Transaction Size vs. Average Latency", "Transaction Size",f"{'Normalized ' if lat_label == 'Normalized Latency' else ''}Average {lat_label if lat_label != 'Normalized Latency' else 'Latency'}",directory,allBar)
         generate_plot(x_axises, y_axis_throughput,title_letters["txn_size_throughput"] + "Transaction Size vs. Throughput", "Transaction Size", tp_label,directory,allBar)
-        generate_plot(x_axises, y_axis_read_latency,title_letters["txn_size_read_latency"] + "Transaction Size vs. Read Latency", "Transaction Size", "Read " + lat_label,directory,allBar)
-        generate_plot(x_axises, y_axis_write_latency,title_letters["txn_size_write_latency"] + "Transaction Size vs. Write Latency", "Transaction Size", "Write " + lat_label,directory,allBar)
+        generate_plot(x_axises, y_axis_read_latency,title_letters["txn_size_read_latency"] + "Transaction Size vs. Read Latency", "Transaction Size",f"{'Normalized ' if lat_label == 'Normalized Latency' else ''}Read {lat_label if lat_label != 'Normalized Latency' else 'Latency'}",directory,allBar)
+        generate_plot(x_axises, y_axis_write_latency,title_letters["txn_size_write_latency"] + "Transaction Size vs. Write Latency", "Transaction Size",f"{'Normalized ' if lat_label == 'Normalized Latency' else ''}Write {lat_label if lat_label != 'Normalized Latency' else 'Latency'}",directory,allBar)
         generate_plot(x_axises, y_axis_99th_latency,title_letters["txn_size_99th_latency"] + "Transaction Size vs. 99th Latency", "Transaction Size", "99th Latency",directory,allBar,latThrough=True)
         generate_plot(x_axises, y_axis_95th_latency,title_letters["txn_size_95th_latency"] + "Transaction Size vs. 95th Latency", "Transaction Size", "95th Latency",directory,allBar,latThrough=True)
     return
@@ -451,12 +490,12 @@ def plot_num_servers(directory):
             line = line.split(",")
             x_axises, y_axises = read_line(x_axises,y_axises,id_num_servers, id_algorithm, id_average_latency, id_throughput,id_read_latency,id_write_latency,id_99th_latency,id_95th_latency,line)
         y_axis_average_latency,y_axis_throughput,y_axis_read_latency,y_axis_write_latency,y_axis_99th_latency,y_axis_95th_latency = get_separate_y_axis(y_axises)
-        generate_plot(x_axises, y_axis_average_latency,title_letters["num_servers_average_latency"] + "Number of Servers vs. Average Latency", "Number of Servers", "Average " + lat_label,directory,allBar)
+        generate_plot(x_axises, y_axis_average_latency,title_letters["num_servers_average_latency"] + "Number of Servers vs. Average Latency", "Number of Servers",f"{'Normalized ' if lat_label == 'Normalized Latency' else ''}Average {lat_label if lat_label != 'Normalized Latency' else 'Latency'}",directory,allBar)
         generate_plot(x_axises, y_axis_throughput,title_letters["num_servers_throughput"] +  "Number of Servers vs. Throughput", "Number of Servers", tp_label,directory,allBar)
-        generate_plot(x_axises, y_axis_read_latency,title_letters["num_servers_read_latency"] + "Number of Servers vs. Read Latency", "Number of Servers", "Read " + lat_label,directory,allBar)
-        generate_plot(x_axises, y_axis_write_latency,title_letters["num_servers_write_latency"] + "Number of Servers vs. Write Latency", "Number of Servers", "Write " + lat_label,directory,allBar)
+        generate_plot(x_axises, y_axis_read_latency,title_letters["num_servers_read_latency"] + "Number of Servers vs. Read Latency", "Number of Servers",f"{'Normalized ' if lat_label == 'Normalized Latency' else ''}Read {lat_label if lat_label != 'Normalized Latency' else 'Latency'}",directory,allBar)
+        generate_plot(x_axises, y_axis_write_latency,title_letters["num_servers_write_latency"] + "Number of Servers vs. Write Latency", "Number of Servers",f"{'Normalized ' if lat_label == 'Normalized Latency' else ''}Write {lat_label if lat_label != 'Normalized Latency' else 'Latency'}",directory,allBar)
         generate_plot(x_axises, y_axis_99th_latency,title_letters["num_servers_99th_latency"] + "Number of Servers vs. 99th Latency", "Number of Servers", "99th Latency",directory,allBar,latThrough=True)
-        generate_plot(x_axises, y_axis_95th_latency,title_letters["95th_latency_vs_throughput"] + "Number of Servers vs. 95th Latency", "Number of Servers", "95th Latency",directory,allBar,latThrough=True)
+        generate_plot(x_axises, y_axis_95th_latency,title_letters["num_servers_95th_latency"] + "Number of Servers vs. 95th Latency", "Number of Servers", "95th Latency",directory,allBar,latThrough=True)
     return
 
 def plot_num_key(directory):
@@ -477,10 +516,10 @@ def plot_num_key(directory):
             line = line.split(",")
             x_axises, y_axises = read_line(x_axises,y_axises,id_num_key, id_algorithm, id_average_latency, id_throughput,id_read_latency,id_write_latency,id_99th_latency,id_95th_latency,line)
         y_axis_average_latency,y_axis_throughput,y_axis_read_latency,y_axis_write_latency,y_axis_99th_latency,y_axis_95th_latency = get_separate_y_axis(y_axises)
-        generate_plot(x_axises, y_axis_average_latency,title_letters["num_keys_average_latency"] + "Number of Keys vs. Average Latency", "Number of Keys", "Average " + lat_label,directory,allBar)
+        generate_plot(x_axises, y_axis_average_latency,title_letters["num_keys_average_latency"] + "Number of Keys vs. Average Latency", "Number of Keys",f"{'Normalized ' if lat_label == 'Normalized Latency' else ''}Average {lat_label if lat_label != 'Normalized Latency' else 'Latency'}",directory,allBar)
         generate_plot(x_axises, y_axis_throughput,title_letters["num_keys_throughput"] + "Number of Keys vs. Throughput", "Number of Keys", tp_label,directory,allBar)
-        generate_plot(x_axises, y_axis_read_latency,title_letters["num_keys_read_latency"] + "Number of Keys vs. Read Latency", "Number of Keys", "Read " + lat_label,directory,allBar)
-        generate_plot(x_axises, y_axis_write_latency,title_letters["num_keys_write_latency"] + "Number of Keys vs. Write Latency", "Number of Keys", "Write " + lat_label,directory,allBar)
+        generate_plot(x_axises, y_axis_read_latency,title_letters["num_keys_read_latency"] + "Number of Keys vs. Read Latency", "Number of Keys",f"{'Normalized ' if lat_label == 'Normalized Latency' else ''}Read {lat_label if lat_label != 'Normalized Latency' else 'Latency'}",directory,allBar)
+        generate_plot(x_axises, y_axis_write_latency,title_letters["num_keys_write_latency"] + "Number of Keys vs. Write Latency", "Number of Keys",f"{'Normalized ' if lat_label == 'Normalized Latency' else ''}Write {lat_label if lat_label != 'Normalized Latency' else 'Latency'}",directory,allBar)
         generate_plot(x_axises, y_axis_99th_latency,title_letters["num_servers_99th_latency"] + "Number of Keys vs. 99th Latency", "Number of Keys", "99th Latency",directory,allBar,latThrough=True)
         generate_plot(x_axises, y_axis_95th_latency,title_letters["num_keys_95th_latency"] + "Number of Keys vs. 95th Latency", "Number of Keys", "95th Latency",directory,allBar,latThrough=True)
     return
@@ -505,10 +544,10 @@ def plot_distribution(directory):
         new_x_axises = []
         for x in x_axises:
             new_x_axises.append(round(float(x.split("-")[1]),2))
-        generate_plot(new_x_axises, y_axis_average_latency,title_letters["distribution_average_latency"] + "Distribution vs. Average Latency", "Distribution", "Average " + lat_label,directory,barPlot=True)
+        generate_plot(new_x_axises, y_axis_average_latency,title_letters["distribution_average_latency"] + "Distribution vs. Average Latency", "Distribution",f"{'Normalized ' if lat_label == 'Normalized Latency' else ''}Average {lat_label if lat_label != 'Normalized Latency' else 'Latency'}",directory,barPlot=True)
         generate_plot(new_x_axises, y_axis_throughput,title_letters["distribution_throughput"] + "Distribution vs. Throughput", "Distribution", tp_label,directory,barPlot=True)
-        generate_plot(new_x_axises, y_axis_read_latency,title_letters["distribution_read_latency"] + "Distribution vs. Read Latency", "Distribution", "Read " + lat_label,directory, barPlot=True)
-        generate_plot(new_x_axises, y_axis_write_latency,title_letters["distribution_write_latency"] + "Distribution vs. Write Latency", "Distribution", "Write " + lat_label,directory,barPlot=True)
+        generate_plot(new_x_axises, y_axis_read_latency,title_letters["distribution_read_latency"] + "Distribution vs. Read Latency", "Distribution",f"{'Normalized ' if lat_label == 'Normalized Latency' else ''}Read {lat_label if lat_label != 'Normalized Latency' else 'Latency'}",directory, barPlot=True)
+        generate_plot(new_x_axises, y_axis_write_latency,title_letters["distribution_write_latency"] + "Distribution vs. Write Latency", "Distribution",f"{'Normalized ' if lat_label == 'Normalized Latency' else ''}Write {lat_label if lat_label != 'Normalized Latency' else 'Latency'}",directory,barPlot=True)
         generate_plot(new_x_axises, y_axis_99th_latency,title_letters["distribution_99th_latency"] + "Distribution vs. 99th Latency", "Distribution", "99th Latency",directory,barPlot=True,latThrough=True)
         generate_plot(new_x_axises, y_axis_95th_latency,title_letters["distribution_95th_latency"] + "Distribution vs. 95th Latency", "Distribution", "95th Latency",directory,barPlot=True,latThrough=True)
     return
@@ -532,6 +571,7 @@ def plot(ylabel, directory):
         plot_freshness(directory)
     elif ylabel == "freshness_vs_zipf":
         plot_freshness_vs_zipf(directory)
+    
 
 
 

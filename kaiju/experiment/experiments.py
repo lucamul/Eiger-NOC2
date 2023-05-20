@@ -17,6 +17,29 @@ default = {
                     "keydistribution" : ["zipfian"],
                     "bootstrap_time_ms" : 10000,
                     "launch_in_bg" : False,
+                    "tester" : 0,
+                    "drop_commit_pcts" : [0],
+                    "check_commit_delays" : [-1],
+}
+
+test_CC = {
+    "serversList" : [(8,8)],
+                    "txnlen" : [5],
+                    "threads" : [32],
+                    "numseconds" : 60,
+                    "configs" : [
+                                  "EIGER_PORT_PLUS",
+                                  "EIGER_PORT_PLUS_PLUS"
+                                ],
+                    "readprop" : [.9],
+                    "iterations" : range(1),
+                    "freshness" : 0,
+                    "numkeys" : [1000000],
+                    "valuesize" : [128],
+                    "keydistribution" : ["zipfian"],
+                    "bootstrap_time_ms" : 10000,
+                    "launch_in_bg" : False,
+                    "tester" : 1,
                     "drop_commit_pcts" : [0],
                     "check_commit_delays" : [-1],
 }
@@ -40,6 +63,7 @@ num_keys = {
                     "keydistribution" : ["zipfian"],
                     "bootstrap_time_ms" : 10000,
                     "launch_in_bg" : False,
+                    "tester" : 0,
                     "drop_commit_pcts" : [0],
                     "check_commit_delays" : [-1],
 }
@@ -63,6 +87,7 @@ read_prop = {
                     "keydistribution" : ["zipfian"],
                     "bootstrap_time_ms" : 10000,
                     "launch_in_bg" : False,
+                    "tester" : 0,
                     "drop_commit_pcts" : [0],
                     "check_commit_delays" : [-1],
 }
@@ -86,6 +111,7 @@ value_size = {
                     "keydistribution" : ["zipfian"],
                     "bootstrap_time_ms" : 10000,
                     "launch_in_bg" : False,
+                    "tester" : 0,
                     "drop_commit_pcts" : [0],
                     "check_commit_delays" : [-1],
 }
@@ -109,6 +135,7 @@ txn_len = {
                     "keydistribution" : ["zipfian"],
                     "bootstrap_time_ms" : 10000,
                     "launch_in_bg" : False,
+                    "tester" : 0,
                     "drop_commit_pcts" : [0],
                     "check_commit_delays" : [-1],
 }
@@ -132,6 +159,7 @@ freshness = {
                     "keydistribution" : ["zipfian"],
                     "bootstrap_time_ms" : 10000,
                     "launch_in_bg" : False,
+                    "tester" : 0,
                     "drop_commit_pcts" : [0],
                     "check_commit_delays" : [-1],
 }
@@ -155,6 +183,7 @@ num_clients = {
                     "keydistribution" : ["zipfian"],
                     "bootstrap_time_ms" : 10000,
                     "launch_in_bg" : False,
+                    "tester" : 0,
                     "drop_commit_pcts" : [0],
                     "check_commit_delays" : [-1],
 }
@@ -179,6 +208,7 @@ num_servers = {
                     "keydistribution" : ["zipfian"],
                     "bootstrap_time_ms" : 10000,
                     "launch_in_bg" : False,
+                    "tester" : 0,
                     "drop_commit_pcts" : [0],
                     "check_commit_delays" : [-1],
 }
@@ -194,4 +224,5 @@ experiments = {
                 "value_size" : value_size,
                 "read_prop" : read_prop,
                 "num_keys" : num_keys,
+                "tester" : test_CC
 }

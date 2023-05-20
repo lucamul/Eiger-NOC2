@@ -75,6 +75,7 @@ def start_servers(**kwargs):
      -check_commit_delay_ms %d\
      -outbound_internal_conn %d \
      -locktable_numlatches %d \
+     -tester %d \
      -opw %d \
      -freshness_test %d \
       1>server-%d.log 2>&1 & "
@@ -102,6 +103,7 @@ def start_servers(**kwargs):
                    kwargs.get("check_commit_delay", -1),
                    kwargs.get("outbound_internal_conn", 1),
                    kwargs.get("locktable_numlatches", 1024),
+                   kwargs.get("tester", 0),
                    kwargs.get("opw", 0),
                    kwargs.get("freshness",0),
                    s_localid))
@@ -340,6 +342,7 @@ if __name__ == "__main__":
         system("mkdir -p "+args.output_dir)
         system("cp experiments.py "+args.output_dir)
         fresh = experiment["freshness"]
+        tester = experiment["tester"]
         for nc, ns in experiment["serversList"]:
             n_clients = nc
             n_servers = ns
@@ -449,5 +452,6 @@ if __name__ == "__main__":
                                                                 check_commit_delay=check_commit_delay,
                                                                 bgrun=experiment["launch_in_bg"],
                                                                 opw = opw,
-                                                                freshness=fresh)
+                                                                freshness=fresh,
+                                                                tester=tester)
                                                     firstrun = False
