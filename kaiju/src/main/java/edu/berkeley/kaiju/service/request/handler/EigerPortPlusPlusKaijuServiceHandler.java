@@ -37,7 +37,12 @@ public class EigerPortPlusPlusKaijuServiceHandler implements IKaijuHandler{
 
             Map<Integer, Collection<String>> keysByServerID = OutboundRouter.getRouter().groupKeysByServerID(keys);
             Map<Integer, KaijuMessage> requestsByServerID = Maps.newHashMap();
-            String cid = Config.getConfig().server_id.toString(); //+ ":" + Long.valueOf(Thread.currentThread().getId()).toString();
+            String cid;
+            if(Config.getConfig().threadLocal == 1){
+                cid = Config.getConfig().server_id.toString() + ":" + Long.valueOf(Thread.currentThread().getId()).toString();
+            }else{
+                cid = Config.getConfig().server_id.toString(); //+ ":" + Long.valueOf(Thread.currentThread().getId()).toString();
+            }
             for(int serverID : keysByServerID.keySet()) {
                 Map<String,DataItem> keysWithMd = new HashMap<String,DataItem>();
                 for(String key : keysByServerID.get(serverID)){
@@ -45,10 +50,20 @@ public class EigerPortPlusPlusKaijuServiceHandler implements IKaijuHandler{
                     keysWithMd.get(key).setCid(cid);
                     Long prepTs = Timestamp.NO_TIMESTAMP;
                     Long tid = Timestamp.NO_TIMESTAMP;
-                    if(KaijuServer.pending.containsKey(key)){
-                        TidTimestampPair pair = KaijuServer.pending.get(key);
-                        tid = pair.getTransaction_id();
-                        prepTs = pair.getPrepared_t();
+                    if(Config.getConfig().threadLocal == 1){
+                        if(KaijuServer.pendingLocal.get().containsKey(key)){
+                            TidTimestampPair pair = KaijuServer.pendingLocal.get().get(key);
+                            tid = pair.getTransaction_id();
+                            prepTs = pair.getPrepared_t();
+                        }
+                        keysWithMd.get(key).setPrepTs(prepTs);
+                        keysWithMd.get(key).setTid(tid);
+                    }else{
+                        if(KaijuServer.pending.containsKey(key)){
+                            TidTimestampPair pair = KaijuServer.pending.get(key);
+                            tid = pair.getTransaction_id();
+                            prepTs = pair.getPrepared_t();
+                        }
                     }
                     keysWithMd.get(key).setPrepTs(prepTs);
                     keysWithMd.get(key).setTid(tid);
@@ -81,19 +96,29 @@ public class EigerPortPlusPlusKaijuServiceHandler implements IKaijuHandler{
         try{
             List<String> keys = Lists.newArrayList(keyValuePairs.keySet());
             String coordinatorKey = keys.get(random.nextInt(keys.size()));
-
+            long gst;
+            if(Config.getConfig().threadLocal == 1){
+                gst = KaijuServer.gstLocal.get();
+            }else{
+                gst = KaijuServer.gst;
+            }
             Map<Integer, Collection<String>> keysByServerID = OutboundRouter.getRouter().groupKeysByServerID(
                     keyValuePairs.keySet());
             Map<Integer, KaijuMessage> requestsByServerID = Maps.newHashMap();
 
             long timestamp = Timestamp.assignNewTimestamp();
-            String cid = Config.getConfig().server_id.toString(); //+ ":" + Long.valueOf(Thread.currentThread().getId()).toString();
+            String cid;
+            if(Config.getConfig().threadLocal == 1){
+                cid = Config.getConfig().server_id.toString() + ":" + Long.valueOf(Thread.currentThread().getId()).toString();
+            }else{
+                cid = Config.getConfig().server_id.toString(); //+ ":" + Long.valueOf(Thread.currentThread().getId()).toString();
+            }
             for(int serverID : keysByServerID.keySet()) {
                 Map<String, DataItem> keyValuePairsForServer = Maps.newHashMap();
                 for(String key : keysByServerID.get(serverID)) {
                     keyValuePairsForServer.put(key, new DataItem(timestamp, keyValuePairs.get(key)));
                     keyValuePairsForServer.get(key).setCid(cid);
-                    keyValuePairsForServer.get(key).setPrepTs(KaijuServer.gst);
+                    keyValuePairsForServer.get(key).setPrepTs(gst);
                 }
 
                 requestsByServerID.put(serverID, new EigerPutAllRequest(keyValuePairsForServer,
@@ -105,6 +130,23 @@ public class EigerPortPlusPlusKaijuServiceHandler implements IKaijuHandler{
 
             KaijuResponse.coalesceErrorsIntoException(responses);
             Long prepared_t = Timestamp.NO_TIMESTAMP;
+            if(Config.getConfig().threadLocal == 1){
+                for(KaijuResponse response : responses){
+                    if(!KaijuServer.hctsLocal.get().containsKey(Integer.valueOf(response.senderID)) || KaijuServer.hcts.get(Integer.valueOf(response.senderID)) < response.getHct()){
+                        KaijuServer.hctsLocal.get().put(Integer.valueOf(response.senderID),response.getHct());
+                    }
+                    if(prepared_t == Timestamp.NO_TIMESTAMP || response.getPrepTs() > prepared_t){
+                        prepared_t = response.getPrepTs();
+                    }   
+                }
+
+                for(String key : keyValuePairs.keySet()){
+                    if(!KaijuServer.pendingLocal.get().containsKey(key) || KaijuServer.pendingLocal.get().get(key).getPrepared_t() < timestamp){
+                        KaijuServer.pendingLocal.get().put(key, new TidTimestampPair(timestamp, prepared_t));
+                    }
+                }
+                return;
+            }
             synchronized(this){
                 for(KaijuResponse response : responses){
                     if(!KaijuServer.hcts.containsKey(Integer.valueOf(response.senderID)) || KaijuServer.hcts.get(Integer.valueOf(response.senderID)) < response.getHct()){
@@ -135,6 +177,14 @@ public class EigerPortPlusPlusKaijuServiceHandler implements IKaijuHandler{
     }
     
     private Long get_read_ts(){
+        if(Config.getConfig().threadLocal == 1){
+            Long min_ts = Timestamp.NO_TIMESTAMP;
+            for(Long ts : KaijuServer.hctsLocal.get().values()){
+                if(min_ts == Timestamp.NO_TIMESTAMP || ts < min_ts) min_ts = ts;
+            }
+            if(KaijuServer.gstLocal.get() < min_ts) KaijuServer.gstLocal.set(min_ts);
+            return KaijuServer.gstLocal.get();
+        }
         Long min_ts = Timestamp.NO_TIMESTAMP;
         for(Long ts : KaijuServer.hcts.values()){
             if(min_ts == Timestamp.NO_TIMESTAMP || ts < min_ts) min_ts = ts;

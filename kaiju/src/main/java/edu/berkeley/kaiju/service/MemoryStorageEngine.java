@@ -14,6 +14,7 @@ import edu.berkeley.kaiju.config.Config.IsolationLevel;
 import edu.berkeley.kaiju.config.Config.ReadAtomicAlgorithm;
 import edu.berkeley.kaiju.data.DataItem;
 import edu.berkeley.kaiju.data.ItemVersion;
+import edu.berkeley.kaiju.data.Transaction;
 import edu.berkeley.kaiju.exception.AbortedException;
 import edu.berkeley.kaiju.exception.HandlerException;
 import edu.berkeley.kaiju.exception.KaijuException;
@@ -150,7 +151,7 @@ public class MemoryStorageEngine {
     public ConcurrentMap<KeyTimestampPair,Long> timesPerVersion = Maps.newConcurrentMap();
     public ConcurrentMap<String,Long> latestTime = Maps.newConcurrentMap();
     public ConcurrentLinkedQueue<Long> staleness = new ConcurrentLinkedQueue<Long>();
-
+    public ConcurrentLinkedQueue<Transaction> test = new ConcurrentLinkedQueue<Transaction>();
     // ORA:
     private long latest = Timestamp.NO_TIMESTAMP;
     private long latest_prep = Timestamp.NO_TIMESTAMP;
@@ -195,13 +196,16 @@ public class MemoryStorageEngine {
 
             @Override
             public void run() {
-                if(Config.getConfig().freshness_test == 0) return;
+                if(Config.getConfig().freshness_test == 0 && Config.getConfig().ra_tester == 0) return;
                 while(true){
                     try {
                         Thread.sleep(1000);
                         if(KaijuServer.hasEnded.get()){
                             for(Long stale : staleness){
                                 logger.warn("Freshness = " + stale);
+                            }
+                            for(Transaction t : test){
+                                logger.warn("Transaction = " + t.toString());
                             }
                             return;
                         }
@@ -216,7 +220,10 @@ public class MemoryStorageEngine {
 
     //freshness functions:
     public long freshness(String key, long timestamp){
-        if(timestamp == Timestamp.NO_TIMESTAMP) return 0;
+        if(timestamp == Timestamp.NO_TIMESTAMP){
+            if(Config.getConfig().ra_tester == 1) this.staleness.add(0l);
+            return 0;
+        }
         KeyTimestampPair kts = this.createNewKeyTimestampPair(key, timestamp);
         Long f = 0l;
         if(!this.timesPerVersion.containsKey(kts) || !this.latestTime.containsKey(key)) f = 0l;

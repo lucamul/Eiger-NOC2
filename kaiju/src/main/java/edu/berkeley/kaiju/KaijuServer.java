@@ -44,6 +44,26 @@ public class KaijuServer {
     public static Long gst = Timestamp.NO_TIMESTAMP;
     public static Map<String,TidTimestampPair> pending = Maps.newConcurrentMap();
     
+    // Thread Local Version
+    public static ThreadLocal<Long> gstLocal = new ThreadLocal<Long>() {
+        @Override
+        protected Long initialValue() {
+            return Timestamp.NO_TIMESTAMP;
+        }
+    };
+    public static ThreadLocal<Map<String,TidTimestampPair>> pendingLocal = new ThreadLocal<Map<String,TidTimestampPair>>() {
+        @Override
+        protected Map<String,TidTimestampPair> initialValue() {
+            return Maps.newConcurrentMap();
+        }
+    };
+    public static ThreadLocal<Map<Integer,Long>> hctsLocal = new ThreadLocal<Map<Integer,Long>>() {
+        @Override
+        protected Map<Integer,Long> initialValue() {
+            return Maps.newConcurrentMap();
+        }
+    };
+
     public static AtomicBoolean hasEnded = new AtomicBoolean(false);
     public static void main(String[] args) {
         Config.serverSideInitialize(args);

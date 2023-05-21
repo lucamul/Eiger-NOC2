@@ -37,6 +37,10 @@ public class Config {
     @Parameter(names = "-opw",
         description = "enter 1 if you want RAMP to be with OPWs")
     public Integer opw = 0;
+
+    @Parameter(names = "-threadLocal",
+        description = "enter 1 if you want local data-structures")
+    public Integer threadLocal = 0;
     /*
      Outputs a log of all the transactions executed which you can use to check if the system is behaving correctly
     */

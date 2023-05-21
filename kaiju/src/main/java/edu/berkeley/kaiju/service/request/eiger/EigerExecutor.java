@@ -449,6 +449,6 @@ public class EigerExecutor implements IEigerExecutor{
     @Override
     public void logTransaction(String key, Long timestamp, String client_id, Long transaction_id, String type) {
         Transaction t = new Transaction(key, timestamp, client_id, transaction_id, type);
-        logger.warn(t.toString());
+        storageEngine.test.add(t);
     }
 }
