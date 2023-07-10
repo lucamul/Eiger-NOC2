@@ -1,0 +1,7 @@
+algorithm,threads,read_prop,value_size,txn_size,num_clients,num_servers,num_key,distribution,zipfian_constant,throughput,average_latency,read_latency,write_latency,99th_latency,95th_latency
+EIGER_PORT_PLUS,32,0.0,128,5,8,8,1000000,zipfian,0.8,1816.006,27.43,0.00,27.43,27.43,56.58
+EIGER_PORT_PLUS,32,0.3,128,5,8,8,1000000,zipfian,0.8,2215.0060000000003,22.43,13.53,26.25,43.78,43.98
+EIGER_PORT_PLUS,32,0.5,128,5,8,8,1000000,zipfian,0.8,2656.17,18.65,12.57,24.73,50.08,36.44
+EIGER_PORT_PLUS,32,0.7,128,5,8,8,1000000,zipfian,0.8,3379.37,14.65,11.31,22.44,63.11,28.53
+EIGER_PORT_PLUS,32,0.9,128,5,8,8,1000000,zipfian,0.8,4462.092,11.10,10.13,19.75,35.03,21.58
+EIGER_PORT_PLUS,32,1.0,128,5,8,8,1000000,zipfian,0.8,5714.414,8.66,8.66,0.00,22.10,15.85
