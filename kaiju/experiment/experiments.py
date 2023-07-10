@@ -6,7 +6,7 @@ default = {
                     "configs" : [
                                   "EIGER",
                                   "EIGER_PORT",
-                                  "EIGER_PORT_PLUS",
+                                  #"EIGER_PORT_PLUS",
                                   "EIGER_PORT_PLUS_PLUS"
                                 ],
                     "readprop" : [.9],
@@ -52,7 +52,7 @@ num_keys = {
                     "configs" : [
                                   "EIGER",
                                   "EIGER_PORT",
-                                  "EIGER_PORT_PLUS",
+                                  #"EIGER_PORT_PLUS",
                                   "EIGER_PORT_PLUS_PLUS"
                                 ],
                     "readprop" : [.9],
@@ -76,7 +76,7 @@ read_prop = {
                     "configs" : [
                                   "EIGER",
                                   "EIGER_PORT",
-                                  "EIGER_PORT_PLUS",
+                                  #"EIGER_PORT_PLUS",
                                   "EIGER_PORT_PLUS_PLUS"
                                 ],
                     "readprop" : [0,0.3,0.5,0.7,.9,1],
@@ -100,7 +100,7 @@ value_size = {
                     "configs" : [
                                   "EIGER",
                                   "EIGER_PORT",
-                                  "EIGER_PORT_PLUS",
+                                  #"EIGER_PORT_PLUS",
                                   "EIGER_PORT_PLUS_PLUS"
                                 ],
                     "readprop" : [.9],
@@ -124,7 +124,7 @@ txn_len = {
                     "configs" : [
                                   "EIGER",
                                   "EIGER_PORT",
-                                  "EIGER_PORT_PLUS",
+                                  #"EIGER_PORT_PLUS",
                                   "EIGER_PORT_PLUS_PLUS"
                                 ],
                     "readprop" : [.9],
@@ -148,7 +148,7 @@ freshness = {
                     "configs" : [
                                   "EIGER",
                                   "EIGER_PORT",
-                                  "EIGER_PORT_PLUS",
+                                  #"EIGER_PORT_PLUS",
                                   "EIGER_PORT_PLUS_PLUS"
                                 ],
                     "readprop" : [.9],
@@ -172,7 +172,7 @@ num_clients = {
                     "configs" : [
                                   "EIGER",
                                   "EIGER_PORT",
-                                  "EIGER_PORT_PLUS",
+                                  #"EIGER_PORT_PLUS",
                                   "EIGER_PORT_PLUS_PLUS"
                                 ],
                     "readprop" : [.9],
@@ -197,7 +197,7 @@ num_servers = {
                     "configs" : [
                                   "EIGER",
                                   "EIGER_PORT",
-                                  "EIGER_PORT_PLUS",
+                                  #"EIGER_PORT_PLUS",
                                   "EIGER_PORT_PLUS_PLUS"
                                 ],
                     "readprop" : [.9],

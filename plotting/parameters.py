@@ -1,5 +1,3 @@
-import numpy as np
-
 # parameters for plot
 title_font = 20
 axis_font = 18

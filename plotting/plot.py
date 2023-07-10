@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from matplotlib import rcParams
 from parameters import *
 import re
+import numpy as np
 
 bar_legend = {}
 

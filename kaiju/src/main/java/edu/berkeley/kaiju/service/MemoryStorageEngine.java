@@ -253,7 +253,7 @@ public class MemoryStorageEngine {
     public long getHighestCommittedNotGreaterThan(String key, long timestamp){
         if(!this.eigerMap.containsKey(key)) return Timestamp.NO_TIMESTAMP;
 
-        Map.Entry<Long,DataItem> res = this.eigerMap.get(key).floorEntry(timestamp);
+        Map.Entry<Long,DataItem> res = this.eigerMap.get(key).lowerEntry(timestamp);
         
         if(res == null) return Timestamp.NO_TIMESTAMP;
         
