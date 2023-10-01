@@ -38,6 +38,21 @@ public class Config {
         description = "enter 1 if you want RAMP to be with OPWs")
     public Integer opw = 0;
 
+    /*
+      replication
+    */
+    @Parameter(names = "-replication",
+        description = "enter 1 if you want to allow replication")
+    public Integer replication = 0;
+
+    /*
+      replication batch size
+    */
+    @Parameter(names = "-batch_size_replication",
+        description = "enter the size for the batches of replicas")
+    public Integer batch_size_replication = 8;
+
+
     @Parameter(names = "-threadLocal",
         description = "enter 1 if you want local data-structures")
     public Integer threadLocal = 0;

@@ -11,4 +11,11 @@ public class HashingRouter extends OutboundRouter {
     public int getServerIDByResourceID(int resourceID) {
         return Math.abs(resourceID) % senders.size();
     }
+
+    @Override
+    public int getReplicaServerIDByResourceID(int resourceID) {
+        return (Math.abs(resourceID) % senders.size()) + senders.size();
+    }
+
+    
 }

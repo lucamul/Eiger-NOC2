@@ -26,6 +26,10 @@ public class PreparePutAllRequest extends KaijuMessage implements IKaijuRequest 
     @Override
     public KaijuResponse processRequest(MemoryStorageEngine storageEngine, LockManager lockManager) throws
                                                                                                     KaijuException {
+        if(keyValuePairs.values().stream().findFirst().orElse(DataItem.getNullItem()).getCid().equals("replica")){
+            storageEngine.replicaPutAll(keyValuePairs);
+            return new KaijuResponse();
+        }
         storageEngine.prepare(keyValuePairs);
         if(MemoryStorageEngine.is_ORA() || MemoryStorageEngine.is_NOC()){
             KaijuResponse response = new KaijuResponse();

@@ -74,6 +74,7 @@ public class KaijuServer {
         LockManager lockManager = new LockManager();
         RequestExecutorFactory requestExecutorFactory = new RequestExecutorFactory(storage, lockManager);
         RequestDispatcher dispatcher = new RequestDispatcher(requestExecutorFactory);
+        storage.setDispatcher(dispatcher);
         if(Config.getConfig().readatomic_algorithm == Config.ReadAtomicAlgorithm.EIGER_PORT)
             requestExecutorFactory.setEigerExecutor(new EigerPortExecutor(dispatcher, storage));
         else if(Config.getConfig().readatomic_algorithm == Config.ReadAtomicAlgorithm.EIGER_PORT_PLUS)
