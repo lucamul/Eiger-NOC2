@@ -2,11 +2,13 @@ package edu.berkeley.kaiju.service.request;
 
 import com.google.common.collect.Maps;
 import edu.berkeley.kaiju.config.Config;
+import edu.berkeley.kaiju.data.DataItem;
 import edu.berkeley.kaiju.net.callback.IMessageCallback;
 import edu.berkeley.kaiju.net.callback.MultiMessageCallback;
 import edu.berkeley.kaiju.net.callback.SingleMessageCallback;
 import edu.berkeley.kaiju.net.routing.OutboundRouter;
 import edu.berkeley.kaiju.service.request.message.KaijuMessage;
+import edu.berkeley.kaiju.service.request.message.request.PreparePutAllRequest;
 import edu.berkeley.kaiju.service.request.message.response.KaijuResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,9 +82,18 @@ public class RequestDispatcher {
                 outstandingRequests.put(requestID, callback);
             request.getValue().senderID = Config.getConfig().server_id;
             request.getValue().requestID = requestID;
-
-            OutboundRouter.getRouter().getChannelByResourceID(request.getKey())
+            if(request.getValue() instanceof PreparePutAllRequest){
+                if(((PreparePutAllRequest)request.getValue()).keyValuePairs.values().stream().findFirst().orElse(DataItem.getNullItem()).getCid() == "replica"){
+                    OutboundRouter.getRouter().getReplicaChannelByResourceID(request.getKey())
                           .enqueue(request.getValue());
+                }else{
+                    OutboundRouter.getRouter().getChannelByResourceID(request.getKey())
+                          .enqueue(request.getValue());
+                }
+            }else{
+                OutboundRouter.getRouter().getChannelByResourceID(request.getKey())
+                          .enqueue(request.getValue());
+            }
         }
 
         if(callback == null)

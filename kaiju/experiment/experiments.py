@@ -4,13 +4,13 @@ default = {
                     "threads" : [32],
                     "numseconds" : 60,
                     "configs" : [
-                                  "EIGER",
-                                  "EIGER_PORT",
+                                  #"EIGER",
+                                  #"EIGER_PORT",
                                   #"EIGER_PORT_PLUS",
                                   "EIGER_PORT_PLUS_PLUS"
                                 ],
                     "readprop" : [.9],
-                    "iterations" : range(0,5),
+                    "iterations" : range(0,1),
                     "freshness" : 0,
                     "numkeys" : [1000000],
                     "valuesize" : [128],
@@ -18,6 +18,7 @@ default = {
                     "bootstrap_time_ms" : 10000,
                     "launch_in_bg" : False,
                     "tester" : 0,
+                    "replication" : 1,
                     "drop_commit_pcts" : [0],
                     "check_commit_delays" : [-1],
 }
@@ -64,6 +65,7 @@ num_keys = {
                     "bootstrap_time_ms" : 10000,
                     "launch_in_bg" : False,
                     "tester" : 0,
+                    "replication" : 1,
                     "drop_commit_pcts" : [0],
                     "check_commit_delays" : [-1],
 }
@@ -88,6 +90,7 @@ read_prop = {
                     "bootstrap_time_ms" : 10000,
                     "launch_in_bg" : False,
                     "tester" : 0,
+                    "replication" : 1,
                     "drop_commit_pcts" : [0],
                     "check_commit_delays" : [-1],
 }
@@ -112,6 +115,7 @@ value_size = {
                     "bootstrap_time_ms" : 10000,
                     "launch_in_bg" : False,
                     "tester" : 0,
+                    "replication" : 1,
                     "drop_commit_pcts" : [0],
                     "check_commit_delays" : [-1],
 }
@@ -136,6 +140,7 @@ txn_len = {
                     "bootstrap_time_ms" : 10000,
                     "launch_in_bg" : False,
                     "tester" : 0,
+                    "replication" : 1,
                     "drop_commit_pcts" : [0],
                     "check_commit_delays" : [-1],
 }
@@ -160,6 +165,7 @@ freshness = {
                     "bootstrap_time_ms" : 10000,
                     "launch_in_bg" : False,
                     "tester" : 0,
+                    "replication" : 1,
                     "drop_commit_pcts" : [0],
                     "check_commit_delays" : [-1],
 }
@@ -184,6 +190,7 @@ num_clients = {
                     "bootstrap_time_ms" : 10000,
                     "launch_in_bg" : False,
                     "tester" : 0,
+                    "replication" : 1,
                     "drop_commit_pcts" : [0],
                     "check_commit_delays" : [-1],
 }
@@ -209,6 +216,7 @@ num_servers = {
                     "bootstrap_time_ms" : 10000,
                     "launch_in_bg" : False,
                     "tester" : 0,
+                    "replication" : 1,
                     "drop_commit_pcts" : [0],
                     "check_commit_delays" : [-1],
 }
