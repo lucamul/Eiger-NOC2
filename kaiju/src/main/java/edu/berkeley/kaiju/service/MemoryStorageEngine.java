@@ -259,7 +259,6 @@ public class MemoryStorageEngine {
                         Collection<KaijuResponse> responses = dispatcher.multiRequest(requestsByServerID);
 
                         KaijuResponse.coalesceErrorsIntoException(responses);
-                        logger.warn("replicating");            
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
