@@ -132,14 +132,11 @@ def transform_csv_file(filename):
 
 def split_all():
     paths = {
-        "Freshness" : "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/freshness-2023-04-05-09-32-39.csv",
-        "Num_Clients" : "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/num_clients-2023-04-05-16-40-00.csv",
-        "Num_Servers" : "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/num_servers-2023-04-05-20-52-39.csv",
-        "Read_Proportion" : "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/read_prop-2023-04-06-02-19-04.csv",
-        "Transaction_Length" : "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/tlen.csv",
-        "Zipf" : "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/zipf-2023-04-11-08-18-38.csv",
-        "Value_Size" : "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/value_size-2023-04-06-16-00-08.csv",
-        "Zipf_Fresh" : "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/zipf_fresh.csv",
+        #"Freshness" : "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/resultsReplication/freshness-2023-10-02-18-11-53.csv",
+        "Num_Clients" : "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/resultsReplication/num_clients-2023-10-02-22-48-02.csv",
+        "Read_Proportion" : "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/resultsReplication/read_prop-2023-10-03-01-54-29.csv",
+        "Transaction_Length" : "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/resultsReplication/txn_len-2023-10-03-06-08-59.csv",
+        "Zipf" : "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/resultsReplication/distribution-2023-10-04-01-03-12.csv",
     }
 
     freshPaths = ["/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/Freshness/EIGER_PORT_PLUS_PLUS.csv",
@@ -153,8 +150,8 @@ def split_all():
                   ]
     for name, path in paths.items():
         print(name)
-        create_algorithm_csv_files(path, f'/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/{name}')
-        #create_normalized_csv_files(path, f'/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/Normalized{name}')
+        create_algorithm_csv_files(path, f'/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/resultsReplication/{name}')
+        create_normalized_csv_files(path, f'/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/resultsReplication/Normalized{name}')
     for path in freshPaths:
         transform_csv_file(path)
         continue
