@@ -4,13 +4,13 @@ default = {
                     "threads" : [32],
                     "numseconds" : 60,
                     "configs" : [
-                                  #"EIGER",
+                                  "EIGER",
                                   #"EIGER_PORT",
-                                  #"EIGER_PORT_PLUS",
+                                  "EIGER_PORT_PLUS",
                                   "EIGER_PORT_PLUS_PLUS"
                                 ],
                     "readprop" : [.9],
-                    "iterations" : range(0,1),
+                    "iterations" : range(0,5),
                     "freshness" : 0,
                     "numkeys" : [1000000],
                     "valuesize" : [128],

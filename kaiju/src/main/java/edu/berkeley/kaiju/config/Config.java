@@ -50,7 +50,7 @@ public class Config {
     */
     @Parameter(names = "-batch_size_replication",
         description = "enter the size for the batches of replicas")
-    public Integer batch_size_replication = 8;
+    public Integer batch_size_replication = 128;
 
 
     @Parameter(names = "-threadLocal",

@@ -232,7 +232,7 @@ public class MemoryStorageEngine {
                 if(Config.getConfig().replication == 0) return;
                 while(true){
                     try {
-                        Thread.sleep(10);
+                        Thread.sleep(100);
                         int i = 0;
                         Map<String,DataItem> itemsToReplicate = Maps.newConcurrentMap();
                         
