@@ -83,8 +83,12 @@ def start_servers(**kwargs):
     setup_hosts()
     sid = 0
     i = 0
+    replication = kwargs.get("replication",0)
+    num_s = n_servers
+    if replication == 1:
+        num_s *= 2
     for server in server_list:
-        if i == n_servers:
+        if i == num_s:
             break
         servercmd = HEADER
         for s_localid in range(0, SERVERS_PER_HOST):
@@ -356,16 +360,20 @@ if __name__ == "__main__":
             n_servers = ns
             args.servers = ns
             args.clients = nc
+            num_s = ns
+            if replication == 1:
+                num_s *= 2
+                
             KAIJU_HOSTS_INTERNAL = None
             i = 0
             for server in server_list:
-                if i == ns:
+                if i == num_s:
                     break
                 for loc_id in range (0,SERVERS_PER_HOST):
                     if KAIJU_HOSTS_INTERNAL:
                         KAIJU_HOSTS_INTERNAL += ","
                         KAIJU_HOSTS_EXTERNAL += ","
-                        if i < ns//2:
+                        if i < num_s//2:
                             KAIJU_HOSTS_EXTERNAL_REPLICA += ","
                     else:
                         KAIJU_HOSTS_EXTERNAL = ""
@@ -373,7 +381,7 @@ if __name__ == "__main__":
                         KAIJU_HOSTS_INTERNAL = ""
                     KAIJU_HOSTS_INTERNAL += server + ":" + str(KAIJU_PORT+loc_id)
                     KAIJU_HOSTS_EXTERNAL += server + ":" + str(THRIFT_PORT+loc_id)
-                    if i < ns//2:
+                    if i < num_s//2:
                         KAIJU_HOSTS_EXTERNAL_REPLICA += server + ":" + str(THRIFT_PORT+loc_id)
                 i += 1
             for iteration in experiment["iterations"]:
