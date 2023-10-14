@@ -1,7 +1,9 @@
 
 # EIGER-NOC2 Prototype
 
-This repository contains the prototype for the EIGER-NOC2 project. It is based on the repository from the SIGMOD 2014 paper titled [Scalable Atomic Visibility with RAMP Transactions](http://www.bailis.org/papers/ramp-sigmod2014.pdf) and includes enhancements to run experiments on EIGER-PORT, EIGER-PORT+, and EIGER-PORT++ along with the enhancements provided by the ORA repository.
+This repository contains the prototype for the EIGER-NOC2 project. It is based on the repository from the SIGMOD 2014 paper titled [Scalable Atomic Visibility with RAMP Transactions](http://www.bailis.org/papers/ramp-sigmod2014.pdf) and includes enhancements to run experiments on EIGER-PORT, EIGER-PORT+, and EIGER-PORT++ along with the enhancements provided by the RA-NOC2 repository. 
+
+Most of the logic for the algorithms is located in the respective ServiceHandler files. For Eiger-NOC2 the logic is found in EigerPortPlusPlusKaijuServiceHandler.java. Some more logic is found in the MemoryStorageEngine.java and the respective Executor class, for Eiger-NOC2 it is called EigerPortPlusPlusExecutor, which handle a lot of the server-side logic.
 
 ## Setting up the CloudLab Cluster
 

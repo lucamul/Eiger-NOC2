@@ -132,17 +132,18 @@ def transform_csv_file(filename):
 
 def split_all():
     paths = {
-        #"Freshness" : "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/resultsReplication/freshness-2023-10-02-18-11-53.csv",
-        "Num_Clients" : "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/resultsReplication/num_clients-2023-10-02-22-48-02.csv",
-        "Read_Proportion" : "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/resultsReplication/read_prop-2023-10-03-01-54-29.csv",
-        "Transaction_Length" : "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/resultsReplication/txn_len-2023-10-03-06-08-59.csv",
-        "Zipf" : "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/resultsReplication/distribution-2023-10-04-01-03-12.csv",
+        #"vsRANOC2" : "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/vsRANOC2/num_clients-2023-10-10-05-40-14.csv",
+        #"Freshness" : "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/resultsReplication/freshness-2023-10-07-12-53-32.csv",
+        "Num_Clients" : "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/resultsReplication/num_clients-2023-10-07-13-52-22.csv",
+        "Num_Servers" : "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/resultsReplication/num_servers-2023-10-07-14-23-39.csv",
+        "Read_Proportion" : "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/resultsReplication/read_prop-2023-10-07-15-00-37.csv",
+        "Transaction_Length" : "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/resultsReplication/txn_len-2023-10-07-15-49-31.csv",
+        "Zipf" : "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/resultsReplication/distribution-2023-10-07-16-49-07.csv",
     }
 
-    freshPaths = ["/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/Freshness/EIGER_PORT_PLUS_PLUS.csv",
-                  "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/Freshness/EIGER_PORT_PLUS.csv",
-                  "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/Freshness/EIGER_PORT.csv",
-                  "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/Freshness/EIGER.csv",
+    freshPaths = ["/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/resultsReplication/Freshness/EIGER_PORT_PLUS_PLUS.csv",
+                  "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/resultsReplication/Freshness/EIGER_PORT.csv",
+                  "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/resultsReplication/Freshness/EIGER.csv",
                   "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/Zipf_Fresh/EIGER_PORT_PLUS_PLUS.csv",
                   "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/Zipf_Fresh/EIGER_PORT_PLUS.csv",
                   "/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/Zipf_Fresh/EIGER_PORT.csv",
@@ -150,7 +151,7 @@ def split_all():
                   ]
     for name, path in paths.items():
         print(name)
-        create_algorithm_csv_files(path, f'/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/resultsReplication/{name}')
+        #create_algorithm_csv_files(path, f'/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/resultsReplication/{name}')
         create_normalized_csv_files(path, f'/home/luca/ETH/Thesis/EIGERPORT++/Eiger-PORT-plus-plus/results/resultsReplication/Normalized{name}')
     for path in freshPaths:
         transform_csv_file(path)
